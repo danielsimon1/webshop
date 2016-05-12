@@ -3,13 +3,12 @@
   "description": "Frontend for a fictive gaming web-shop",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "~1.4.0",
-    "angular-loader": "~1.4.0",
-    "angular-mocks": "~1.4.0"
+    "angular": "^1.5.5"
   },
   "devDependencies": {
     "bootstrap": "^3.3.6",
     "jquery": "^2.2.3",
-    "angular-ui-router": "^0.2.18"
+    "angular-ui-router": "^0.2.18",
+    "toastr": "^2.1.2"
   }
 }
