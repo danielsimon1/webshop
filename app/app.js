@@ -10,6 +10,9 @@ angular.module('app', [
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/view1'});
     }])
-    .controller('AppCtrl', function ($scope) {
-
+    .controller('AppCtrl', function ($scope, $rootScope) {
+        $rootScope.$on('$stateChangeSuccess',
+            function(event, toState){
+                $scope.currentStateName = toState.name;
+            })
     });
