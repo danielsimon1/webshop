@@ -1,10 +1,7 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
-  "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
-  "license": "MIT",
-  "private": true,
+  "name": "webshop",
+  "description": "Frontend for a fictive gaming web-shop",
+  "version": "0.0.1",
   "dependencies": {
     "angular": "~1.4.0",
     "angular-route": "~1.4.0",

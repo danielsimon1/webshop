@@ -1,17 +1,13 @@
 {
-  "name": "angular-seed",
-  "private": true,
-  "version": "0.0.0",
-  "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
-  "license": "MIT",
+  "name": "webshop",
+  "version": "0.0.1",
+  "description": "Frontend for a fictive gaming web-shop",
+  "repository": "https://github.com/danielsimon1/webshop",
   "devDependencies": {
     "http-server": "^0.6.1"
   },
   "scripts": {
     "postinstall": "bower install",
-
-    "prestart": "npm install",
     "start": "http-server -a localhost -p 8000 -c-1"
   }
 }
