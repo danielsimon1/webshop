@@ -1,0 +1,13 @@
+{
+  "name": "webshop",
+  "version": "0.0.1",
+  "description": "Frontend for a fictive gaming web-shop",
+  "repository": "https://github.com/danielsimon1/webshop",
+  "devDependencies": {
+    "http-server": "^0.6.1"
+  },
+  "scripts": {
+    "postinstall": "bower install",
+    "start": "http-server -a localhost -p 8000 -c-1"
+  }
+}
