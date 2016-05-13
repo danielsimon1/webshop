@@ -2,14 +2,21 @@
 
 // Declare app level module which depends on views, and components
 angular.module('app', [
-    'ngRoute',
     'ui.router',
+    'angular-carousel',
+    'app.home',
     'app.view1',
-    'app.view2'
+    'app.view2',
+    'app.login',
+    'app.register',
+    'app.passwordForget'
 ])
-    .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.otherwise({redirectTo: '/view1'});
-    }])
-    .controller('AppCtrl', function ($scope) {
-
+    .config(function ($urlRouterProvider) {
+        $urlRouterProvider.otherwise('/home');
+    })
+    .controller('AppCtrl', function ($scope, $rootScope) {
+        $rootScope.$on('$stateChangeSuccess',
+            function(event, toState){
+                $scope.currentStateName = toState.name;
+            })
     });
