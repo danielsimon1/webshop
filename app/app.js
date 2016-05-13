@@ -5,7 +5,8 @@ angular.module('app', [
     'ui.router',
     'app.view1',
     'app.view2',
-    'app.login'
+    'app.login',
+    'app.register'
 ])
     .config(function ($urlRouterProvider) {
         $urlRouterProvider.otherwise('/view1');
