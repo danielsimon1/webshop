@@ -10,12 +10,13 @@
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/toastr/toastr.min.css">
+    <link rel="stylesheet" href="bower_components/angular-carousel/dist/angular-carousel.min.css">
 </head>
 <body ng-controller="AppCtrl">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <span class="navbar-brand">Webshop</span>
+            <a ui-sref="home"><span class="navbar-brand">Webshop</span></a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -26,13 +27,24 @@
                 <li ng-class="{active: currentStateName == 'view2' ? true : false}">
                     <a ui-sref="view2">View 2<span class="sr-only"></span></a>
                 </li>
-                </ul>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        Alle Spiele<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a>Genre 1</a></li>
+                        <li><a>Genre 2</a></li>
+                    </ul>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">User<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="login">Logout</a></li>
+                        <li><a>Bestellungen</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="#">Separated link</a></li>
                     </ul>
@@ -45,14 +57,18 @@
 <div ui-view></div>
 
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-touch/angular-touch.min.js"></script>
+<script src="bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="bower_components/toastr/toastr.min.js"></script>
 <script src="app.js"></script>
+<script src="home/home.js"></script>
 <script src="view1/view1.js"></script>
 <script src="view2/view2.js"></script>
 <script src="login/login.js"></script>
 <script src="login/register/register.js"></script>
+<script src="login/passwordForget/passwordForget.js"></script>
 </body>
 </html>

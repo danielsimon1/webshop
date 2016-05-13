@@ -5,18 +5,34 @@
             <div style="padding: 20px;">
                 <fieldset>
                     <div class="form-group input-group">
-                        <span class="input-group-addon"> @ </span>
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </span>
                         <input class="form-control" placeholder="Benutzername" type="text" ng-model="data.userName"
                                autofocus required id="username">
                     </div>
                     <div class="form-group input-group">
-                            <span class="input-group-addon">
-                                <i class="glyphicon glyphicon-lock"></i>
-                            </span>
+                        <span class="input-group-addon"> @ </span>
+                        <input class="form-control" placeholder="Email" type="email" ng-model="data.email"
+                               autofocus required id="Email">
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
                         <input class="form-control" placeholder="Passwort" type="password" id="password"
-                               ng-model="data.password" required></div>
+                               ng-model="data.password" required>
+                    </div>
+                    <div class="form-group input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-lock"></i>
+                        </span>
+                        <input class="form-control" placeholder="Passwort bestätigen" type="password" id="passwordConfirm"
+                               ng-model="data.passwordConfirm" required>
+                    </div>
                     <div class="form-group">
-                        <button class="btn btn-primary btn-block" ng-click="register()" id="submit">Registrieren</button>
+                        <button class="btn btn-primary btn-block" ng-click="register()" id="submit">Registrieren
+                        </button>
                     </div>
                 </fieldset>
             </div>

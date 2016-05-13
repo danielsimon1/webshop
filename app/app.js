@@ -3,13 +3,16 @@
 // Declare app level module which depends on views, and components
 angular.module('app', [
     'ui.router',
+    'angular-carousel',
+    'app.home',
     'app.view1',
     'app.view2',
     'app.login',
-    'app.register'
+    'app.register',
+    'app.passwordForget'
 ])
     .config(function ($urlRouterProvider) {
-        $urlRouterProvider.otherwise('/view1');
+        $urlRouterProvider.otherwise('/home');
     })
     .controller('AppCtrl', function ($scope, $rootScope) {
         $rootScope.$on('$stateChangeSuccess',
