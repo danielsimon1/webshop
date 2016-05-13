@@ -21,11 +21,11 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li ng-class="{active: currentStateName == 'view1' ? true : false}">
-                    <a ui-sref="view1">View 1<span class="sr-only"></span></a>
+                <li ng-class="{active: currentStateName == 'topGames' ? true : false}">
+                    <a ui-sref="topGames">Top-Spiele</a>
                 </li>
-                <li ng-class="{active: currentStateName == 'view2' ? true : false}">
-                    <a ui-sref="view2">View 2<span class="sr-only"></span></a>
+                <li ng-class="{active: currentStateName == 'newGames' ? true : false}">
+                    <a ui-sref="newGames">Neuerscheinungen</a>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -43,10 +43,10 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">User<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a ui-sref="login">Logout</a></li>
+                        <li><a>Warenkorb</a></li>
                         <li><a>Bestellungen</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="#">Separated link</a></li>
+                        <li><a ui-sref="login">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -54,7 +54,7 @@
     </div>
 </nav>
 
-<div ui-view></div>
+<div ui-view class="content"></div>
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
@@ -65,8 +65,8 @@
 <script src="bower_components/toastr/toastr.min.js"></script>
 <script src="app.js"></script>
 <script src="home/home.js"></script>
-<script src="view1/view1.js"></script>
-<script src="view2/view2.js"></script>
+<script src="topGames/topGames.js"></script>
+<script src="newGames/newGames.js"></script>
 <script src="login/login.js"></script>
 <script src="login/register/register.js"></script>
 <script src="login/passwordForget/passwordForget.js"></script>

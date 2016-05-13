@@ -5,8 +5,8 @@ angular.module('app', [
     'ui.router',
     'angular-carousel',
     'app.home',
-    'app.view1',
-    'app.view2',
+    'app.topGames',
+    'app.newGames',
     'app.login',
     'app.register',
     'app.passwordForget'
