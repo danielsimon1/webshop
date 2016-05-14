@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Call of Duty: Black Ops 2",
-    "Genre": "Ego-Shooter",
+    "genre": "Ego-Shooter",
     "price": 20.00,
     "fsk": 18,
     "platforms": [
@@ -12,6 +12,7 @@
     "language": "Deutsch",
     "minRam": "2 GB",
     "minProcessor": "2,3 GHz",
+    "description": "Beschreibungs-String mit <strong>HTML</strong>",
     "reviews": [
       {
         "id": 1,
@@ -22,7 +23,7 @@
       },
       {
         "id": 2,
-        "stars": 2,
+        "stars": 1,
         "author": "Matthias",
         "title": "Enttäuschend",
         "message": "Schlechte Grafik"

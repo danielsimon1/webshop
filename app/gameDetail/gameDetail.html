@@ -1,0 +1,41 @@
+<div class="game-view">
+    <div class="image"></div>
+    <div class="block">
+        <p class="h3">{{ actualGame.name }}</p>
+        <p class="h4">{{ actualGame.genre }}</p>
+        <p class="h5">Plattformen: <span ng-repeat="platform in actualGame.platforms"> {{ platform }} </span></p>
+        <p class="h5">Altersfreigabe: FSK {{ actualGame.fsk }}</p>
+        <p class="h5">Durchschnittliche Bewertung:
+            <span class="outline">
+                <span>★</span><span ng-show="stars >= 1.5">★</span><span ng-show="stars >= 2.5">★</span><span
+                    ng-show="stars >= 3.5">★</span><span ng-show="stars >= 4.5">★</span>
+            </span>
+            <span>☆☆☆☆☆</span>
+        </p>
+    </div>
+</div>
+<ul class="nav nav-pills nav-justified">
+    <li role="presentation" ng-class="{active: tab.active == 'description'}">
+        <a ng-click="changeTab('description')">Beschreibung</a>
+    </li>
+    <li role="presentation" ng-class="{active: tab.active == 'requirements'}">
+        <a ng-click="changeTab('requirements')">Systemvorraussetzungen</a>
+    </li>
+    <li role="presentation" ng-class="{active: tab.active == 'reviews'}">
+        <a ng-click="changeTab('reviews')">Bewertungen</a>
+    </li>
+</ul>
+<div ng-show="tab.active == 'description'" id="description"></div>
+<div ng-show="tab.active == 'reviews'">
+    <div ng-repeat="review in actualGame.reviews" class="review">
+        <p class="h5">
+            <span class="outline">
+                <span>★</span><span ng-show="review.stars >= 1.5">★</span><span ng-show="review.stars >= 2.5">★</span><span
+                    ng-show="review.stars >= 3.5">★</span><span ng-show="review.stars >= 4.5">★</span>
+            </span>
+            <span>☆☆☆☆☆</span>
+        </p>
+        <p class="h5">{{ review.author }}: {{ review.title }}</p>
+        <p>{{ review.message }}</p>
+    </div>
+</div>

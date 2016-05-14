@@ -8,3 +8,27 @@ body {
 .content {
     padding: 30px;
 }
+
+.game-view {
+}
+
+.image {
+    width: 300px;
+    height: 200px;
+    background-color: #1b6d85;
+    display: inline-block;
+}
+
+.block {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 20px;
+}
+
+.outline {
+    position: absolute;
+}
+
+.review {
+    margin-top: 20px;
+}

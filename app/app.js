@@ -7,6 +7,7 @@ angular.module('app', [
     'app.home',
     'app.topGames',
     'app.newGames',
+    'app.gameDetail',
     'app.login',
     'app.register',
     'app.passwordForget'
