@@ -3,7 +3,7 @@
     "id": 1,
     "name": "Call of Duty: Black Ops 2",
     "genre": "Action",
-    "price": 20.00,
+    "price": 19.99,
     "fsk": 18,
     "platforms": [
       "wiiu",
@@ -31,6 +31,41 @@
         "author": "Matthias",
         "title": "Enttäuschend",
         "message": "Schlechte Grafik"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "FIFA 16",
+    "genre": "Sport",
+    "price": 39.99,
+    "fsk": 0,
+    "platforms": [
+      "wiiu",
+      "windows",
+      "ps",
+      "xbox",
+      "osx"
+    ],
+    "release": "09. September 2015",
+    "language": "Deutsch",
+    "minRam": "2 GB",
+    "minProcessor": "2,6 GHz",
+    "description": "Beschreibungs-String mit <strong>HTML</strong> LAdasdafsadfsadfa lsdkfjhalsdkjfhalksdjfhalkjsdhf lakjdhflakjdhfalksjdfhalkjsdhflakjfhdlsakjhfalksjdhfalksjdhflakj",
+    "reviews": [
+      {
+        "id": 1,
+        "stars": 4,
+        "author": "Enes",
+        "title": "Geiles Spiel",
+        "message": "Macht Bock! Aber ein paar Bugs gibts leider noch"
+      },
+      {
+        "id": 2,
+        "stars": 2,
+        "author": "MirDochEgal",
+        "title": "So ein Scheiß !!!!111!",
+        "message": "Die werden echtr jedes jahr schlecher ....... "
       }
     ]
   }

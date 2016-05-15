@@ -33,9 +33,9 @@
                         Genres<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a>Alle Spiele</a></li>
+                        <li><a ui-sref="genre({name: 'Alle Spiele'})">Alle Spiele</a></li>
                         <li role="separator" class="divider"></li>
-                        <li ng-repeat="genre in genres"><a>{{ genre }}</a></li>
+                        <li ng-repeat="genre in genres"><a ui-sref="genre({name: genre})">{{ genre }}</a></li>
                     </ul>
                 </li>
             </ul>
@@ -60,7 +60,6 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
 <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
-<script src="bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -71,6 +70,7 @@
 <script src="newGames/newGames.js"></script>
 <script src="gameDetail/gameDetail.js"></script>
 <script src="orders/orders.js"></script>
+<script src="genre/genre.js"></script>
 <script src="login/login.js"></script>
 <script src="login/register/register.js"></script>
 <script src="login/passwordForget/passwordForget.js"></script>

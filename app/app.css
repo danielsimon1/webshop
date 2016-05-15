@@ -45,3 +45,14 @@ body {
 .tabs {
     margin-top: 20px;
 }
+
+.games-list {
+    margin-top: 10px;
+}
+
+.slider {
+    margin-left: auto;
+    margin-right: auto;
+    width: 750px;
+    height: 422px;
+}

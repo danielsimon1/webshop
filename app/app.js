@@ -10,6 +10,7 @@ angular.module('app', [
     'app.newGames',
     'app.gameDetail',
     'app.login',
+    'app.genre',
     'app.orders',
     'app.register',
     'app.passwordForget'
