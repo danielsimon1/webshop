@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/toastr/toastr.min.css">
-    <link rel="stylesheet" href="bower_components/angular-carousel/dist/angular-carousel.min.css">
 </head>
 <body ng-controller="AppCtrl">
 <nav class="navbar navbar-default">
@@ -42,12 +41,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">User<span class="caret"></span></a>
+                       aria-expanded="false">{{ userName }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a>Warenkorb</a></li>
-                        <li><a ui-sref="orders">Bestellungen</a></li>
+                        <li><a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a></li>
+                        <li ng-show="userName != 'Benutzer'"><a ui-sref="orders">Bestellungen</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a ui-sref="login">Logout</a></li>
+                        <li ng-show="userName != 'Benutzer'"><a ng-click="logout()" href="">Logout</a></li>
+                        <li ng-show="userName == 'Benutzer'"><a ui-sref="login">Login</a></li>
                     </ul>
                 </li>
             </ul>
@@ -66,6 +66,7 @@
 <script src="bower_components/toastr/toastr.min.js"></script>
 <script src="app.js"></script>
 <script src="home/home.js"></script>
+<script src="cart/cart.js"></script>
 <script src="topGames/topGames.js"></script>
 <script src="newGames/newGames.js"></script>
 <script src="gameDetail/gameDetail.js"></script>

@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div ng-repeat="item in cart" class="form-inline">
+    <input ng-model="item.quantity" class="form-control input-sm form-control-inline" style="width: 45px"
+           ng-change="quantityChange(item.id)">
+    <a ui-sref="gameDetail({id: item.id})">{{ item.name }}</a> ({{ item.price }}€)
+    <p class="price">{{ item.quantity * item.price | number: 2 }}€</p>
+    <hr>
+</div>
+<h4>Gesamt: {{ totalPrice | number: 2 }}€</h4>

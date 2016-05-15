@@ -4,13 +4,13 @@
 angular.module('app', [
     'ui.router',
     'LocalStorageModule',
-    'angular-carousel',
     'app.home',
     'app.topGames',
     'app.newGames',
     'app.gameDetail',
     'app.login',
     'app.genre',
+    'app.cart',
     'app.orders',
     'app.register',
     'app.passwordForget'
@@ -33,11 +33,37 @@ angular.module('app', [
                 console.log(error);
             });
     })
-    .controller('AppCtrl', function ($scope, $rootScope, $http) {
+    .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state) {
         $rootScope.$on('$stateChangeSuccess',
             function(event, toState){
                 $scope.currentStateName = toState.name;
             });
+        
+        $rootScope.$on('itemAddedToCart', function () {
+            countCartItems();
+        });
+
+        $rootScope.$on('login', function () {
+            getUserData();
+        });
+
+        $scope.logout = function () {
+            localStorageService.remove('user');
+            localStorageService.remove('cart');
+            localStorageService.remove('orders');
+            // update user data
+            $rootScope.$emit('login');
+            $rootScope.$emit('itemAddedToCart');
+            toastr.success('Logout war erfolgreich.');
+            $state.go('login');
+        };
+
+        var getUserData = function () {
+            var user = localStorageService.get('user') || {};
+            $scope.userName = user.userName || 'Benutzer';
+        };
+        getUserData();
+        
         $http.get('../assets/json/genres.json')
             .then(function (response) {
                 $scope.genres = response.data;
@@ -45,4 +71,13 @@ angular.module('app', [
             }, function (error) {
                 console.log(error);
             });
+        
+        var countCartItems = function () {
+            var cart = localStorageService.get('cart');
+            $scope.quantity = 0;
+            angular.forEach(cart, function (item) {
+                $scope.quantity += item.quantity;
+            });
+        };
+        countCartItems();
     });

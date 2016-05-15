@@ -10,7 +10,12 @@ angular.module('app.login', [])
         });
     })
 
-    .controller('LoginCtrl', function ($scope, $state) {
+    .controller('LoginCtrl', function ($scope, $state, localStorageService, $rootScope) {
+        var user = localStorageService.get('user') || {};
+        if (user.userName) {
+            toastr.info('Sie sind bereits eingeloogt als "' + user.userName + '"!');
+            $state.go('home');
+        }
         $scope.data = {};
         $scope.data.password = '';
         $scope.data.userName = '';
@@ -32,7 +37,12 @@ angular.module('app.login', [])
                 toastr.warning('Benutzername und Passwort müssen angegeben werden!', 'Fehlende Informationen!')
             } else {
                 toastr.success('Einloggen war erfolgreich.');
-                $state.go('view1');
+                var user = {
+                    userName: $scope.data.userName
+                };
+                localStorageService.set('user', user);
+                $rootScope.$emit('login');
+                $state.go('home');
             }
         }
     });
