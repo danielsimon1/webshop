@@ -10,26 +10,9 @@ angular.module('app.gameDetail', [])
         });
     })
 
-    .controller('GameDetailCtrl', function ($scope, $http, $stateParams) {
+    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService) {
         $scope.tab = {};
         $scope.tab.active = 'description';
-        $scope.changeTab = function (type) {
-            $scope.tab.active = type;
-        };
-        var id = $stateParams.id;
-        $http.get('../assets/json/articles.json')
-            .then(function (response) {
-                $scope.articles = response.data;
-                angular.forEach($scope.articles, function (item) {
-                    if (item.id == id) {
-                        $scope.actualGame = item;
-                    }
-                });
-                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-                document.getElementById("description").innerHTML = $scope.actualGame.description
-            }, function (error) {
-                console.log(error);
-            });
         var calculateAverageStars = function (data) {
             var count = 0;
             var stars = 0;
@@ -39,4 +22,16 @@ angular.module('app.gameDetail', [])
             });
             return stars / count;
         };
+        $scope.changeTab = function (type) {
+            $scope.tab.active = type;
+        };
+        var id = $stateParams.id;
+        $scope.articles = localStorageService.get('articles');
+        angular.forEach($scope.articles, function (item) {
+            if (item.id == id) {
+                $scope.actualGame = item;
+            }
+        });
+        $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+        document.getElementById("description").innerHTML = $scope.actualGame.description;
     });

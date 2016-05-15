@@ -30,11 +30,12 @@
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">
-                        Alle Spiele<span class="caret"></span>
+                        Genres<span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a>Genre 1</a></li>
-                        <li><a>Genre 2</a></li>
+                        <li><a>Alle Spiele</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li ng-repeat="genre in genres"><a>{{ genre }}</a></li>
                     </ul>
                 </li>
             </ul>
@@ -44,7 +45,7 @@
                        aria-expanded="false">User<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a>Warenkorb</a></li>
-                        <li><a>Bestellungen</a></li>
+                        <li><a ui-sref="orders">Bestellungen</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a ui-sref="login">Logout</a></li>
                     </ul>
@@ -58,6 +59,7 @@
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
+<script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
 <script src="bower_components/angular-carousel/dist/angular-carousel.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -68,6 +70,7 @@
 <script src="topGames/topGames.js"></script>
 <script src="newGames/newGames.js"></script>
 <script src="gameDetail/gameDetail.js"></script>
+<script src="orders/orders.js"></script>
 <script src="login/login.js"></script>
 <script src="login/register/register.js"></script>
 <script src="login/passwordForget/passwordForget.js"></script>

@@ -6,17 +6,26 @@ body {
 }
 
 .content {
-    padding: 30px;
+    padding: 0 30px 30px 30px;
 }
 
 .game-view {
+    height: 200px;
 }
 
 .image {
     width: 300px;
     height: 200px;
     background-color: #1b6d85;
-    display: inline-block;
+}
+
+.platform {
+    height: 40px;
+    margin-right: 15px;
+}
+
+.description {
+    margin-top: 40px;
 }
 
 .block {
@@ -30,5 +39,9 @@ body {
 }
 
 .review {
+    margin-top: 20px;
+}
+
+.tabs {
     margin-top: 20px;
 }

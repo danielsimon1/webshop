@@ -2,17 +2,21 @@
   {
     "id": 1,
     "name": "Call of Duty: Black Ops 2",
-    "genre": "Ego-Shooter",
+    "genre": "Action",
     "price": 20.00,
     "fsk": 18,
     "platforms": [
-      "Nintento Wii U", "Windows", "PlayStation 3", "Xbox 360"
+      "wiiu",
+      "windows",
+      "ps",
+      "xbox",
+      "osx"
     ],
     "release": "13. November 2012",
     "language": "Deutsch",
     "minRam": "2 GB",
     "minProcessor": "2,3 GHz",
-    "description": "Beschreibungs-String mit <strong>HTML</strong>",
+    "description": "Beschreibungs-String mit <strong>HTML</strong> LAdasdafsadfsadfa lsdkfjhalsdkjfhalksdjfhalkjsdhf lakjdhflakjdhfalksjdfhalkjsdhflakjfhdlsakjhfalksjdhfalksjdhflakj",
     "reviews": [
       {
         "id": 1,

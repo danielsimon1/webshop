@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "date": "1463307966365",
+    "price": 199.99,
+    "articles": [
+      {
+        "id": 1,
+        "quantity": 1,
+        "name": "Call of Duty: Black Ops 2",
+        "price": 199.99
+      }
+    ]
+  }
+]
