@@ -9,6 +9,7 @@
     "bootstrap": "^3.3.6",
     "jquery": "^2.2.3",
     "angular-ui-router": "^0.2.18",
-    "toastr": "^2.1.2"
+    "toastr": "^2.1.2",
+    "angular-animate": "^1.5.5"
   }
 }

@@ -37,8 +37,11 @@ angular.module('app.login', [])
                 toastr.warning('Benutzername und Passwort müssen angegeben werden!', 'Fehlende Informationen!')
             } else {
                 toastr.success('Einloggen war erfolgreich.');
+                var role;
+                $scope.data.userName == 'daniel' ? role = 'admin' : role = 'user';
                 var user = {
-                    userName: $scope.data.userName
+                    userName: $scope.data.userName,
+                    role: role
                 };
                 localStorageService.set('user', user);
                 $rootScope.$emit('login');

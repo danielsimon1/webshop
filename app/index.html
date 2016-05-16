@@ -7,7 +7,7 @@
     <meta name="description" content="Webshop for web engineering course">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/toastr/toastr.min.css">
 </head>
@@ -43,8 +43,10 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">{{ userName }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a></li>
+                        <li><a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a>
+                        </li>
                         <li ng-show="userName != 'Benutzer'"><a ui-sref="orders">Bestellungen</a></li>
+                        <li ng-show="userRole == 'admin'"><a>Artikel anlegen</a></li>
                         <li role="separator" class="divider"></li>
                         <li ng-show="userName != 'Benutzer'"><a ng-click="logout()" href="">Logout</a></li>
                         <li ng-show="userName == 'Benutzer'"><a ui-sref="login">Login</a></li>
@@ -55,7 +57,10 @@
     </div>
 </nav>
 
-<div ui-view class="content"></div>
+<div class="ui-view-container">
+    <div ui-view class="content"></div>
+</div>
+
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-touch/angular-touch.min.js"></script>
@@ -63,6 +68,7 @@
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="bower_components/toastr/toastr.min.js"></script>
 <script src="app.js"></script>
 <script src="home/home.js"></script>

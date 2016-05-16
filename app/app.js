@@ -4,6 +4,7 @@
 angular.module('app', [
     'ui.router',
     'LocalStorageModule',
+    'ngAnimate',
     'app.home',
     'app.topGames',
     'app.newGames',
@@ -61,6 +62,7 @@ angular.module('app', [
         var getUserData = function () {
             var user = localStorageService.get('user') || {};
             $scope.userName = user.userName || 'Benutzer';
+            $scope.userRole = user.role;
         };
         getUserData();
         
