@@ -45,4 +45,21 @@ angular.module('app.cart', [])
             localStorageService.set('cart', cart);
             $rootScope.$emit('itemAddedToCart');
         };
+
+        $scope.remove = function (id) {
+            var index = 0;
+            angular.forEach(cart, function (item) {
+                console.log(item);
+                if (item.itemId == id) {
+                    console.log(index);
+                    $scope.cart.splice(index, 1);
+                    cart.splice(index, 1);
+                }
+                index++;
+            });
+            $scope.quantityChange();
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', cart);
+            $rootScope.$emit('itemAddedToCart');
+        }
     });
