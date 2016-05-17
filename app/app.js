@@ -36,8 +36,9 @@ angular.module('app', [
     })
     .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state) {
         $rootScope.$on('$stateChangeSuccess',
-            function(event, toState){
+            function(event, toState, toParams){
                 $scope.currentStateName = toState.name;
+                $scope.currentStateParams = toParams.name;
             });
         
         $rootScope.$on('itemAddedToCart', function () {
