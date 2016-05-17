@@ -12,6 +12,7 @@ angular.module('app', [
     'app.login',
     'app.genre',
     'app.cart',
+    'app.checkout',
     'app.orders',
     'app.register',
     'app.passwordForget'
@@ -35,6 +36,7 @@ angular.module('app', [
             });
     })
     .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state) {
+        localStorageService.remove('checkout');
         $rootScope.$on('$stateChangeSuccess',
             function(event, toState, toParams){
                 $scope.currentStateName = toState.name;
@@ -51,8 +53,8 @@ angular.module('app', [
 
         $scope.logout = function () {
             localStorageService.remove('user');
-            localStorageService.remove('cart');
             localStorageService.remove('orders');
+            localStorageService.remove('checkout');
             // update user data
             $rootScope.$emit('login');
             $rootScope.$emit('itemAddedToCart');

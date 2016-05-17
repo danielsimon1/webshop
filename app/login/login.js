@@ -12,6 +12,7 @@ angular.module('app.login', [])
 
     .controller('LoginCtrl', function ($scope, $state, localStorageService, $rootScope) {
         var user = localStorageService.get('user') || {};
+        var toCheckout = localStorageService.get('fromCheckout');
         if (user.userName) {
             toastr.info('Sie sind bereits eingeloogt als "' + user.userName + '"!');
             $state.go('home');
@@ -45,7 +46,12 @@ angular.module('app.login', [])
                 };
                 localStorageService.set('user', user);
                 $rootScope.$emit('login');
-                $state.go('home');
+                localStorageService.remove('checkout');
+                if (toCheckout) {
+                    $state.go('checkout');
+                } else {
+                    $state.go('home');
+                }
             }
         }
     });
