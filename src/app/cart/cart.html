@@ -1,6 +1,6 @@
 <div ng-repeat="item in cart" class="form-inline">
     <input ng-model="item.quantity" class="form-control input-sm form-control-inline" style="width: 45px"
-           ng-change="quantityChange()">
+           ng-change="quantityChange(item.id)">
     <span><a ui-sref="gameDetail({id: item.id})">{{ item.name }}</a> (Stückpreis: {{ item.price }}€)<br></span>
     <p class="delete-link"><a ng-click="remove(item.id)" href="">Löschen</a></p>
     <p>

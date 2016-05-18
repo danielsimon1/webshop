@@ -40,19 +40,14 @@ angular.module('app.gameDetail', [])
 
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
-                var cart = localStorageService.get('cart') || [];
-                var isInCart = false;
-                angular.forEach(cart, function (item) {
-                    if (item.itemId == $scope.actualGame.id) {
-                        item.quantity = parseInt(item.quantity) + parseInt($scope.quantity);
-                        isInCart = true;
-                    }
-                });
-                if (!isInCart) {
-                    cart.push({
+                var cart = localStorageService.get('cart') || {};
+                if (cart[$scope.actualGame.id] && cart[$scope.actualGame.id].quantity) {
+                    cart[$scope.actualGame.id].quantity = parseInt(cart[$scope.actualGame.id].quantity) + parseInt($scope.quantity)
+                } else {
+                    cart[$scope.actualGame.id] = {
                         itemId: $scope.actualGame.id,
                         quantity: parseInt($scope.quantity)
-                    });
+                    };
                 }
                 localStorageService.set('cart', cart);
                 $rootScope.$emit('itemAddedToCart');

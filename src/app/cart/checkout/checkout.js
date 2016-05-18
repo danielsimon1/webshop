@@ -15,9 +15,9 @@ angular.module('app.checkout', [])
             toastr.info('Bitte melden Sie sich an.');
             $state.go('login');
         }
-        var cart = localStorageService.get('cart');
-        var articles = localStorageService.get('articles');
-        $scope.cart = [];
+        var cart = localStorageService.get('cart') || {};
+        var articles = localStorageService.get('articles') || {};
+        $scope.cart = {};
 
         $scope.updateTotalPrice = function () {
             $scope.totalPrice = 0;
@@ -31,7 +31,7 @@ angular.module('app.checkout', [])
                 if (item.itemId == article.id) {
                     var newObject = article;
                     newObject.quantity = item.quantity;
-                    $scope.cart.push(newObject);
+                    $scope.cart[item.itemId] = newObject;
                 }
             });
         });
