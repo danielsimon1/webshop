@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.gameDetail', [])
 
     .config(function ($stateProvider) {
@@ -14,7 +12,7 @@ angular.module('app.gameDetail', [])
         $scope.tab = {};
         $scope.tab.active = 'description';
         $scope.quantity = 1;
-        
+
         var calculateAverageStars = function (data) {
             var count = 0;
             var stars = 0;
@@ -24,11 +22,11 @@ angular.module('app.gameDetail', [])
             });
             return stars / count;
         };
-        
+
         $scope.changeTab = function (type) {
             $scope.tab.active = type;
         };
-        
+
         var id = $stateParams.id;
         $scope.articles = localStorageService.get('articles');
         angular.forEach($scope.articles, function (item) {
@@ -36,10 +34,10 @@ angular.module('app.gameDetail', [])
                 $scope.actualGame = item;
             }
         });
-        
+
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
         document.getElementById("description").innerHTML = $scope.actualGame.description;
-        
+
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
                 var cart = localStorageService.get('cart') || [];

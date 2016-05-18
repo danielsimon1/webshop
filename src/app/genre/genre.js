@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.genre', [])
 
     .config(function ($stateProvider) {

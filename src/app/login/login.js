@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.login', [])
 
     .config(function ($stateProvider) {
@@ -20,15 +18,15 @@ angular.module('app.login', [])
         $scope.data = {};
         $scope.data.password = '';
         $scope.data.userName = '';
-        
+
         //Trigger Login when enter pressed
-        $("#username").keydown(function(event){
-            if(event.keyCode == 13){
+        $("#username").keydown(function (event) {
+            if (event.keyCode == 13) {
                 $("#submit").click();
             }
         });
-        $("#password").keydown(function(event){
-            if(event.keyCode == 13){
+        $("#password").keydown(function (event) {
+            if (event.keyCode == 13) {
                 $("#submit").click();
             }
         });

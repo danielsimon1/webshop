@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.newGames', [])
 
     .config(function ($stateProvider) {

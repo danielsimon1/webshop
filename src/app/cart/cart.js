@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.cart', [])
 
     .config(function ($stateProvider) {
@@ -24,11 +22,11 @@ angular.module('app.cart', [])
 
         angular.forEach(articles, function (article) {
             angular.forEach(cart, function (item) {
-               if (item.itemId == article.id) {
-                   var newObject = article;
-                   newObject.quantity = item.quantity;
-                   $scope.cart.push(newObject);
-               } 
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    $scope.cart.push(newObject);
+                }
             });
         });
         $scope.updateTotalPrice();

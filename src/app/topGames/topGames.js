@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.topGames', [])
 
     .config(function ($stateProvider) {

@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.orders', [])
 
     .config(function ($stateProvider) {

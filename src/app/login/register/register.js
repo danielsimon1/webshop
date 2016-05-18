@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('app.register', [])
 
     .config(function ($stateProvider) {
@@ -24,7 +22,7 @@ angular.module('app.register', [])
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!')
             } else {
-                toastr.success('Registrierung war valid.');                
+                toastr.success('Registrierung war valid.');
             }
         }
     });
