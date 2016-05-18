@@ -25,15 +25,44 @@ var using = require('gulp-using');
 
 var config = require('./gulpfile.config.js');
 
+gulp.task('default', function (done) {
+    runSequence(
+        'clean',
+        ['index', 'bower', 'assets', 'sass', 'templatecache', 'js'],
+        done);
+});
+
+gulp.task('watch', function (done) {
+
+    runSequence(
+        'clean',
+        ['index', 'bower', 'assets', 'sass', 'templatecache', 'js', 'server'],
+        done);
+
+    livereload.listen();
+
+    gulp.watch(config.paths.index, ['index']);
+    gulp.watch(config.paths.sass, ['sass']);
+    gulp.watch(config.paths.html, ['templatecache', 'html']);
+    gulp.watch(config.paths.js, ['templatecache', 'js']);
+});
+
+gulp.task('server', function (done) {
+    http.createServer(
+        st({path: __dirname + '/' + config.paths.dist, index: 'index.html', cache: false})
+    ).listen(8000, done);
+    console.log('Post: ' + 8000);
+});
+
 gulp.task('sass', function (done) {
     gulp.src(config.paths.sassMain)
         .pipe(sourcemaps.init())
-        .pipe(sass({errLogToConsole : true}))
+        .pipe(sass({errLogToConsole: true}))
         .pipe(gulp.dest(config.paths.dist + '/assets/css/'))
         .pipe(minifyCss({
-            keepSpecialComments : 0
+            keepSpecialComments: 0
         }))
-        .pipe(rename({extname : '.min.css'}))
+        .pipe(rename({extname: '.min.css'}))
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest(config.paths.dist + '/assets/css/'))
         .pipe(livereload())
@@ -43,14 +72,14 @@ gulp.task('sass', function (done) {
 gulp.task('assets', function (done) {
 
     gulp.src(config.paths.assets, {
-        base : config.paths.assetsBase
+        base: config.paths.assetsBase
     })
         .pipe(gulp.dest(config.paths.dist))
         .on('end', done);
 });
 
 gulp.task('clean', function () {
-    return gulp.src(config.paths.dist, {read : false})
+    return gulp.src(config.paths.dist, {read: false})
         .pipe(clean());
 });
 
@@ -59,20 +88,20 @@ gulp.task('js', function (done) {
         .pipe(plumber())
         .pipe(ngAnnotate())
         .pipe(concat('app', {
-            process : function (src) {
+            process: function (src) {
                 return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
             }
         }))
         .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
         .pipe(concat.footer('\n})(window, document);\n'))
         .pipe(rename({
-            extname : ".js"
+            extname: ".js"
         }))
         .pipe(gulp.dest(config.paths.dist + '/assets/js/'))
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(rename({
-            extname : ".min.js"
+            extname: ".min.js"
         }))
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest(config.paths.dist + '/assets/js/'))
@@ -87,13 +116,9 @@ gulp.task('index', function () {
 
 gulp.task('templatecache', function (done) {
     gulp.src(config.paths.html)
-        .pipe(minifyHTML({
-            //conditionals : true,
-            //spare : true
-        }))
+        .pipe(minifyHTML())
         .pipe(templateCache({
-            standalone : true
-            //root : 'templates'
+            standalone: true
         }))
         .pipe(gulp.dest(config.paths.dist + '/assets/js/'))
         .pipe(livereload())
@@ -103,7 +128,7 @@ gulp.task('templatecache', function (done) {
 gulp.task('bower', ['bower-css', 'bower-js', 'bower-assets']);
 
 gulp.task('bower-js', function (done) {
-    gulp.src(config.bower.js, {cwd : config.paths.bower})
+    gulp.src(config.bower.js, {cwd: config.paths.bower})
         .pipe(using())
         .pipe(sourcemaps.init())
         .pipe(concat('bower.js'))
@@ -113,16 +138,14 @@ gulp.task('bower-js', function (done) {
 });
 
 gulp.task('bower-css', function (done) {
-    gulp.src(config.bower.css, {cwd : config.paths.bower})
+    gulp.src(config.bower.css, {cwd: config.paths.bower})
         .pipe(using())
         .pipe(sourcemaps.init())
         .pipe(concat('bower.css'))
-        //.pipe(gulp.dest(config.paths.dist + '/css/'))
         .pipe(minifyCss({
-            keepSpecialComments : 0
+            keepSpecialComments: 0
         }))
         .pipe(gulp.dest(config.paths.dist + '/assets/css/'))
-        //.pipe(rename({extname : '.min.css'}))
         .pipe(sourcemaps.write('/'))
         .on('end', done);
 });
@@ -135,8 +158,8 @@ function createTask(key) {
         var folder = (config.bower.assets[key].dist) ? config.bower.assets[key].dist : 'assets/';
 
         gulp.src(config.bower.assets[key].src, {
-            base : config.paths.bower + '/' + config.bower.assets[key].base,
-            cwd : config.paths.bower
+            base: config.paths.bower + '/' + config.bower.assets[key].base,
+            cwd: config.paths.bower
         })
             .pipe(using())
             .pipe(gulp.dest(config.paths.dist + '/' + folder))
@@ -155,37 +178,4 @@ gulp.task('html', function (done) {
     gulp.src(config.paths.html)
         .pipe(livereload())
         .on('end', done);
-});
-
-gulp.task('server', function (done) {
-    http.createServer(
-        st({path : __dirname + '/' + config.paths.dist, index : 'index.html', cache : false})
-    ).listen(8000, done);
-    console.log('Post: ' + 8000);
-});
-
-gulp.task('default', function (done) {
-    runSequence(
-        'clean',
-        ['index', 'bower', 'assets', 'sass', 'templatecache', 'js'],
-        done);
-});
-
-gulp.task('watch', function (done) {
-
-    runSequence(
-        'clean',
-        ['index', 'bower', 'assets', 'sass', 'templatecache', 'js', 'server'],
-        done);
-
-    //livereload.listen({basePath : config.paths.dist});
-    livereload.listen();
-
-    gulp.watch(config.paths.index, ['index']);
-    gulp.watch(config.paths.sass, ['sass']);
-    gulp.watch(config.paths.html, ['templatecache', 'html']);
-
-    //gulp.watch(config.paths.templatecache, ['templatecache']);
-    gulp.watch(config.paths.js, ['templatecache', 'js']);
-    //gulp.watch(config.paths.bower, ['bower']);
 });
