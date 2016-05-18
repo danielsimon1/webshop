@@ -1,0 +1,13 @@
+<div ng-repeat="item in cart" class="form-inline">
+    <input ng-model="item.quantity" class="form-control input-sm form-control-inline" style="width: 45px"
+           ng-change="quantityChange()">
+    <span><a ui-sref="gameDetail({id: item.id})">{{ item.name }}</a> (Stückpreis: {{ item.price }}€)<br></span>
+    <p class="delete-link"><a ng-click="remove(item.id)" href="">Löschen</a></p>
+    <p>
+        <span class="h4" ng-show="item.quantity">{{ item.quantity * item.price | number: 2 }}€</span>
+    </p>
+    <hr>
+</div>
+<p class="h4" ng-show="totalPrice">Gesamt: {{ totalPrice | number: 2 }}€</p>
+<button class="btn btn-default" ng-show="totalPrice" ui-sref="checkout">Zur Kasse gehen</button>
+<p class="h4" ng-show="!totalPrice">Es sind keine Elemente im Warenkorb!</p>

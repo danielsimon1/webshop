@@ -1,0 +1,61 @@
+<div class="game-view">
+    <div class="col-md-2">
+        <img ng-src="{{ actualGame.image }}" height="200px"/>
+    </div>
+    <div class="col-md-5">
+        <p class="h3">{{ actualGame.name }}</p>
+        <p class="h4">{{ actualGame.genre }}</p>
+        <p class="h5">
+            <img ng-repeat="image in actualGame.platforms" ng-src="../assets/img/{{image}}.png" class="platform"/>
+        </p>
+        <p class="h5">Altersfreigabe: FSK {{ actualGame.fsk }}</p>
+        <p class="h5">Durchschnittliche Bewertung:
+            <span class="outline">
+                <span>★</span><span ng-show="stars >= 1.5">★</span><span ng-show="stars >= 2.5">★</span><span
+                    ng-show="stars >= 3.5">★</span><span ng-show="stars >= 4.5">★</span>
+            </span>
+            <span>☆☆☆☆☆</span>
+        </p>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Anzahl" ng-model="quantity">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="toCart()">In den Warenkorb legen</button>
+            </span>
+        </div><br>
+        <button class="btn btn-primary pull-right" ui-sref="cart">Zum Warenkorb</button>
+    </div>
+</div>
+<div class="tabs">
+    <ul class="nav nav-pills nav-justified">
+        <li role="presentation" ng-class="{active: tab.active == 'description'}">
+            <a ng-click="changeTab('description')">Beschreibung</a>
+        </li>
+        <li role="presentation" ng-class="{active: tab.active == 'requirements'}">
+            <a ng-click="changeTab('requirements')">Systemvorraussetzungen</a>
+        </li>
+        <li role="presentation" ng-class="{active: tab.active == 'reviews'}">
+            <a ng-click="changeTab('reviews')">Bewertungen</a>
+        </li>
+    </ul>
+</div>
+<div ng-show="tab.active == 'description'" class="col-md-10 col-md-offset-1 description" id="description"></div>
+<div ng-show="tab.active == 'reviews'" class="col-md-10 col-md-offset-1 description">
+    <div ng-repeat="review in actualGame.reviews" class="review">
+        <p class="h5">
+            <span class="outline">
+                <span>★</span><span ng-show="review.stars >= 1.5">★</span><span
+                    ng-show="review.stars >= 2.5">★</span><span
+                    ng-show="review.stars >= 3.5">★</span><span ng-show="review.stars >= 4.5">★</span>
+            </span>
+            <span>☆☆☆☆☆</span>
+        </p>
+        <p class="h5">{{ review.author }}: {{ review.title }}</p>
+        <p>{{ review.message }}</p>
+    </div>
+</div>
+<div ng-show="tab.active == 'requirements'" class="col-md-10 col-md-offset-1 description">
+    <p>Minimum RAM: {{ actualGame.minRam }}</p>
+    <p>Minimum Prozessor: {{ actualGame.minProcessor }}</p>
+</div>
