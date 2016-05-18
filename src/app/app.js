@@ -22,28 +22,34 @@ angular.module('app', [
         $urlRouterProvider.otherwise('/home');
         localStorageServiceProvider.setPrefix('webshop');
     })
-    .run(function ($http, localStorageService) {
-        $http.get('../assets/json/articles.json')
+    .run(function ($http, localStorageService, articles) {
+        articles.getAllArticles()
             .then(function (response) {
-                localStorageService.set('articles', response.data);
+                console.log(response);
             }, function (error) {
-                var data = localStorageService.get('articles');
-                if (data) {
-                   toastr.warning('Artikel konnten nicht neu geladen werden. Daten sind möglicherweise veraltet.')
-                } else {
-                    toastr.error('Artikel konnten nicht geladen werden.');
-                }
                 console.log(error);
             });
+        // $http.get('../assets/json/articles.json')
+        //     .then(function (response) {
+        //         localStorageService.set('articles', response.data);
+        //     }, function (error) {
+        //         var data = localStorageService.get('articles');
+        //         if (data) {
+        //            toastr.warning('Artikel konnten nicht neu geladen werden. Daten sind möglicherweise veraltet.')
+        //         } else {
+        //             toastr.error('Artikel konnten nicht geladen werden.');
+        //         }
+        //         console.log(error);
+        //     });
     })
     .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state) {
         localStorageService.remove('checkout');
         $rootScope.$on('$stateChangeSuccess',
-            function(event, toState, toParams){
+            function (event, toState, toParams) {
                 $scope.currentStateName = toState.name;
                 $scope.currentStateParams = toParams.name;
             });
-        
+
         $rootScope.$on('itemAddedToCart', function () {
             countCartItems();
         });
@@ -69,7 +75,7 @@ angular.module('app', [
             $scope.userRole = user.role;
         };
         getUserData();
-        
+
         $http.get('../assets/json/genres.json')
             .then(function (response) {
                 $scope.genres = response.data;
@@ -77,7 +83,7 @@ angular.module('app', [
             }, function (error) {
                 console.log(error);
             });
-        
+
         var countCartItems = function () {
             var cart = localStorageService.get('cart');
             $scope.quantity = 0;
