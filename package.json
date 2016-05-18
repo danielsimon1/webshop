@@ -21,8 +21,5 @@
     "http-server": "^0.6.1",
     "run-sequence": "^1.2.0",
     "st": "^1.1.0"
-  },
-  "scripts": {
-    "start": "http-server dist -a localhost -p 8000 -c-1"
   }
 }

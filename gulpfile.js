@@ -164,6 +164,13 @@ gulp.task('server', function (done) {
     console.log('Post: ' + 8000);
 });
 
+gulp.task('default', function (done) {
+    runSequence(
+        'clean',
+        ['index', 'bower', 'assets', 'sass', 'templatecache', 'js'],
+        done);
+});
+
 gulp.task('watch', function (done) {
 
     runSequence(
