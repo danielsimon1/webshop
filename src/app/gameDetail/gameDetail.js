@@ -56,5 +56,22 @@ angular.module('app.gameDetail', [])
             } else {
                 toastr.warning('Bitte geben Sie eine gültige Zahl ein!')
             }
+        };
+
+        $scope.starsActivator = {};
+        $scope.numbers = [1,2,3,4,5];
+        for(var i = 0; i <= 4; i++) {
+            $scope.starsActivator[$scope.numbers[i]] = false;
+        }
+        $scope.starHover = function (number) {
+            while(number > 0) {
+                $scope.starsActivator[number] = true;
+                number--;
+            }
+        };
+        $scope.leave = function () {
+            for(var i = 0; i <= 4; i++) {
+                $scope.starsActivator[$scope.numbers[i]] = false;
+            }
         }
     });

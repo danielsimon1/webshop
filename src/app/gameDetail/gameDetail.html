@@ -10,11 +10,16 @@
         </p>
         <p class="h5">Altersfreigabe: FSK {{ actualGame.fsk }}</p>
         <p class="h5">Durchschnittliche Bewertung:
-            <span class="outline">
-                <span>★</span><span ng-show="stars >= 1.5">★</span><span ng-show="stars >= 2.5">★</span><span
-                    ng-show="stars >= 3.5">★</span><span ng-show="stars >= 4.5">★</span>
+            <span class="stars">
+                <span class="rating">
+                    <span class="star-active" ng-class="{'star-selected': starsActivator[1]}" ng-mouseover="starHover(1)" ng-mouseleave="leave()">★</span><span
+                        ng-class="{'star-inactive': stars < 1.5, 'star-active': stars >= 1.5, 'star-selected': starsActivator[2] }" ng-mouseover="starHover(2)" ng-mouseleave="leave()">★</span><span
+                        ng-class="{'star-inactive': stars < 2.5, 'star-active': stars >= 2.5, 'star-selected': starsActivator[3] }" ng-mouseover="starHover(3)" ng-mouseleave="leave()">★</span><span
+                        ng-class="{'star-inactive': stars < 3.5, 'star-active': stars >= 3.5, 'star-selected': starsActivator[4] }" ng-mouseover="starHover(4)" ng-mouseleave="leave()">★</span><span
+                        ng-class="{'star-inactive': stars < 4.5, 'star-active': stars >= 4.5, 'star-selected': starsActivator[5] }" ng-mouseover="starHover(5)" ng-mouseleave="leave()">★</span>
+                </span>
+                <span>☆☆☆☆☆</span>
             </span>
-            <span>☆☆☆☆☆</span>
         </p>
     </div>
     <div class="col-md-3">
@@ -23,7 +28,8 @@
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button" ng-click="toCart()">In den Warenkorb legen</button>
             </span>
-        </div><br>
+        </div>
+        <br>
         <button class="btn btn-primary pull-right" ui-sref="cart">Zum Warenkorb</button>
     </div>
 </div>
@@ -44,7 +50,7 @@
 <div ng-show="tab.active == 'reviews'" class="col-md-10 col-md-offset-1 description">
     <div ng-repeat="review in actualGame.reviews" class="review">
         <p class="h5">
-            <span class="outline">
+            <span class="rating">
                 <span>★</span><span ng-show="review.stars >= 1.5">★</span><span
                     ng-show="review.stars >= 2.5">★</span><span
                     ng-show="review.stars >= 3.5">★</span><span ng-show="review.stars >= 4.5">★</span>

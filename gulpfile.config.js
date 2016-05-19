@@ -18,10 +18,12 @@ module.exports = {
             'angular-touch/angular-touch.min.js',
             'angular-ui-router/release/angular-ui-router.min.js',
             'bootstrap/dist/js/bootstrap.min.js',
+            'angular-bootstrap/ui-bootstrap.min.js',
             'toastr/toastr.min.js'
         ]
         , css: [
             'bootstrap/dist/css/bootstrap.min.css',
+            'angular-bootstrap/ui-bootstrap-csp.css',
             'toastr/toastr.min.css'
         ], assets: {
             bootstrapFonts: {
