@@ -18,7 +18,7 @@ module.exports = {
             'angular-touch/angular-touch.min.js',
             'angular-ui-router/release/angular-ui-router.min.js',
             'bootstrap/dist/js/bootstrap.min.js',
-            'angular-bootstrap/ui-bootstrap.min.js',
+            'angular-bootstrap/ui-bootstrap-tpls.min.js',
             'toastr/toastr.min.js'
         ]
         , css: [
