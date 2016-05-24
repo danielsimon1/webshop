@@ -31,12 +31,7 @@ angular.module('app.gameDetail', [])
 
         var id = $stateParams.id;
         $scope.articles = localStorageService.get('articles');
-        angular.forEach($scope.articles, function (item) {
-            if (item.id == id) {
-                $scope.actualGame = item;
-            }
-        });
-        console.log($scope.actualGame);
+        $scope.actualGame = $scope.articles[id];
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
         document.getElementById("description").innerHTML = $scope.actualGame.description;
@@ -66,18 +61,35 @@ angular.module('app.gameDetail', [])
         for (var i = 0; i <= 4; i++) {
             $scope.starsActivator[$scope.numbers[i]] = false;
         }
+
         $scope.starHover = function (number) {
             while (number > 0) {
                 $scope.starsActivator[number] = true;
                 number--;
             }
         };
+
         $scope.leave = function () {
             for (var i = 0; i <= 4; i++) {
                 $scope.starsActivator[$scope.numbers[i]] = false;
             }
         };
+
         $scope.rate = function (stars) {
+            //TODO: eigene Bewertung abfangen
+            var newReviewId = 1;
+            do {
+                newReviewId++;
+            } while ($scope.actualGame.reviews[newReviewId]);
+            var title = '';
+            var message = '';
+            angular.forEach($scope.actualGame.reviews, function (review) {
+                if (review.author == user) {
+                    title = review.title;
+                    message = review.message;
+                    newReviewId = review.id;
+                }
+            });
             var modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'app/gameDetail/rating/rating.html',
@@ -85,23 +97,30 @@ angular.module('app.gameDetail', [])
                 resolve: {
                     stars: function () {
                         return stars;
+                    },
+                    title: function () {
+                        return title;
+                    },
+                    message: function () {
+                        return message;
                     }
                 }
             });
 
             modalInstance.result.then(function (result) {
-                console.log(result);
-                //TODO
-                var id = 3;
-                $scope.actualGame.reviews[id] = {
-                    id: id,
+                $scope.actualGame.reviews[newReviewId] = {
+                    id: newReviewId,
                     stars: result.stars,
                     title: result.title,
                     message: result.message,
                     author: user
                 };
+                $scope.articles[id].reviews = $scope.actualGame.reviews;
+                localStorageService.set('articles', $scope.articles);
+                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+                toastr.success('Bewertung hinzugefügt!');
             }, function () {
-                console.log('Modal dismissed at: ' + new Date());
+                console.log('Modal dismissed');
             });
         };
     });

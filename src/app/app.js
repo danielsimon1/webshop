@@ -5,6 +5,7 @@ angular.module('app', [
     'ngAnimate',
     'templates',
     'app.home',
+    'app.addArticle',
     'app.topGames',
     'app.newGames',
     'app.gameDetail',

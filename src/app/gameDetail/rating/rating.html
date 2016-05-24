@@ -2,17 +2,21 @@
     <h3 class="modal-title">Bewertung schreiben</h3>
 </div>
 <div class="modal-body">
-    {{ stars }}
+    <span class="rating">
+        <span>★</span><span ng-show="stars >= 1.5">★</span><span ng-show="stars >= 2.5">★</span><span
+            ng-show="stars >= 3.5">★</span><span ng-show="stars >= 4.5">★</span>
+    </span>
+    <span>☆☆☆☆☆</span>
     <div class="form-group">
         <label for="title">Titel:</label>
-        <input type="text" class="form-control" id="title" ng-model="title">
+        <input type="text" class="form-control" id="title" ng-model="title" ng-change="checkValid()">
     </div>
     <div class="form-group">
-        <label for="comment">Text:</label>
-        <textarea class="form-control" rows="5" id="comment" ng-model="comment"></textarea>
+        <label for="message">Text:</label>
+        <textarea class="form-control" rows="5" id="message" ng-model="message" ng-change="checkValid()"></textarea>
     </div>
 </div>
 <div class="modal-footer">
     <button class="btn btn-warning" type="button" ng-click="cancel()">Abbrechen</button>
-    <button class="btn btn-primary" type="button" ng-click="submit()">Abschicken</button>
+    <button class="btn btn-primary" type="button" ng-click="submit()" ng-disabled="!isValid">Abschicken</button>
 </div>

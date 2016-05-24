@@ -34,7 +34,7 @@
                             <a ui-sref="genre({name: 'Alle Spiele'})">Alle Spiele</a>
                         </li>
                         <li role="separator" class="divider"></li>
-                        <li ng-repeat="genre in genres"  ng-class="{active: currentStateParams == genre ? true : false}">
+                        <li ng-repeat="genre in genres" ng-class="{active: currentStateParams == genre ? true : false}">
                             <a ui-sref="genre({name: genre})">{{ genre }}</a>
                         </li>
                     </ul>
@@ -51,7 +51,10 @@
                         </li>
                         <li ng-class="{active: currentStateName == 'orders' ? true : false}"
                             ng-show="userName != 'Benutzer'"><a ui-sref="orders">Bestellungen</a></li>
-                        <li ng-show="userRole == 'admin'"><a>Artikel anlegen</a></li>
+                        <li ng-show="userRole == 'admin'"
+                            ng-class="{active: currentStateName == 'addArticle' ? true : false}">
+                            <a ui-sref="addArticle">Artikel anlegen</a>
+                        </li>
                         <li role="separator" class="divider"></li>
                         <li ng-show="userName != 'Benutzer'"><a ng-click="logout()" href="">Logout</a></li>
                         <li ng-class="{active: currentStateName == 'login' ? true : false}"

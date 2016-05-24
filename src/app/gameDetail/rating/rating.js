@@ -1,9 +1,15 @@
 angular.module('app.gameDetail')
-    .controller('RatingCtrl', function ($scope, $uibModalInstance, stars) {
+    .controller('RatingCtrl', function ($scope, $uibModalInstance, stars, title, message) {
         
         $scope.stars = stars;
-        $scope.message = '';
-        $scope.title = '';
+        $scope.message = message;
+        $scope.title = title;
+
+        $scope.checkValid = function () {
+            $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
+        };
+        $scope.checkValid();
+
         $scope.submit = function () {
             var result = {
                 title: $scope.title,
