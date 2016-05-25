@@ -16,7 +16,6 @@ module.exports = {
             'angular-animate/angular-animate.min.js',
             'angular-local-storage/dist/angular-local-storage.min.js',
             'angular-touch/angular-touch.min.js',
-            // 'angular-sanitize/angular-sanitize.min.js',
             'angular-ui-router/release/angular-ui-router.min.js',
             'bootstrap/dist/js/bootstrap.min.js',
             'angular-bootstrap/ui-bootstrap-tpls.min.js',
