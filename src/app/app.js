@@ -4,6 +4,8 @@ angular.module('app', [
     'LocalStorageModule',
     'ngAnimate',
     'templates',
+    'textAngular',
+    // 'ngSanitize',
     'app.home',
     'app.addArticle',
     'app.topGames',

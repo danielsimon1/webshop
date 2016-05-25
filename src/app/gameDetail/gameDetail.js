@@ -13,7 +13,8 @@ angular.module('app.gameDetail', [])
         $scope.tab.active = 'description';
         $scope.quantity = 1;
 
-        var user = localStorageService.get('user').userName;
+        var user = localStorageService.get('user') || {};
+        var userName = user.userName;
 
         var calculateAverageStars = function (data) {
             var count = 0;
@@ -76,51 +77,54 @@ angular.module('app.gameDetail', [])
         };
 
         $scope.rate = function (stars) {
-            //TODO: eigene Bewertung abfangen
-            var newReviewId = 1;
-            do {
-                newReviewId++;
-            } while ($scope.actualGame.reviews[newReviewId]);
-            var title = '';
-            var message = '';
-            angular.forEach($scope.actualGame.reviews, function (review) {
-                if (review.author == user) {
-                    title = review.title;
-                    message = review.message;
-                    newReviewId = review.id;
-                }
-            });
-            var modalInstance = $uibModal.open({
-                animation: true,
-                templateUrl: 'app/gameDetail/rating/rating.html',
-                controller: 'RatingCtrl',
-                resolve: {
-                    stars: function () {
-                        return stars;
-                    },
-                    title: function () {
-                        return title;
-                    },
-                    message: function () {
-                        return message;
+            if (userName) {
+                var newReviewId = 1;
+                do {
+                    newReviewId++;
+                } while ($scope.actualGame.reviews[newReviewId]);
+                var title = '';
+                var message = '';
+                angular.forEach($scope.actualGame.reviews, function (review) {
+                    if (review.author == user) {
+                        title = review.title;
+                        message = review.message;
+                        newReviewId = review.id;
                     }
-                }
-            });
+                });
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'app/gameDetail/rating/rating.html',
+                    controller: 'RatingCtrl',
+                    resolve: {
+                        stars: function () {
+                            return stars;
+                        },
+                        title: function () {
+                            return title;
+                        },
+                        message: function () {
+                            return message;
+                        }
+                    }
+                });
 
-            modalInstance.result.then(function (result) {
-                $scope.actualGame.reviews[newReviewId] = {
-                    id: newReviewId,
-                    stars: result.stars,
-                    title: result.title,
-                    message: result.message,
-                    author: user
-                };
-                $scope.articles[id].reviews = $scope.actualGame.reviews;
-                localStorageService.set('articles', $scope.articles);
-                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-                toastr.success('Bewertung hinzugefügt!');
-            }, function () {
-                console.log('Modal dismissed');
-            });
+                modalInstance.result.then(function (result) {
+                    $scope.actualGame.reviews[newReviewId] = {
+                        id: newReviewId,
+                        stars: result.stars,
+                        title: result.title,
+                        message: result.message,
+                        author: userName
+                    };
+                    $scope.articles[id].reviews = $scope.actualGame.reviews;
+                    localStorageService.set('articles', $scope.articles);
+                    $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+                    toastr.success('Bewertung hinzugefügt!');
+                }, function () {
+                    console.log('Modal dismissed');
+                });
+            } else {
+                toastr.warning('Bitte loggen Sie sich zuerst ein!');
+            }
         };
     });
