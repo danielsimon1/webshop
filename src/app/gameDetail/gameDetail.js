@@ -51,6 +51,7 @@ angular.module('app.gameDetail', [])
                 localStorageService.set('cart', cart);
                 $rootScope.$emit('itemAddedToCart');
                 toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
+                toastr.success('<img src="assets/img/giphy.gif" ng-show="inCart"/>');
                 $scope.quantity = 1;
             } else {
                 toastr.warning('Bitte geben Sie eine gültige Zahl ein!')

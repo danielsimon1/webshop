@@ -3,7 +3,7 @@ module.exports = {
         index: 'src/index.html',
         html: ['src/{app,common}/**/*.html', '!src/index.html'],
         sass: ['src/{app,common}/**/*.scss'],
-        sassMain: ['src/app/main.scss', 'bower_components/font-awesome/scss/font-awesome.scss'],
+        sassMain: ['src/app/main.scss'],
         bower: 'bower_components',
         assets: ['src/assets/**/*.*'],
         assetsBase: 'src/',
@@ -30,6 +30,7 @@ module.exports = {
             'angular-bootstrap/ui-bootstrap-csp.css',
             'jasny-bootstrap/dist/css/jasny-bootstrap.min.css',
             'textAngular/dist/textAngular.css',
+            'font-awesome/css/font-awesome.min.css',
             'toastr/toastr.min.css'
         ], assets: {
             bootstrapFonts: {
