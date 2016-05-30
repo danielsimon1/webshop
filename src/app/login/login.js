@@ -33,7 +33,8 @@ angular.module('app.login', [])
 
         $scope.login = function () {
             if (!$scope.data.userName || !$scope.data.password) {
-                toastr.warning('Benutzername und Passwort müssen angegeben werden!', 'Fehlende Informationen!')
+                toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
+                toastr.warning('Fehlende Informationen!');
             } else {
                 toastr.success('Einloggen war erfolgreich.');
                 var role;

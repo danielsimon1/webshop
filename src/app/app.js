@@ -30,6 +30,7 @@ angular.module('app', [
             }, function (error) {
                 console.log(error);
             });
+        localStorageService.set('fromCheckout', false);
         // $http.get('../assets/json/articles.json')
         //     .then(function (response) {
         //         localStorageService.set('articles', response.data);
