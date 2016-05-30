@@ -9,6 +9,7 @@ angular.module('app.login', [])
     })
 
     .controller('LoginCtrl', function ($scope, $state, localStorageService, $rootScope) {
+        $scope.isFormTouched = false;
         var user = localStorageService.get('user') || {};
         var toCheckout = localStorageService.get('fromCheckout');
         if (user.userName) {
@@ -32,9 +33,10 @@ angular.module('app.login', [])
         });
 
         $scope.login = function () {
+            $scope.isFormTouched = true;
             if (!$scope.data.userName || !$scope.data.password) {
                 toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
-                toastr.warning('Fehlende Informationen!');
+                toastr.warning('Ohne Benutzername und Passwort geht nix...','You had one Job!');
             } else {
                 toastr.success('Einloggen war erfolgreich.');
                 var role;
