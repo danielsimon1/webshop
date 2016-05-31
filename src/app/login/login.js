@@ -36,7 +36,7 @@ angular.module('app.login', [])
             $scope.isFormTouched = true;
             if (!$scope.data.userName || !$scope.data.password) {
                 toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
-                toastr.warning('Ohne Benutzername und Passwort geht nix...','You had one Job!');
+                toastr.warning('You had one Job!');
             } else {
                 toastr.success('Einloggen war erfolgreich.');
                 var role;
