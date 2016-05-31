@@ -8,22 +8,31 @@ angular.module('app.addArticle', [])
         });
     })
 
-    .controller('AddArticleCtrl', function ($scope, $http) {
+    .controller('AddArticleCtrl', function ($scope, articles, $log) {
         $scope.selected = {};
         $scope.selected.platform = {};
         $scope.selected.fsk = '0';
         $scope.isTouched = false;
         $scope.isPriceInvalid = false;
         $scope.isPriceTouched = false;
-        $http.get('../assets/json/genres.json')
+        $scope.isCustomGenre = false;
+        $scope.genreButtonText = 'Neues Genre anlegen';
+
+        articles.getAllGenres()
             .then(function (response) {
-                $scope.genres = response.data;
+                $scope.genres = response;
             }, function (error) {
-                console.log(error);
+                $log.error(error);
             });
+
         function validatePrice(input) {
             return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
         }
+
+        $scope.changeInputStyle = function () {
+            $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
+            $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
+        };
 
         $scope.priceValidation = function () {
             $scope.isPriceTouched = true;
@@ -34,7 +43,7 @@ angular.module('app.addArticle', [])
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
             $scope.isPriceInvalid = false;
-            if ($scope.title && $scope.selected.genre && $scope.price && ($scope.selected.platform.wiiu ||
+            if ($scope.title && ((!selected.genre && !isCustomGenre) || (isCustomGenre && !customGenre)) && $scope.price && ($scope.selected.platform.wiiu ||
                 $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
                 $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
                 $scope.minProcessor && $scope.description) {

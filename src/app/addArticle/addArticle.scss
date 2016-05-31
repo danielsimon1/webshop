@@ -1,18 +1,6 @@
-.invalid > input {
+.invalid > input, .invalid-select > select, .invalid-textarea > div > .ta-text, .invalid-select > input  {
   border-color: red;
 }
-.invalid > label {
+.invalid > label, .invalid-select > label, .invalid-textarea > label {
   color: red;
-}
-.invalid-select > label {
-  color: red;
-}
-.invalid-select > select {
-  border-color: red;
-}
-.invalid-textarea > label {
-  color: red;
-}
-.invalid-textarea > div > .ta-text {
-  border-color: red;
 }

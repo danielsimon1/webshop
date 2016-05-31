@@ -1,6 +1,7 @@
 angular.module('app')
     .factory('articles', function ($q, $http, localStorageService) {
         var service = {};
+
         service.getAllArticles = function () {
             var q = $q.defer();
             $http.get('assets/json/articles.json')
@@ -14,9 +15,40 @@ angular.module('app')
                 });
             return q.promise;
         };
+
+        service.getAllGenres = function () {
+            var q = $q.defer();
+            var genres = localStorageService.get('genres') || [];
+            if (!genres) {
+                this.getAllArticles()
+                    .then(function () {
+                        genres = localStorageService.get('genres') || [];
+                        q.resolve(genres);
+                    }, function (error) {
+                        q.reject(error);
+                    })
+            } else {
+                q.resolve(genres);
+            }
+            return q.promise;
+        };
+
         var _mapArticles = function (articles) {
             var mappedItems = {};
+            var genres = [];
+
             angular.forEach(articles, function (item) {
+                // Genres
+                var isNewGenre = true;
+                angular.forEach(genres, function (genre) {
+                    if (item.genre == genre) {
+                        isNewGenre = false;
+                    }
+                });
+                if (isNewGenre) {
+                    genres.push(item.genre);
+                }
+
                 var mappedItem = {
                     id: item.id,
                     name: item.name,
@@ -34,6 +66,7 @@ angular.module('app')
                 };
                 mappedItems[mappedItem.id] = mappedItem;
             });
+            localStorageService.set('genres', genres);
             return mappedItems;
         };
         var _mapReviews = function (reviews) {
