@@ -90,4 +90,19 @@ angular.module('app', [
             });
         };
         countCartItems();
+    })
+    .directive('imageonload', function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.bind('load', function() {
+                    scope.isImage = true;
+                    scope.$apply();
+                });
+                element.bind('error', function(){
+                    scope.isImage = false;
+                    scope.$apply();
+                });
+            }
+        };
     });
