@@ -3,10 +3,10 @@ package webshop.model;
 import org.json.JSONObject;
 
 public class User {
-	String benutzername;
-	String email;
-	String password;
 	String id;
+	String benutzername;
+	String password;
+	String email;
 	String role;
 
 	public User(String benutzername, String password, String email, String id,String role) {
