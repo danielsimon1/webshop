@@ -10,7 +10,8 @@ import webshop.model.User;
 public class AddUser {
 
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addingUser(String json) {
 		User user = new User(json);

@@ -20,8 +20,11 @@ public class Datenbank {
 
 		try {
 			connection = DriverManager.getConnection(
-					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering; shutdown=true",
+					"jdbc:hsqldb:file:D:/users/dsimon/Documents/datenbank-webshop; shutdown=true",
 					"sa", "");
+//			connection = DriverManager.getConnection(
+//					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering; shutdown=true",
+//					"sa", "");
 			statement = connection.createStatement();
 			return true;
 

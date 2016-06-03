@@ -109,57 +109,64 @@ angular.module('app', [
         };
     });
 
-angular.module('app.cart', [])
+angular.module('app.addArticle', [])
 
     .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('cart', {
-            url: '/cart',
-            templateUrl: 'app/cart/cart.html',
-            controller: 'CartCtrl'
+        $stateProvider.state('addArticle', {
+            url: '/addArticle',
+            templateUrl: 'app/addArticle/addArticle.html',
+            controller: 'AddArticleCtrl'
         });
     }])
 
-    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
-        // cart only
-        var cart = localStorageService.get('cart');
-        // articles only
-        var articles = localStorageService.get('articles');
-        // cart and articles merged
-        $scope.cart = {};
+    .controller('AddArticleCtrl', ["$scope", "articles", "$log", function ($scope, articles, $log) {
+        $scope.selected = {};
+        $scope.selected.platform = {};
+        $scope.selected.fsk = '0';
+        $scope.isTouched = false;
+        $scope.isPriceInvalid = false;
+        $scope.isPriceTouched = false;
+        $scope.isCustomGenre = false;
+        $scope.genreButtonText = 'Neues Genre anlegen';
 
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
+        articles.getAllGenres()
+            .then(function (response) {
+                $scope.genres = response;
+            }, function (error) {
+                $log.error(error);
             });
+
+        function validatePrice(input) {
+            return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
+        }
+
+        $scope.changeInputStyle = function () {
+            $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
+            $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
         };
 
-        // merge cart and articles
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    console.log(newObject);
-                    $scope.cart[item.itemId] = newObject;
+        $scope.priceValidation = function () {
+            $scope.isPriceTouched = true;
+            !validatePrice($scope.price) ? $scope.isPriceInvalid = true : $scope.isPriceInvalid = false;
+        };
+
+        $scope.addArticle = function () {
+            $scope.isTouched = true;
+            $scope.isPriceTouched = true;
+            $scope.isPriceInvalid = false;
+            if ($scope.title && ((!selected.genre && !isCustomGenre) || (isCustomGenre && !customGenre)) && $scope.price && ($scope.selected.platform.wiiu ||
+                $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
+                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
+                $scope.minProcessor && $scope.description) {
+                if (!validatePrice($scope.price)) {
+                    toastr.warning('Ungültiger Preis!');
+                    $scope.isPriceInvalid = true;
+                } else {
+                    toastr.success('Top');
                 }
-            });
-        });
-        $scope.updateTotalPrice();
-
-        $scope.quantityChange = function (id) {
-            cart[id].quantity = parseInt($scope.cart[id].quantity);
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
-            $rootScope.$emit('itemAddedToCart');
-        };
-
-        $scope.remove = function (id) {
-            delete $scope.cart[id];
-            delete cart[id];
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
-            $rootScope.$emit('itemAddedToCart');
+            } else {
+                toastr.warning('Fehlende Informationen!');
+            }
         }
     }]);
 
@@ -295,64 +302,57 @@ angular.module('app.gameDetail', [])
         };
     }]);
 
-angular.module('app.addArticle', [])
+angular.module('app.cart', [])
 
     .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('addArticle', {
-            url: '/addArticle',
-            templateUrl: 'app/addArticle/addArticle.html',
-            controller: 'AddArticleCtrl'
+        $stateProvider.state('cart', {
+            url: '/cart',
+            templateUrl: 'app/cart/cart.html',
+            controller: 'CartCtrl'
         });
     }])
 
-    .controller('AddArticleCtrl', ["$scope", "articles", "$log", function ($scope, articles, $log) {
-        $scope.selected = {};
-        $scope.selected.platform = {};
-        $scope.selected.fsk = '0';
-        $scope.isTouched = false;
-        $scope.isPriceInvalid = false;
-        $scope.isPriceTouched = false;
-        $scope.isCustomGenre = false;
-        $scope.genreButtonText = 'Neues Genre anlegen';
+    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
+        // cart only
+        var cart = localStorageService.get('cart');
+        // articles only
+        var articles = localStorageService.get('articles');
+        // cart and articles merged
+        $scope.cart = {};
 
-        articles.getAllGenres()
-            .then(function (response) {
-                $scope.genres = response;
-            }, function (error) {
-                $log.error(error);
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * item.price;
             });
-
-        function validatePrice(input) {
-            return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
-        }
-
-        $scope.changeInputStyle = function () {
-            $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
-            $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
         };
 
-        $scope.priceValidation = function () {
-            $scope.isPriceTouched = true;
-            !validatePrice($scope.price) ? $scope.isPriceInvalid = true : $scope.isPriceInvalid = false;
-        };
-
-        $scope.addArticle = function () {
-            $scope.isTouched = true;
-            $scope.isPriceTouched = true;
-            $scope.isPriceInvalid = false;
-            if ($scope.title && ((!selected.genre && !isCustomGenre) || (isCustomGenre && !customGenre)) && $scope.price && ($scope.selected.platform.wiiu ||
-                $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
-                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
-                $scope.minProcessor && $scope.description) {
-                if (!validatePrice($scope.price)) {
-                    toastr.warning('Ungültiger Preis!');
-                    $scope.isPriceInvalid = true;
-                } else {
-                    toastr.success('Top');
+        // merge cart and articles
+        angular.forEach(articles, function (article) {
+            angular.forEach(cart, function (item) {
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    console.log(newObject);
+                    $scope.cart[item.itemId] = newObject;
                 }
-            } else {
-                toastr.warning('Fehlende Informationen!');
-            }
+            });
+        });
+        $scope.updateTotalPrice();
+
+        $scope.quantityChange = function (id) {
+            cart[id].quantity = parseInt($scope.cart[id].quantity);
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', cart);
+            $rootScope.$emit('itemAddedToCart');
+        };
+
+        $scope.remove = function (id) {
+            delete $scope.cart[id];
+            delete cart[id];
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', cart);
+            $rootScope.$emit('itemAddedToCart');
         }
     }]);
 
@@ -456,36 +456,6 @@ angular.module('app.login', [])
                 }
             }
         }
-    }]);
-
-angular.module('app.orders', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('orders', {
-            url: '/orders',
-            templateUrl: 'app/orders/orders.html',
-            controller: 'OrdersCtrl'
-        });
-    }])
-
-    .controller('OrdersCtrl', ["$scope", "$http", "localStorageService", function ($scope, $http, localStorageService) {
-        var date = new Date();
-        console.log(date);
-        $http.get('../assets/json/orders.json')
-            .then(function (response) {
-                localStorageService.set('orders', response.data);
-                $scope.orders = response.data;
-                console.log($scope.orders);
-            }, function (error) {
-                var data = localStorageService.get('orders');
-                if (data) {
-                    toastr.warning('Bestellungen konnten nicht geladen werden! Daten sind möglicherweise veraltet.');
-                    $scope.orders = data;
-                } else {
-                    toastr.error('Bestellungen konnten nicht geladen werden! Bitte verbinden Sie sich mit dem Internet.');
-                }
-                console.log(error);
-            });
     }]);
 
 angular.module('app.newGames', [])
@@ -604,6 +574,61 @@ angular.module('app.topGames', [])
 
     });
 
+angular.module('app.orders', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('orders', {
+            url: '/orders',
+            templateUrl: 'app/orders/orders.html',
+            controller: 'OrdersCtrl'
+        });
+    }])
+
+    .controller('OrdersCtrl', ["$scope", "$http", "localStorageService", function ($scope, $http, localStorageService) {
+        var date = new Date();
+        console.log(date);
+        $http.get('../assets/json/orders.json')
+            .then(function (response) {
+                localStorageService.set('orders', response.data);
+                $scope.orders = response.data;
+                console.log($scope.orders);
+            }, function (error) {
+                var data = localStorageService.get('orders');
+                if (data) {
+                    toastr.warning('Bestellungen konnten nicht geladen werden! Daten sind möglicherweise veraltet.');
+                    $scope.orders = data;
+                } else {
+                    toastr.error('Bestellungen konnten nicht geladen werden! Bitte verbinden Sie sich mit dem Internet.');
+                }
+                console.log(error);
+            });
+    }]);
+
+angular.module('app.gameDetail')
+    .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
+        
+        $scope.stars = stars;
+        $scope.message = message;
+        $scope.title = title;
+
+        $scope.checkValid = function () {
+            $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
+        };
+        $scope.checkValid();
+
+        $scope.submit = function () {
+            var result = {
+                title: $scope.title,
+                message: $scope.message,
+                stars: $scope.stars
+            };
+            $uibModalInstance.close(result);
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+    }]);
+
 angular.module('app.checkout', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -645,31 +670,6 @@ angular.module('app.checkout', [])
 
     }]);
 
-angular.module('app.gameDetail')
-    .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
-        
-        $scope.stars = stars;
-        $scope.message = message;
-        $scope.title = title;
-
-        $scope.checkValid = function () {
-            $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
-        };
-        $scope.checkValid();
-
-        $scope.submit = function () {
-            var result = {
-                title: $scope.title,
-                message: $scope.message,
-                stars: $scope.stars
-            };
-            $uibModalInstance.close(result);
-        };
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        };
-    }]);
-
 angular.module('app.passwordForget', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -702,20 +702,34 @@ angular.module('app.register', [])
         });
     }])
 
-    .controller('RegisterCtrl', ["$scope", function ($scope) {
+    .controller('RegisterCtrl', ["$scope", "$http", "$log", function ($scope, $http, $log) {
         $scope.data = {};
         $scope.data.userName = '';
         $scope.data.email = '';
         $scope.data.password = '';
         $scope.data.passwordConfirm = '';
+        $http.get('http://localhost:8080/rest/user/Daniel')
+            .then(function (response) {
+                $log.log(response);
+            }, function (error) {
+                $log.error(error)
+            });
         $scope.register = function () {
             if (!$scope.data.userName || !$scope.data.password || !$scope.data.passwordConfirm) {
                 toastr.warning('Alle Felder müssen ausgefüllt werden!', 'Fehlende Informationen!')
-            } else if (!$scope.email) {
+            } else if (!$scope.data.email) {
                 toastr.warning('Die Email-Adresse ist ungültig!', 'Fehlerhafte Informationen!')
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!')
             } else {
+                var user = {
+                    id: '0000',
+                    username: $scope.data.userName,
+                    password: $scope.data.password,
+                    email: $scope.data.email,
+                    role: 'user'
+                };
+                // $http.post('http://localhost:8080/rest/user/' + JSON.stringify(user)+'');
                 toastr.success('Registrierung war valid.');
             }
         }
