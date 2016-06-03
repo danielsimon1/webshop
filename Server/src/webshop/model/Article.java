@@ -49,17 +49,17 @@ public class Article {
 		this.genre = obj.getString("Genre");
 		this.price = obj.getDouble("Preis");
 		this.fsk = obj.getInt("fsk");
-		JSONArray arr = obj.getJSONArray("platforms");
+		JSONArray arr = obj.getJSONArray("Plattformen");
 		this.platforms = new String[arr.length()];
 		for (int i = 0; i < arr.length(); i++) {
 			platforms[i] = arr.getString(i);
 		}
-		this.release = (Date) obj.get("release");
-		this.language = obj.getString("language");
+		this.release = (Date) obj.get("Release");
+		this.language = obj.getString("Sprache");
 		this.minRam = obj.getInt("minRam");
 		this.minProcessor = obj.getDouble("minProcessor");
-		this.description = obj.getString("description");
-		JSONArray arrRev = obj.getJSONArray("reviews");
+		this.description = obj.getString("Beschreibung");
+		JSONArray arrRev = obj.getJSONArray("Rezensionen");
 		this.reviews = new Review[arrRev.length()];
 		for (int i = 0; i < arrRev.length(); i++) {
 			reviews[i] = new Review(arrRev.getString(i));

@@ -28,9 +28,10 @@ public class Review {
 		JSONObject obj = new JSONObject(json);
 		this.id = obj.getString("ID");
 		this.idArticle=obj.getString("idArticle");
-		this.stars = obj.getInt("stars");
-		this.author = obj.getString("author");
-		this.title = obj.getString("title");
+		this.stars = obj.getInt("Sterne");
+		this.author = obj.getString("Autor");
+		this.title = obj.getString("Titel");
+		this.message = obj.getString("Text");
 	}
 
 	public String toJSON() {

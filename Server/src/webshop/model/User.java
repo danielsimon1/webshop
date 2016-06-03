@@ -22,8 +22,8 @@ public class User {
 		JSONObject obj = new JSONObject(json);
 		this.benutzername = obj.getString("Benutzername");
 		this.email = obj.getString("email");
-		this.password = obj.getString("password");
-//		this.id = createNewID();
+		this.password = obj.getString("Passwort");
+		this.role=obj.getString("Rolle");
 	}
 
 	public User() {
@@ -59,7 +59,7 @@ public class User {
 		String json="{"
 				+ "\"Benutzername\": \""+ benutzername+"\","
 				+ " \"email\": \"" + email + "\","
-				+ " \"Passwort\": \"" + password + " \","
+				+ " \"Passwort\": \"" + password + "\","
 				+ " \"id\": \"" + id + "\","
 				+ " \"Rolle\": \"" + role + "\"}";
 		return json;
