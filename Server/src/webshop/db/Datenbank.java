@@ -1,7 +1,6 @@
 package webshop.db;
 
 import java.sql.*;
-import java.sql.Statement;
 
 import webshop.model.*;
 import webshop.util.Util;
@@ -80,7 +79,7 @@ public class Datenbank {
 			// Artikel
 			statement.executeUpdate("CREATE TABLE if not exists articles ( " + "id char(4) NOT NULL ,  "
 					+ "Name char(60) NOT NULL,  " + "Genre char(20) NOT NULL, " + "Preis double NOT NULL, "
-					+ "fsk int NOT NULL,  " + "platforms char(100) NOT NULL, " + "release bigint NOT NULL, "
+					+ "fsk int NOT NULL,  " + "platforms char(100) NOT NULL, " + "release date NOT NULL, "
 					+ "language char(15) NOT NULL, " + "minRam int NOT NULL, " + "minProcessor double NOT NULL, "
 					+ "description char(8000) NOT NULL, " + "PRIMARY KEY (id)" + ");");
 			// Reviews
@@ -90,7 +89,7 @@ public class Datenbank {
 			// Bestellungen
 			statement.executeUpdate(
 					"create table if not exists orders ( " + "id char(4) not null," + "idUser char(4) not null,"
-							+ "date bigint not null," + "preis int not null, " + "PRIMARY KEY (id)" + ");");
+							+ "date timestamp not null," + "preis int not null, " + "PRIMARY KEY (id)" + ");");
 			// BestellArtikel
 			statement.executeUpdate("create table if not exists orderArticles ( " + "id char(4) not null,"
 					+ "idOrder char(4) not null," + "Name char(60) not null," + "idArticle char(4) not null, "
@@ -110,28 +109,30 @@ public class Datenbank {
 	public static Artikelliste getArticles(String attribute) {
 		try {
 			statement = connection.createStatement();
-			ResultSet countrs = statement.executeQuery("select count(*) from articles");
 			ResultSet rs;
+			ResultSet countrs;
 			if (attribute.equals("all")) {
 				rs = getTable("select * from articles");
+				countrs = statement.executeQuery("select count(*) from articles");
 			} else {
 				rs = getTable("select * from articles where genre = '" + attribute + "'");
+				countrs = statement.executeQuery("select count(*) from articles where genre = '" + attribute + "'");
 			}
 			Article[] artikelliste = new Article[countrs.getInt(1)];
 			while(rs.next()){
 				Article tempArtikel = new Article();
-				tempArtikel.setId(Util.deleteAllWhitespaces(rs.getString("id")));
+				tempArtikel.setId(Util.deleteLastWhitespaces(rs.getString("id")));
 				tempArtikel.setName(Util.deleteLastWhitespaces(rs.getString("Name")));
-				tempArtikel.setGenre(Util.deleteAllWhitespaces(rs.getString("genre")));
+				tempArtikel.setGenre(Util.deleteLastWhitespaces(rs.getString("genre")));
 				tempArtikel.setPrice(rs.getDouble("preis"));
 				tempArtikel.setFsk(rs.getInt("fsk"));
 				tempArtikel.setPlatforms(Util.deleteLastWhitespaces(rs.getString("platforms")));
-				tempArtikel.setRelease(rs.getLong("release"));
+				tempArtikel.setRelease(rs.getDate("release"));
 				tempArtikel.setLanguage(Util.deleteLastWhitespaces(rs.getString("language")));
 				tempArtikel.setMinRam(rs.getInt("minRam"));
 				tempArtikel.setMinProcessor(rs.getDouble("minProcessor"));
 				tempArtikel.setDescription(Util.deleteLastWhitespaces(rs.getString("description")));
-
+				tempArtikel.setReviews(getReviews(tempArtikel.getId()));
 				artikelliste[rs.getRow()-1]=tempArtikel;
 			}
 			return new Artikelliste(artikelliste);
@@ -143,20 +144,48 @@ public class Datenbank {
 	}
 
 	public static Bestellungsliste getOrders(String id) {
-
 		return null;
 	}
 
-	public static User getUser(String id) {
+	public static Review[] getReviews(String id) {
+		try {
+			statement = connection.createStatement();
+			ResultSet countrs = statement.executeQuery("select count(*) from articles");
+			Review[] reviews = new Review[countrs.getInt(1)];
+			
+			ResultSet rs = getTable("select * from reviews where idArticle = '" + id + "'");
+			
+			while(rs.next()){
+				Review tempReview = new Review();
+				tempReview.setId(Util.deleteLastWhitespaces(rs.getString("id")));
+				tempReview.setIdArticle(Util.deleteLastWhitespaces(rs.getString("idArticle")));
+				tempReview.setStars(rs.getInt("stars"));
+				tempReview.setAuthor(Util.deleteLastWhitespaces(rs.getString("author")));
+				tempReview.setTitle(Util.deleteLastWhitespaces(rs.getString("title")));
+				tempReview.setMessage(Util.deleteLastWhitespaces(rs.getString("message")));
+				reviews[rs.getRow()-1] = tempReview;
+			}
+			
+			
+			
+			return reviews;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	public static User getUser(String username) {
 		try {
 			user = new User();
-			ResultSet rs = getTable("select * from users where id = '" + id + "'");
+			ResultSet rs = getTable("select * from users where Benutzername = '" + username + "'");
 			while (rs.next()) {
-				user.setId(Util.deleteAllWhitespaces(rs.getString("id")));
-				user.setBenutzername(Util.deleteAllWhitespaces(rs.getString("benutzername")));
-				user.setPassword(Util.deleteAllWhitespaces(rs.getString("password")));
-				user.setEmail(Util.deleteAllWhitespaces(rs.getString("email")));
-				user.setRole(Util.deleteAllWhitespaces(rs.getString("role")));
+				user.setId(Util.deleteLastWhitespaces(rs.getString("id")));
+				user.setBenutzername(Util.deleteLastWhitespaces(rs.getString("benutzername")));
+				user.setPassword(Util.deleteLastWhitespaces(rs.getString("password")));
+				user.setEmail(Util.deleteLastWhitespaces(rs.getString("email")));
+				user.setRole(Util.deleteLastWhitespaces(rs.getString("role")));
 
 			}
 
@@ -240,7 +269,7 @@ public class Datenbank {
 			ResultSet rs = getTable("select benutzername from users");
 
 			while (rs.next()) {
-				if (Util.deleteAllWhitespaces(rs.getString("benutzername")).equals(username)) {
+				if (Util.deleteLastWhitespaces(rs.getString("benutzername")).equals(username)) {
 					return true;
 				}
 			}

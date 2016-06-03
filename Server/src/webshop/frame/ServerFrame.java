@@ -43,20 +43,16 @@ public class ServerFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (serverStarted == false && connectedToDB) {
+					if (serverStarted == false) {
+						Datenbank.connectToBD();
 						RestServer.startServer();
 						serverButton.setText("Server anhalten");
 						serverStarted = true;
 					} else {
-						if (serverStarted == false && connectedToDB == false) {
-							message.setText("bitte mit Datenbank verbinden");
-						} else {
-							if (serverStarted) {
-								RestServer.stopServer();
-								serverButton.setText("Server starten");
-								serverStarted = false;
-							}
-						}
+						RestServer.stopServer();
+						Datenbank.closeConnectionToDB();
+						serverButton.setText("Server starten");
+						serverStarted=false;
 					}
 				} catch (IllegalArgumentException | IOException e1) {
 					e1.printStackTrace();

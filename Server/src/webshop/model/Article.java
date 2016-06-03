@@ -154,9 +154,8 @@ public class Article {
 		return release;
 	}
 
-	public void setRelease(long release) {
-//		this.release = (Date) release;
-		this.release = null;
+	public void setRelease(Date release) {
+		this.release = release;
 	}
 
 	public String getLanguage() {
