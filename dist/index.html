@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Webshop</title>
+    <meta name="description" content="Webshop for web engineering course">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/bower.css">
+</head>
+<body ng-controller="AppCtrl">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li ng-class="{active: currentStateName == 'home' ? true : false}" class="navbar-home">
+                    <a ui-sref="home">Webshop</a>
+                </li>
+                <li ng-class="{active: currentStateName == 'topGames' ? true : false}">
+                    <a ui-sref="topGames">Top-Spiele</a>
+                </li>
+                <li ng-class="{active: currentStateName == 'newGames' ? true : false}">
+                    <a ui-sref="newGames">Neuerscheinungen</a>
+                </li>
+                <li class="dropdown" ng-class="{active: currentStateName == 'genre' ? true : false}">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">
+                        Genres<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: currentStateParams == 'Alle Spiele' ? true : false}">
+                            <a ui-sref="genre({name: 'Alle Spiele'})">Alle Spiele</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li ng-repeat="genre in genres" ng-class="{active: currentStateParams == genre ? true : false}">
+                            <a ui-sref="genre({name: genre})">{{ genre }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" ng-class="{active: currentStateName == 'cart' ||  currentStateName == 'cart' ||
+                currentStateName == 'orders' || currentStateName == 'login' || currentStateName == 'addArticle' ? true : false}">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ userName }}<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: currentStateName == 'cart' ? true : false}">
+                            <a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a>
+                        </li>
+                        <li ng-class="{active: currentStateName == 'orders' ? true : false}"
+                            ng-show="userName != 'Benutzer'"><a ui-sref="orders">Bestellungen</a></li>
+                        <li ng-show="userRole == 'admin'"
+                            ng-class="{active: currentStateName == 'addArticle' ? true : false}">
+                            <a ui-sref="addArticle">Artikel anlegen</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li ng-show="userName != 'Benutzer'"><a ng-click="logout()" href="">Logout</a></li>
+                        <li ng-class="{active: currentStateName == 'login' ? true : false}"
+                            ng-show="userName == 'Benutzer'"><a ui-sref="login">Login</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="ui-view-container">
+    <div ui-view class="content"></div>
+</div>
+
+<script src="assets/js/bower.js"></script>
+<script src="assets/js/templates.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

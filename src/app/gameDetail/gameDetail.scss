@@ -1,0 +1,38 @@
+.tabs {
+  margin-top: 20px;
+}
+
+.description {
+  margin-top: 40px;
+}
+
+.stars {
+  font-size: 22px;
+}
+
+.rating {
+  position: absolute;
+}
+
+.platform {
+  height: 40px;
+  margin-right: 15px;
+}
+
+.review {
+  margin-top: 20px;
+}
+
+.star-selected {
+  color: gold !important;
+  cursor: pointer;
+}
+
+.star-inactive {
+  color: transparent;
+}
+
+.star-active {
+  color: black;
+}
+

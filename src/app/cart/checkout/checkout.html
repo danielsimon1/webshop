@@ -1,0 +1,9 @@
+<div ng-repeat="item in cart">
+    <p><b>{{ item.quantity }}</b>x {{ item.name }} (Stückpreis: {{ item.price }}€)</p>
+    <p>
+        <span class="h4" ng-show="item.quantity">{{ item.quantity * item.price | number: 2 }}€</span>
+    </p>
+    <hr>
+</div>
+<p class="h4" ng-show="totalPrice">Gesamt: {{ totalPrice | number: 2 }}€</p>
+<button class="btn btn-warning">Artikel bestellen</button>

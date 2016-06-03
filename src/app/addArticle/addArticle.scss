@@ -1,0 +1,6 @@
+.invalid > input, .invalid-select > select, .invalid-textarea > div > .ta-text, .invalid-select > input  {
+  border-color: red;
+}
+.invalid > label, .invalid-select > label, .invalid-textarea > label {
+  color: red;
+}

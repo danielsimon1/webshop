@@ -1,0 +1,12 @@
+<div ng-repeat="order in orders">
+    <!-- TODO: Date filter-->
+    <p class="h4">Bestellung {{ order.id }} vom {{ order.date | date:'dd.MM.yyyy' }}</p>
+    <p class="h5">{{ order.price }}€</p>
+    <p>Bestellte Artikel:</p>
+    <div class="list-group col-md-3">
+        <div class="list-group-item" ng-repeat="article in order.articles">
+            {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
+            {{ article.quantity * article.price }}€
+        </div>
+    </div>
+</div>
