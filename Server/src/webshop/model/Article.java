@@ -73,18 +73,18 @@ public class Article {
 				+ " \"Genre\": \"" + genre +" \"," 
 				+ " \"Preis\": \"" + price + " \"," 
 				+ " \"\"FSK: \"" + fsk + "\","
-				+ " \"platforms\": [";
+				+ " \"Plattformen\": [";
 		for(int i=0;i<platforms.length;i++){
 			json+="\"" + platforms[i] + "\"";
 			if(i!=platforms.length-1)json+=",";
 		}
 		json+="],"				
-				+ " \"release\": \"" + release + "\","
-				+ " \"language\": \"" + language + "\","
+				+ " \"Release\": \"" + release + "\","
+				+ " \"Sprache\": \"" + language + "\","
 				+ " \"minRam\": \"" + minRam + "\","
 				+ " \"minProcessor\": \"" + minProcessor + "\","
-				+ " \"description\": \"" + description + "\","
-				+ " \"reviews\": [" ;
+				+ " \"Beschreibung\": \"" + description + "\","
+				+ " \"Rezensionen\": [" ;
 		for(int i=0;i<reviews.length;i++){
 			json+="\"" + reviews[i].toJSON() + "\"";
 			if(i!=reviews.length-1)json+=",";

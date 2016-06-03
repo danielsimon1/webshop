@@ -37,10 +37,10 @@ public class Review {
 		String json = "{"
 				+ "\"ID\": \"" + id + "\"," 
 				+ "\"IDArticle\": \"" + idArticle + "\"," 
-				+ " \"stars\": \"" + stars + "\"," 
-				+ " \"author\": \"" + author +" \"," 
-				+ " \"title\": \"" + title + " \"," 
-				+ " \"message\": \"" + message + "\""
+				+ " \"Sterne\": \"" + stars + "\"," 
+				+ " \"Autor\": \"" + author +" \"," 
+				+ " \"Titel\": \"" + title + " \"," 
+				+ " \"Text\": \"" + message + "\""
 				+ "}";
 		return json;
 	}

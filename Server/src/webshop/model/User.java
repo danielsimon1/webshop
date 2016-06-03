@@ -59,7 +59,7 @@ public class User {
 		String json="{"
 				+ "\"Benutzername\": \""+ benutzername+"\","
 				+ " \"email\": \"" + email + "\","
-				+ " \"password\": \"" + password + " \","
+				+ " \"Passwort\": \"" + password + " \","
 				+ " \"id\": \"" + id + "\","
 				+ " \"Rolle\": \"" + role + "\"}";
 		return json;
