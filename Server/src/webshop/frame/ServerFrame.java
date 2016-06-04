@@ -21,8 +21,7 @@ public class ServerFrame extends JFrame {
 	private static JLabel statusDB;
 	private static JLabel message;
 	private static JButton serverButton;
-	private static JButton createTablesButton;
-	private static JButton deleteTablesButton;
+	private static JButton resetTablesButton;
 	private static JButton connectToDBButton;
 	private static JButton closeConnectionTuDBButton;
 	private static boolean serverStarted = false;
@@ -61,15 +60,15 @@ public class ServerFrame extends JFrame {
 		});
 		c.add(serverButton);
 
-		createTablesButton = new JButton("Tabellen anlegen");
-		createTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
-		createTablesButton.addActionListener(new ActionListener() {
+		resetTablesButton = new JButton("Tabellen reseten");
+		resetTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
+		resetTablesButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (connectedToDB == true) {
-						Datenbank.createTables();
+						Datenbank.resetTables();
 						message.setText("Tabellen wurden erstellt");
 
 					} else {
@@ -80,28 +79,9 @@ public class ServerFrame extends JFrame {
 				}
 			}
 		});
-		c.add(createTablesButton);
+		c.add(resetTablesButton);
 
-		deleteTablesButton = new JButton("Tabellen löschen");
-		deleteTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
-		deleteTablesButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (connectedToDB == true) {
-						Datenbank.resetTables();
-						message.setText("Tabellen wurden gelöscht");
-
-					} else {
-						message.setText("Bitte Verbindung mit Datenbank herstellen");
-					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		c.add(deleteTablesButton);
+		
 
 		connectToDBButton = new JButton("mit Datenbank verbinden");
 		connectToDBButton.setFont(new Font("Hallo", Font.ITALIC, 20));

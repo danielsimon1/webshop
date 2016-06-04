@@ -1,7 +1,7 @@
 package webshop.model;
 
 public class Artikelliste {
-	Article[] liste;
+	private Article[] liste;
 
 	public Artikelliste() {
 

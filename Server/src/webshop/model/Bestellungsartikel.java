@@ -1,12 +1,22 @@
 package webshop.model;
 
 public class Bestellungsartikel {
-	String id;
-	String idOrder;
-	String name;
-	String idArticle;
-	int anzahl;
-	double price;
+	public static final String ID = "ID";
+	public static final String IDORDER = "idOrder";
+	public static final String NAME = "Name";
+	public static final String IDARTICLE = "idArticle";
+	public static final String ANZAHL = "Anzahl";
+	public static final String PRICE = "Preis";
+	
+	
+	
+	
+	private String id;
+	private String idOrder;
+	private String idArticle;
+	private String name;
+	private int anzahl;
+	private double price;
 
 	public Bestellungsartikel() {
 
@@ -27,11 +37,11 @@ public class Bestellungsartikel {
 	
 	public String toJSON(){
 		String json="{"
-				+ "\"ID\": \""+ id+"\","
-				+ "\"IDArticle\": \""+ idArticle +"\","
-				+ "\"anzahl\": \"" + anzahl + "\","
-				+ "\"Preis\": \"" + price + " \","
-				+ "\"Name\": \"" + name + "\"}";
+				+ "\"" + ID + "\": \""+ id+"\","
+				+ "\"" + IDARTICLE + "\": \""+ idArticle +"\","
+				+ "\"" + ANZAHL + "\": \"" + anzahl + "\","
+				+ "\"" + PRICE + "\": \"" + price + " \","
+				+ "\"" + NAME + "\": \"" + name + "\"}";
 		return json;		
 	}
 
