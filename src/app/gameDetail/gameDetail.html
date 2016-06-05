@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-md-9">
+        <img ng-src="{{ actualGame.image }}" width="140px" style="display: inline-block; vertical-align: top"/>
+        <div style="display: inline-block; margin-left: 50px">
+            <p class="h3">{{ actualGame.name }}</p>
+            <p class="h4">{{ actualGame.genre }}</p>
+            <p class="h5">
+                <img ng-repeat="image in actualGame.platforms" ng-src="../assets/img/{{image}}.png" class="platform"/>
+            </p>
+            <p class="h5">Altersfreigabe: FSK {{ actualGame.fsk }}</p>
+            <p class="h5">Durchschnittliche Bewertung:
+            <span class="stars" uib-tooltip="Bewerten">
+                <span class="rating">
+                    <span class="star-active" ng-class="{'star-selected': starsActivator[1]}"
+                          ng-mouseover="starHover(1)" ng-mouseleave="leave()" ng-click="rate(1)">★</span><span
+                        ng-class="{'star-inactive': stars < 1.5, 'star-active': stars >= 1.5, 'star-selected': starsActivator[2] }"
+                        ng-mouseover="starHover(2)" ng-mouseleave="leave()" ng-click="rate(2)">★</span><span
+                        ng-class="{'star-inactive': stars < 2.5, 'star-active': stars >= 2.5, 'star-selected': starsActivator[3] }"
+                        ng-mouseover="starHover(3)" ng-mouseleave="leave()" ng-click="rate(3)">★</span><span
+                        ng-class="{'star-inactive': stars < 3.5, 'star-active': stars >= 3.5, 'star-selected': starsActivator[4] }"
+                        ng-mouseover="starHover(4)" ng-mouseleave="leave()" ng-click="rate(4)">★</span><span
+                        ng-class="{'star-inactive': stars < 4.5, 'star-active': stars >= 4.5, 'star-selected': starsActivator[5] }"
+                        ng-mouseover="starHover(5)" ng-mouseleave="leave()" ng-click="rate(5)">★</span>
+                </span>
+                <span class="rating-outline">
+                    <span class="star-active" ng-class="{'star-selected': starsActivator[1]}"
+                          ng-mouseover="starHover(1)" ng-mouseleave="leave()">☆</span><span
+                        ng-class="{'star-active': stars >= 1.5, 'star-selected': starsActivator[2] }"
+                        ng-mouseover="starHover(2)" ng-mouseleave="leave()">☆</span><span
+                        ng-class="{'star-active': stars >= 2.5, 'star-selected': starsActivator[3] }"
+                        ng-mouseover="starHover(3)" ng-mouseleave="leave()">☆</span><span
+                        ng-class="{'star-active': stars >= 3.5, 'star-selected': starsActivator[4] }"
+                        ng-mouseover="starHover(4)" ng-mouseleave="leave()">☆</span><span
+                        ng-class="{'star-active': stars >= 4.5, 'star-selected': starsActivator[5] }"
+                        ng-mouseover="starHover(5)" ng-mouseleave="leave()">☆</span>
+                </span>
+            </span>
+            </p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Anzahl" ng-model="quantity">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="toCart()">In den Warenkorb legen</button>
+            </span>
+        </div>
+        <br>
+        <button class="btn btn-primary pull-right" ui-sref="cart">Zum Warenkorb</button>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12" style="margin-top: 18px">
+        <ul class="nav nav-pills nav-justified">
+            <li role="presentation" ng-class="{active: tab.active == 'description'}">
+                <a ng-click="changeTab('description')">Beschreibung</a>
+            </li>
+            <li role="presentation" ng-class="{active: tab.active == 'requirements'}">
+                <a ng-click="changeTab('requirements')">Systemvorraussetzungen</a>
+            </li>
+            <li role="presentation" ng-class="{active: tab.active == 'reviews'}">
+                <a ng-click="changeTab('reviews')">Bewertungen</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div ng-show="tab.active == 'description'" class="col-md-10 col-md-offset-1 description" id="description"></div>
+    <div ng-show="tab.active == 'reviews'" class="col-md-10 col-md-offset-1 description">
+        <div ng-repeat="review in actualGame.reviews" class="review">
+            <p class="h5">
+                <span class="rating">
+                    <span>★</span><span ng-show="review.stars >= 1.5">★</span><span
+                        ng-show="review.stars >= 2.5">★</span><span
+                        ng-show="review.stars >= 3.5">★</span><span ng-show="review.stars >= 4.5">★</span>
+                </span>
+                <span>☆☆☆☆☆</span>
+            </p>
+            <p class="h5">{{ review.author }}: {{ review.title }}</p>
+            <p>{{ review.message }}</p>
+            <hr>
+        </div>
+    </div>
+    <div ng-show="tab.active == 'requirements'" class="col-md-10 col-md-offset-1 description">
+        <p>Minimum RAM: {{ actualGame.minRam }}</p>
+        <p>Minimum Prozessor: {{ actualGame.minProcessor }}</p>
+    </div>
+</div>

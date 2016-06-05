@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "date": "1463307966365",
+    "price": 139.96,
+    "articles": [
+      {
+        "id": 1,
+        "quantity": 1,
+        "name": "Call of Duty: Black Ops 2",
+        "price": 19.99
+      },
+      {
+        "id": 2,
+        "quantity": 3,
+        "name": "FIFA 16",
+        "price": 39.99
+      }
+    ]
+  }
+]
