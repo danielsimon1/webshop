@@ -13,11 +13,6 @@ public class AddArticle {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String addingArticle(String json) {
 		Article article = new Article(json);
-		if(Datenbank.doesArticleAlreadyExists(article.getName())){
-			return "Artikel existiert bereits";
-		}else{
-			Datenbank.addArticle(article);
-			return "Artikel wurde erfolgreich hinzugefügt";
-		}
+		return Datenbank.addArticle(article);
 	}
 }

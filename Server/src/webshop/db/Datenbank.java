@@ -18,19 +18,16 @@ public class Datenbank {
 	private static User user;
 	private static Statement statement;
 
-	protected static void startDB() {
-
-	}
 
 	public static boolean connectToBD() {
 		connection = null;
 
 		try {
-			connection = DriverManager.getConnection(
-					"jdbc:hsqldb:file:D:/users/dsimon/Documents/datenbank-webshop; shutdown=true", "sa", "");
 //			connection = DriverManager.getConnection(
-//					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering; shutdown=true",
-//					"sa", "");
+//					"jdbc:hsqldb:file:D:/users/dsimon/Documents/datenbank-webshop; shutdown=true", "sa", "");
+			connection = DriverManager.getConnection(
+					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering/Datenbank/hsqldb; shutdown=true",
+					"sa", "");
 			statement = connection.createStatement();
 			return true;
 
@@ -59,50 +56,16 @@ public class Datenbank {
 		deleteTables();
 		createTables();
 	}
-
-	public static void addArticle(Article article) {
-		try {
-			String id = getNextID(ARTICLES);
 	
-			statement.executeUpdate("insert into " + ARTICLES + " values('" 
-					+ id + "', '" 
-					+ article.getName() + "', '" 
-					+ article.getGenre() + "', '" 
-					+ article.getPrice() + "', '" 
-					+ article.getFsk() + "', '"
-					+ article.getPlatforms() + "', '" 
-					+ article.getRelease() + "', '" 
-					+ article.getLanguage() + "', '"
-					+ article.getMinRam() + "', '" 
-					+ article.getMinProcessor() + "', '" 
-					+ article.getDescription() + "')");
-			addPlatforms(article.getPlatforms(),id);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	
-	}
-
-	public static void addOrderArticles(Bestellungsartikel[] liste, String idOrder) {
-		try {
-			
-			for (int i = 0; i < liste.length - 1; i++) {
-				Bestellungsartikel ba = liste[i];
-				String id = getNextID(ORDERARTICLES);
-	
-				statement.executeUpdate("insert into " + ORDERARTICLES + " values('" 
-						+ id + "', '" 
-						+ idOrder + "', '" 
-						+ ba.getName() + "', '" 
-						+ ba.getIdArticle() + "', '" 
-						+ ba.getAnzahl() + "', '" 
-						+ ba.getPrice() + "')");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public static String addArticle(Article article){
+		if(Datenbank.doesArticleAlreadyExists(article.getName())){
+			return "Artikel existiert bereits";
+		}else{
+			Datenbank.insertArticle(article);
+			return "Artikel wurde erfolgreich hinzugefügt";
 		}
 	}
-
+	
 	public static void addOrder(Bestellung bestellung) {
 		try {
 			String id = getNextID(ORDERS);
@@ -112,25 +75,11 @@ public class Datenbank {
 					+ bestellung.getIdUser() + "', '" 
 					+ bestellung.getDate() + "', '" 
 					+ bestellung.getPrice() + "')");
-			addOrderArticles(bestellung.getListe(), bestellung.getId());
+			insertOrderArticles(bestellung.getListe(), bestellung.getId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	
-	}
-	
-	public static void addPlatforms(String[] platforms,String id){
-		try {
-			for(int i=0;i<platforms.length-1;i++){
-				statement.executeUpdate("insert into " + PLATFORMS + " values('" 
-						+ id + "', '" 
-						+ platforms[i] + "')");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	public static void addReview(Review review) {
@@ -150,17 +99,12 @@ public class Datenbank {
 	
 	}
 
-	public static void addUser(User user) {
-		try {
-			String id = getNextID(USERS);
-			statement.executeUpdate("insert into " + USERS + " values('" 
-					+ id + "', '" 
-					+ user.getBenutzername() + "', '" 
-					+ user.getPassword() + "', '" 
-					+ user.getEmail() + "', '" 
-					+ user.getRole() + "')");
-		} catch (SQLException e) {
-			e.printStackTrace();
+	public static String addUser(User user){
+		if (Datenbank.doesUserAlreadyExists(user.getBenutzername())) {
+			return "User existiert bereits";
+		} else {
+			Datenbank.insertUser(user);
+			return "User wurde erfolgreich angelegt.";
 		}
 	}
 
@@ -202,7 +146,7 @@ public class Datenbank {
 			e.printStackTrace();
 		}
 		return null;
-
+	
 	}
 
 	public static Bestellungsliste getOrders(String id) {
@@ -216,7 +160,7 @@ public class Datenbank {
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
 				tempOrder.setDate(rs.getDate(Bestellung.DATE));
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
-
+	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
 				liste[i]=tempOrder;
 			}
@@ -227,7 +171,33 @@ public class Datenbank {
 		return null;
 	}
 
-	public static Bestellungsartikel[] getOrderArticles(String idOrder) {
+	public static String getUser(String username){
+		if(doesUserAlreadyExists(username)){
+			return selectUser(username).toJSON();
+		}
+		else{
+			return "User existiert nicht";
+		}
+	}
+	private static User selectUser(String username) {
+		try {
+			user = new User();
+			ResultSet rs = getTable("select * from " + USERS + " where " +  User.BENUTZERNAME + " = '" + username + "'");
+			while (rs.next()) {
+				user.setId(Util.deleteLastWhitespaces(rs.getString(User.ID)));
+				user.setBenutzername(Util.deleteLastWhitespaces(rs.getString(User.BENUTZERNAME)));
+				user.setPassword(Util.deleteLastWhitespaces(rs.getString(User.PASSWORD)));
+				user.setEmail(Util.deleteLastWhitespaces(rs.getString(User.EMAIL)));
+				user.setRole(Util.deleteLastWhitespaces(rs.getString(User.ROLE)));
+			}
+	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+	private static Bestellungsartikel[] getOrderArticles(String idOrder) {
 		try {
 			ResultSet rscount = getTable("select Count(*) from " + ORDERARTICLES + " where " + Bestellungsartikel.ID + " = '" + idOrder + "'");
 			Bestellungsartikel[] liste = new Bestellungsartikel[rscount.getInt(1)];
@@ -251,7 +221,7 @@ public class Datenbank {
 
 	}
 	
-	public static String[] getPlatforms(String idArticle){
+	private static String[] getPlatforms(String idArticle){
 		try {
 			ResultSet rscount = getTable("select Count(*) from " + PLATFORMS + " where " + Article.ID + " = '" + idArticle + "'");
 			String[] platforms = new String[rscount.getInt(1)];
@@ -267,7 +237,7 @@ public class Datenbank {
 		
 	}
 
-	public static Review[] getReviews(String id) {
+	private static Review[] getReviews(String id) {
 		try {
 			statement = connection.createStatement();
 			Review[] reviews = new Review[getCount(ARTICLES)];
@@ -295,25 +265,78 @@ public class Datenbank {
 		
 	}
 	
-	public static User getUser(String username) {
+	private static void insertArticle(Article article) {
 		try {
-			user = new User();
-			ResultSet rs = getTable("select * from " + USERS + " where " +  User.BENUTZERNAME + " = '" + username + "'");
-			while (rs.next()) {
-				user.setId(Util.deleteLastWhitespaces(rs.getString(User.ID)));
-				user.setBenutzername(Util.deleteLastWhitespaces(rs.getString(User.BENUTZERNAME)));
-				user.setPassword(Util.deleteLastWhitespaces(rs.getString(User.PASSWORD)));
-				user.setEmail(Util.deleteLastWhitespaces(rs.getString(User.EMAIL)));
-				user.setRole(Util.deleteLastWhitespaces(rs.getString(User.ROLE)));
-			}
-
+			String id = getNextID(ARTICLES);
+	
+			statement.executeUpdate("insert into " + ARTICLES + " values('" 
+					+ id + "', '" 
+					+ article.getName() + "', '" 
+					+ article.getGenre() + "', '" 
+					+ article.getPrice() + "', '" 
+					+ article.getFsk() + "', '"
+					+ article.getPlatforms() + "', '" 
+					+ article.getRelease() + "', '" 
+					+ article.getLanguage() + "', '"
+					+ article.getMinRam() + "', '" 
+					+ article.getMinProcessor() + "', '" 
+					+ article.getDescription() + "')");
+			insertPlatforms(article.getPlatforms(),id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return user;
+	
 	}
 
-	public static boolean doesUserAlreadyExists(String username) {
+	private static void insertOrderArticles(Bestellungsartikel[] liste, String idOrder) {
+		try {
+			
+			for (int i = 0; i < liste.length - 1; i++) {
+				Bestellungsartikel ba = liste[i];
+				String id = getNextID(ORDERARTICLES);
+	
+				statement.executeUpdate("insert into " + ORDERARTICLES + " values('" 
+						+ id + "', '" 
+						+ idOrder + "', '" 
+						+ ba.getName() + "', '" 
+						+ ba.getIdArticle() + "', '" 
+						+ ba.getAnzahl() + "', '" 
+						+ ba.getPrice() + "')");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void insertPlatforms(String[] platforms,String id){
+		try {
+			for(int i=0;i<platforms.length-1;i++){
+				statement.executeUpdate("insert into " + PLATFORMS + " values('" 
+						+ id + "', '" 
+						+ platforms[i] + "')");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+
+	private static void insertUser(User user) {
+		try {
+			String id = getNextID(USERS);
+			statement.executeUpdate("insert into " + USERS + " values('" 
+					+ id + "', '" 
+					+ user.getBenutzername() + "', '" 
+					+ user.getPassword() + "', '" 
+					+ user.getEmail() + "', '" 
+					+ user.getRole() + "')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static boolean doesUserAlreadyExists(String username) {
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = getTable("select " + User.BENUTZERNAME + " from " + USERS);
@@ -330,7 +353,7 @@ public class Datenbank {
 		return true;
 	}
 
-	public static boolean doesArticleAlreadyExists(String name) {
+	private static boolean doesArticleAlreadyExists(String name) {
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = getTable("select " + Article.NAME + " from " + ARTICLES);
@@ -373,7 +396,7 @@ public class Datenbank {
 					+ Article.FSK + " int NOT NULL,  " 
 					+ Article.PLATFORMS + " char(100) NOT NULL, " 
 					+ Article.RELEASE + " date NOT NULL, "
-					+ Article.RELEASE + " char(15) NOT NULL, " 
+					+ Article.LANGUAGE + " char(15) NOT NULL, " 
 					+ Article.MINRAM + " int NOT NULL, " 
 					+ Article.MINPROCESSOR + " double NOT NULL, "
 					+ Article.DESCRIPTION + " char(8000) NOT NULL, " 
@@ -394,13 +417,6 @@ public class Datenbank {
 					+ Bestellung.PRICE + " int not null, " 
 					+ "PRIMARY KEY (" + Bestellung.ID + ")" + ");");
 			// Platforms / Plattformen
-//			statement.executeUpdate("create table if not exists " + PLATFORMS + " ( " 
-//					+ Article.ID + " char(4) not null,"
-//					+ Article.GAMEBOY + " boolean not null," 
-//					+ Article.OSX + " boolean not null," 
-//					+ Article.PLAYSTATION + " boolean not null, "
-//					+ Article.WINDOWS + " boolean not null, " 
-//					+ Article.XBOX + " boolean not null, " + ");");
 			statement.executeUpdate("create table if not exists " + PLATFORMS + " ( " 
 					+ Article.ID + " char(4) not null,"
 					+ Article.PLATFORMS + " char(10) not null, " + ");");
@@ -414,7 +430,7 @@ public class Datenbank {
 					+ Review.MESSAGE + " char(1000), " 
 					+ "PRIMARY KEY (" + Review.ID + ")" + ");");
 			// User / Nutzer
-			statement.executeUpdate("create table if not exists " + USERS + " ( " 
+			statement.executeUpdate("create table if not exists " + USERS + " ( "
 					+ User.ID + " char(4) NOT NULL ,  "
 					+ User.BENUTZERNAME + " char(20) NOT NULL, " 
 					+ User.PASSWORD + " char(20) NOT NULL, " 

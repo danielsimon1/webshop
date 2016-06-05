@@ -15,11 +15,6 @@ public class AddUser {
 	@Produces(MediaType.TEXT_PLAIN)
 	public String addingUser(String json) {
 		User user = new User(json);
-		if (Datenbank.doesUserAlreadyExists(user.getBenutzername())) {
-			return "User existiert bereits";
-		} else {
-			Datenbank.addUser(user);
-		}
-		return "User wurde erfolgreich angelegt.";
+		return Datenbank.addUser(user);
 	}
 }

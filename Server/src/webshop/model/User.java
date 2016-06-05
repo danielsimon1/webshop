@@ -6,7 +6,7 @@ public class User {
 	public static final String ID = "ID";
 	public static final String BENUTZERNAME = "Benutzername";
 	public static final String PASSWORD = "Passwort";
-	public static final String EMAIL = "E-Mail";
+	public static final String EMAIL = "Email";
 	public static final String ROLE = "Rolle";
 
 	private String id;
