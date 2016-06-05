@@ -76,6 +76,7 @@ public class Datenbank {
 					+ article.getMinRam() + "', '" 
 					+ article.getMinProcessor() + "', '" 
 					+ article.getDescription() + "')");
+			addPlatforms(article.getPlatforms(),id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -118,8 +119,18 @@ public class Datenbank {
 	
 	}
 	
-	public static void addPlatforms(String[] platforms){
-		
+	public static void addPlatforms(String[] platforms,String id){
+		try {
+			for(int i=0;i<platforms.length-1;i++){
+				statement.executeUpdate("insert into " + PLATFORMS + " values('" 
+						+ id + "', '" 
+						+ platforms[i] + "')");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void addReview(Review review) {
@@ -182,7 +193,7 @@ public class Datenbank {
 				
 				tempArtikel.setReviews(getReviews(tempArtikel.getId()));
 				
-//				tempArtikel.setPlatforms(getPlatforms(tempArtikel.getId()));
+				tempArtikel.setPlatforms(getPlatforms(tempArtikel.getId()));
 				
 				artikelliste[rs.getRow()-1]=tempArtikel;
 			}
@@ -242,14 +253,12 @@ public class Datenbank {
 	
 	public static String[] getPlatforms(String idArticle){
 		try {
-			String[] platforms = new String[5];
-			ResultSet rs = getTable("select * from platforms where ");
-			while(rs.next()){
-				if(rs.getBoolean("gameboy")){
-				}
-					
+			ResultSet rscount = getTable("select Count(*) from " + PLATFORMS + " where " + Article.ID + " = '" + idArticle + "'");
+			String[] platforms = new String[rscount.getInt(1)];
+			ResultSet rs = getTable("select * from " + PLATFORMS + " where " + Article.ID + " = '" + idArticle + "'");
+			for(int i=0; rs.next()&&i<platforms.length-1;i++){
+				platforms[i]=rs.getString(Article.PLATFORMS);
 			}
-			
 			return platforms;
 		} catch (SQLException e) {
 			e.printStackTrace();
