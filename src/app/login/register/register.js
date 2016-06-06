@@ -14,12 +14,7 @@ angular.module('app.register', [])
         $scope.data.email = '';
         $scope.data.password = '';
         $scope.data.passwordConfirm = '';
-        $http.get('http://localhost:8080/rest/user/Daniel')
-            .then(function (response) {
-                $log.log(response);
-            }, function (error) {
-                $log.error(error)
-            });
+
         $scope.register = function () {
             if (!$scope.data.userName || !$scope.data.password || !$scope.data.passwordConfirm) {
                 toastr.warning('Alle Felder müssen ausgefüllt werden!', 'Fehlende Informationen!')
@@ -36,7 +31,6 @@ angular.module('app.register', [])
                     role: 'user'
                 };
                 // $http.post('http://localhost:8080/rest/user/' + JSON.stringify(user)+'');
-                toastr.success('Registrierung war valid.');
             }
         }
     });
