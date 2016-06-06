@@ -1,13 +1,15 @@
 package webshop.model;
 
+import java.util.ArrayList;
+
 public class Bestellungsliste {
-	private Bestellung[] liste;
+	private ArrayList<Bestellung> liste;
 	private String idUser;
 	public Bestellungsliste() {
 
 	}
 
-	public Bestellungsliste(Bestellung[] liste) {
+	public Bestellungsliste(ArrayList<Bestellung> liste) {
 		this.liste = liste;
 	}
 
@@ -17,9 +19,9 @@ public class Bestellungsliste {
 
 	public String toJSON() {
 		String json = "[";
-		for (int i = 0; i < liste.length; i++) {
-			json += liste[i].toJSON();
-			if (i != liste.length - 1) {
+		for (Bestellung x:liste) {
+			json += x.toJSON();
+			if (liste.indexOf(x) != liste.size() - 1) {
 				json += ",";
 			}
 		}

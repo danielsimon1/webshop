@@ -1,5 +1,6 @@
 package webshop.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -16,13 +17,13 @@ public class Bestellung {
 	private String idUser;
 	private Date date;
 	private int price;
-	private Bestellungsartikel[] liste;
+	private ArrayList<Bestellungsartikel> liste;
 
 	public Bestellung() {
 
 	}
 
-	public Bestellung(String id, Date date, int price, Bestellungsartikel[] liste) {
+	public Bestellung(String id, Date date, int price, ArrayList<Bestellungsartikel> liste) {
 
 		this.id = id;
 		this.date = date;
@@ -40,9 +41,9 @@ public class Bestellung {
 				+ " \"" + DATE + "\": \"" + date + "\"," 
 				+ " \"" + PRICE + "\": \"" + price+ " \"," 
 				+ " \"" + ORDERARTICLES + "\": [";
-		for (int i = 0; i < liste.length; i++) {
-			json += liste[i].toJSON();
-			if (i != liste.length - 1) {
+		for (Bestellungsartikel x:liste) {
+			json += x.toJSON();
+			if (liste.indexOf(x) != liste.size() - 1) {
 				json += ",";
 			}
 		}
@@ -82,12 +83,12 @@ public class Bestellung {
 		this.price = price;
 	}
 
-	public Bestellungsartikel[] getListe() {
+	public ArrayList<Bestellungsartikel> getListe() {
 		return liste;
 	}
 
-	public void setListe(Bestellungsartikel[] liste) {
-		this.liste = liste;
+	public void setListe(ArrayList<Bestellungsartikel> bestellungsartikels) {
+		this.liste = bestellungsartikels;
 	}
 
 }

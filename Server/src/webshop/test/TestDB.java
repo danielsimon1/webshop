@@ -8,6 +8,7 @@ public class TestDB {
 		Datenbank.connectToBD();
 		Datenbank.addArticle(TestObjekte.getTestArticle());
 		Datenbank.addReview(TestObjekte.getTestReview());
+		Datenbank.addUser(TestObjekte.getTestUser());
 		Datenbank.closeConnectionToDB();
 	}
 
