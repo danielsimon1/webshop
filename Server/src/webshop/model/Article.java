@@ -6,19 +6,40 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Article {
-	String id;
-	String name;
-	String genre;
-	double price;
-	int fsk;
-	String[] platforms;
-	Date release;
-	String language;
-	int minRam;
-	double minProcessor;
+	public static final String ID = "ID";
+	public static final String NAME = "Name";
+	public static final String GENRE = "Genre";
+	public static final String PRICE = "Preis";
+	public static final String FSK = "FSK";
+	public static final String PLATFORMS = "Plattformen";
+	public static final String RELEASE = "Release";
+	public static final String LANGUAGE = "Sprache";
+	public static final String MINRAM = "minRam";
+	public static final String MINPROCESSOR = "minProcessor";
+	public static final String DESCRIPTION = "Beschreibung";
+	public static final String REVIEW = "Rezensionen";
+	public static final String GAMEBOY = "gameboy";
+	public static final String OSX = "osx";
+	public static final String PLAYSTATION = "ps";
+	public static final String XBOX = "xbox";
+	public static final String WINDOWS = "windows";
+	
+	
+	
+	
+	private String id;
+	private String name;
+	private String genre;
+	private double price;
+	private int fsk;
+	private String[] platforms;
+	private Date release;
+	private String language;
+	private int minRam;
+	private double minProcessor;
 	// Image image;
-	String description;
-	Review[] reviews;
+	private String description;
+	private Review[] reviews;
 
 	public Article() {
 
@@ -44,22 +65,22 @@ public class Article {
 	
 	public Article(String json) {
 		JSONObject obj = new JSONObject(json);
-		this.id = obj.getString("ID");
-		this.name = obj.getString("Name");
-		this.genre = obj.getString("Genre");
-		this.price = obj.getDouble("Preis");
-		this.fsk = obj.getInt("fsk");
-		JSONArray arr = obj.getJSONArray("platforms");
+		this.id = obj.getString(ID);
+		this.name = obj.getString(NAME);
+		this.genre = obj.getString(GENRE);
+		this.price = obj.getDouble(PRICE);
+		this.fsk = obj.getInt(FSK);
+		JSONArray arr = obj.getJSONArray(PLATFORMS);
 		this.platforms = new String[arr.length()];
 		for (int i = 0; i < arr.length(); i++) {
 			platforms[i] = arr.getString(i);
 		}
-		this.release = (Date) obj.get("release");
-		this.language = obj.getString("language");
-		this.minRam = obj.getInt("minRam");
-		this.minProcessor = obj.getDouble("minProcessor");
-		this.description = obj.getString("description");
-		JSONArray arrRev = obj.getJSONArray("reviews");
+		this.release = (Date) obj.get(RELEASE);
+		this.language = obj.getString(LANGUAGE);
+		this.minRam = obj.getInt(MINRAM);
+		this.minProcessor = obj.getDouble(MINPROCESSOR);
+		this.description = obj.getString(DESCRIPTION);
+		JSONArray arrRev = obj.getJSONArray(REVIEW);
 		this.reviews = new Review[arrRev.length()];
 		for (int i = 0; i < arrRev.length(); i++) {
 			reviews[i] = new Review(arrRev.getString(i));
@@ -68,23 +89,24 @@ public class Article {
 	}
 	public String toJSON() {
 		String json = "{"
-				+ "\"ID\": \"" + id + "\"," 
-				+ " \"Name\": \"" + name + "\"," 
-				+ " \"Genre\": \"" + genre +" \"," 
-				+ " \"Preis\": \"" + price + " \"," 
-				+ " \"\"FSK: \"" + fsk + "\","
-				+ " \"platforms\": [";
+				+ "\"" + ID +  "\": \"" + id + "\"," 
+				+ "\"" + NAME + "\": \"" + name + "\"," 
+				+ "\"" + GENRE + "\": \"" + genre +" \"," 
+				+ "\"" + PRICE + "\": \"" + price + " \"," 
+				+ "\"" + FSK + "\": \"" + fsk + " \"," 
+				+ "\"" + PLATFORMS + "\": [";
 		for(int i=0;i<platforms.length;i++){
 			json+="\"" + platforms[i] + "\"";
 			if(i!=platforms.length-1)json+=",";
 		}
-		json+="],"				
-				+ " \"release\": \"" + release + "\","
-				+ " \"language\": \"" + language + "\","
-				+ " \"minRam\": \"" + minRam + "\","
-				+ " \"minProcessor\": \"" + minProcessor + "\","
-				+ " \"description\": \"" + description + "\","
-				+ " \"reviews\": [" ;
+		json+="],"			
+				+ "\"" + RELEASE + "\": \"" + release + " \"," 
+				+ "\"" + LANGUAGE + "\": \"" + language + " \"," 
+				+ "\"" + MINRAM + "\": \"" + minRam + " \"," 
+				+ "\"" + MINPROCESSOR + "\": \"" + minProcessor + " \"," 
+				+ "\"" + DESCRIPTION + "\": \"" + description + " \"," 
+
+				+ " \"" + REVIEW + "\": [" ;
 		for(int i=0;i<reviews.length;i++){
 			json+="\"" + reviews[i].toJSON() + "\"";
 			if(i!=reviews.length-1)json+=",";
@@ -135,18 +157,12 @@ public class Article {
 		this.fsk = fsk;
 	}
 
-	public String getPlatforms() {
-		String allPlatforms = "";
-		for(int i = 0;i<platforms.length-1;i++){
-			allPlatforms+=platforms[i];
-			if(i<platforms.length-2){
-				allPlatforms+=",";
-			}
-		}
-		return allPlatforms;
+	public String[] getPlatforms() {
+		
+		return platforms;
 	}
 
-	public void setPlatforms(String platforms) {
+	public void setPlatforms(String[] platforms) {
 		this.platforms = null;
 	}
 

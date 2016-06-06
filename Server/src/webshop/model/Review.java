@@ -3,44 +3,51 @@ package webshop.model;
 import org.json.JSONObject;
 
 public class Review {
+	public static final String ID = "ID";
+	public static final String IDARTICLE = "idArticle";
+	public static final String STARS = "stars";
+	public static final String AUTHOR = "Autor";
+	public static final String TITLE = "Titel";
+	public static final String MESSAGE = "Text";
 
-	String id;
-	String idArticle;
-	int stars;
-	String author;
-	String title;
-	String message;
+	private String id;
+	private String idArticle;
+	private int stars;
+	private String author;
+	private String title;
+	private String message;
 
 	public Review() {
 
 	}
 
-	public Review(String id,String idArticle, int stars, String author, String title, String message) {
+	public Review(String json) {
+		JSONObject obj = new JSONObject(json);
+		this.id = obj.getString(ID);
+		this.idArticle = obj.getString(IDARTICLE);
+		this.stars = obj.getInt(STARS);
+		this.author = obj.getString(AUTHOR);
+		this.title = obj.getString(TITLE);
+		this.message = obj.getString(MESSAGE);
+	}
+
+	public Review(String id, String idArticle, int stars, String author, String title, String message) {
 		this.id = id;
-		this.idArticle=idArticle;
+		this.idArticle = idArticle;
 		this.stars = stars;
 		this.author = author;
 		this.title = title;
 		this.message = message;
 	}
 
-	public Review(String json) {
-		JSONObject obj = new JSONObject(json);
-		this.id = obj.getString("ID");
-		this.idArticle=obj.getString("idArticle");
-		this.stars = obj.getInt("stars");
-		this.author = obj.getString("author");
-		this.title = obj.getString("title");
-	}
-
 	public String toJSON() {
 		String json = "{"
 				+ "\"ID\": \"" + id + "\"," 
 				+ "\"IDArticle\": \"" + idArticle + "\"," 
-				+ " \"stars\": \"" + stars + "\"," 
-				+ " \"author\": \"" + author +" \"," 
-				+ " \"title\": \"" + title + " \"," 
-				+ " \"message\": \"" + message + "\""
+				+ " \"Sterne\": \"" + stars + "\"," 
+				+ " \"Autor\": \"" + author +" \"," 
+				+ " \"Titel\": \"" + title + " \"," 
+				+ " \"Text\": \"" + message + "\""
 				+ "}";
 		return json;
 	}

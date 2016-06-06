@@ -1,8 +1,8 @@
 package webshop.model;
 
 public class Bestellungsliste {
-	Bestellung[] liste;
-	String idUser;
+	private Bestellung[] liste;
+	private String idUser;
 	public Bestellungsliste() {
 
 	}

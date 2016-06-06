@@ -12,7 +12,6 @@ public class UserResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getUser(@PathParam("username") String username) {
-		User user = Datenbank.getUser(username);
-		return user.toJSON();
+		return Datenbank.getUser(username);
 	}
 }

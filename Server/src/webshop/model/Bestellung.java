@@ -5,11 +5,18 @@ import java.util.Date;
 
 
 public class Bestellung {
-	String id;
-	String idUser;
-	Date date;
-	int price;
-	Bestellungsartikel[] liste;
+	public static final String ID = "ID";
+	public static final String IDUSER = "idUser";
+	public static final String DATE = "Datum";
+	public static final String PRICE = "Preis";
+	public static final String ORDERARTICLES = "Bestellungsartikel";
+	
+	
+	private String id;
+	private String idUser;
+	private Date date;
+	private int price;
+	private Bestellungsartikel[] liste;
 
 	public Bestellung() {
 
@@ -28,11 +35,11 @@ public class Bestellung {
 	}
 
 	public String toJSON() {
-		String json = "{" + "\"ID\": \"" + id + "\"," 
-				+ " \"UserID\": \"" + idUser + "\"," 
-				+ " \"Datum\": \"" + date + "\"," 
-				+ " \"Preis\": \"" + price+ " \"," 
-				+ " \"Bestellungsartikel\": [";
+		String json = "{" + "\"" + ID + "\": \"" + id + "\"," 
+				+ " \"" + IDUSER + "\": \"" + idUser + "\"," 
+				+ " \"" + DATE + "\": \"" + date + "\"," 
+				+ " \"" + PRICE + "\": \"" + price+ " \"," 
+				+ " \"" + ORDERARTICLES + "\": [";
 		for (int i = 0; i < liste.length; i++) {
 			json += liste[i].toJSON();
 			if (i != liste.length - 1) {
