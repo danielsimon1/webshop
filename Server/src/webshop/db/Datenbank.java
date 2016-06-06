@@ -155,7 +155,7 @@ public class Datenbank {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
-				tempOrder.setDate(rs.getDate(Bestellung.DATE));
+				tempOrder.setDate(rs.getTimestamp(Bestellung.DATE));
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
@@ -217,13 +217,12 @@ public class Datenbank {
 
 	}
 	
-	private static String[] getPlatforms(String idArticle){
+	private static ArrayList<String> getPlatforms(String idArticle){
 		try {
-			ResultSet rscount = getTable("select Count(*) from " + PLATFORMS + " where " + Article.ID + " = '" + idArticle + "'");
-			String[] platforms = new String[rscount.getInt(1)];
+			ArrayList<String> platforms = new ArrayList<>();
 			ResultSet rs = getTable("select * from " + PLATFORMS + " where " + Article.ID + " = '" + idArticle + "'");
-			for(int i=0; rs.next()&&i<platforms.length-1;i++){
-				platforms[i]=rs.getString(Article.PLATFORMS);
+			while(rs.next()){
+				platforms.add(rs.getString(Article.PLATFORMS));
 			}
 			return platforms;
 		} catch (SQLException e) {

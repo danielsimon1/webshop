@@ -161,8 +161,8 @@ public class Article {
 		return platforms;
 	}
 
-	public void setPlatforms(String[] platforms) {
-		this.platforms = null;
+	public void setPlatforms(ArrayList<String> platforms) {
+		this.platforms = platforms;
 	}
 
 	public Date getRelease() {
