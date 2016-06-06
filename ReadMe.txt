@@ -4,3 +4,7 @@ Developers:
 
 Daniel Simon
 Matthias Müller
+
+
+Others:
+Enes Orhan
