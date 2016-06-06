@@ -1,1 +1,6 @@
-Daniel ist ein Lappen
+This is the <Name> Webshop.
+
+Developers:
+
+Daniel Simon
+Matthias Müller
