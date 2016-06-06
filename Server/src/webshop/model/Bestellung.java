@@ -1,7 +1,7 @@
 package webshop.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 
 
@@ -15,7 +15,7 @@ public class Bestellung {
 	
 	private String id;
 	private String idUser;
-	private Date date;
+	private Timestamp date;
 	private int price;
 	private ArrayList<Bestellungsartikel> liste;
 
@@ -23,7 +23,7 @@ public class Bestellung {
 
 	}
 
-	public Bestellung(String id, Date date, int price, ArrayList<Bestellungsartikel> liste) {
+	public Bestellung(String id, Timestamp date, int price, ArrayList<Bestellungsartikel> liste) {
 
 		this.id = id;
 		this.date = date;
@@ -67,11 +67,11 @@ public class Bestellung {
 		this.idUser = idUser;
 	}
 
-	public Date getDate() {
+	public Timestamp getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(Timestamp date) {
 		this.date = date;
 	}
 
