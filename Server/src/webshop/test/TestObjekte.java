@@ -1,13 +1,21 @@
 package webshop.test;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import webshop.model.Article;
 import webshop.model.Review;
+import webshop.model.User;
 
 public class TestObjekte {
+	
 	public static Article getTestArticle() {
-		String[] platforms = { Article.PLAYSTATION, Article.XBOX, Article.WINDOWS, Article.OSX };
+		ArrayList<String> platforms = new ArrayList<>();
+		platforms.add(Article.PLAYSTATION);
+		platforms.add(Article.WINDOWS);
+		platforms.add(Article.XBOX);
+		platforms.add(Article.OSX);
+		
 		Date release = new Date(2007, 06, 12);
 		String description = "Im Herbst 2009 kehrt Entwickler Infinity Ward mit Call of Duty: Modern Warfare 2 auf die Bildschirme zurück. "
 				+ "Das wohl am sehnlichsten erwartete Spiel des Jahresist die Fortsetzung zu Call of Duty 4: Modern Warfare, dem wohl meistverkauften Ego-Actionspiel aller Zeiten. "
@@ -44,7 +52,12 @@ public class TestObjekte {
 				"Deutsch ", 2, 2.2, description, null);
 		return article;
 	}
+	
 	public static Review getTestReview(){
 		return 	new Review("0000", "0000", 5, "Matze", "beschtes Spiel", "wirklich gut gemacht von Infinity Ward");
+	}
+	
+	public static User getTestUser(){
+		return new User("Matthias", "secret", "m@gmail.com", "0000", "admin");
 	}
 }

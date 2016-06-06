@@ -5,7 +5,6 @@ import javax.ws.rs.core.MediaType;
 
 
 import webshop.db.Datenbank;
-import webshop.model.User;
 
 @Path("/user/{username}")
 public class UserResource {

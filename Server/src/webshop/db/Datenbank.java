@@ -1,6 +1,8 @@
 package webshop.db;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 import webshop.model.*;
 import webshop.util.Util;
@@ -112,16 +114,12 @@ public class Datenbank {
 		try {
 			statement = connection.createStatement();
 			ResultSet rs;
-			int anzahl=0;
 			if (attribute.equals("all")) {
 				rs = getTable("select * from " +  ARTICLES);
-				anzahl = getCount(ARTICLES);
 			} else {
 				rs = getTable("select * from " + ARTICLES + " where "+  Article.GENRE + " = '" + attribute + "'");
-				ResultSet countrs = statement.executeQuery("select count(*) from " + ARTICLES + " where "+  Article.GENRE + " = '" + attribute + "'");
-				anzahl = countrs.getInt(1);
 			}
-			Article[] artikelliste = new Article[anzahl];
+			ArrayList<Article> artikelliste = new ArrayList<>();
 			while(rs.next()){
 				Article tempArtikel = new Article();
 				tempArtikel.setId(Util.deleteLastWhitespaces(rs.getString(Article.ID)));
@@ -139,7 +137,7 @@ public class Datenbank {
 				
 				tempArtikel.setPlatforms(getPlatforms(tempArtikel.getId()));
 				
-				artikelliste[rs.getRow()-1]=tempArtikel;
+				artikelliste.add(tempArtikel);
 			}
 			return new Artikelliste(artikelliste);
 		} catch (SQLException e) {
@@ -151,10 +149,9 @@ public class Datenbank {
 
 	public static Bestellungsliste getOrders(String id) {
 		try {
-			ResultSet rscount = getTable("select Count(*) from " + ORDERS + " where " + Bestellung.ID + " = '" + id + "'");
-			Bestellung[] liste = new Bestellung[rscount.getInt(1)];
+			ArrayList<Bestellung> liste = new ArrayList<>();
 			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.ID + " = '" + id + "'");
-			for (int i = 0; rs.next(); i++) {
+			while (rs.next()) {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
@@ -162,7 +159,7 @@ public class Datenbank {
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
-				liste[i]=tempOrder;
+				liste.add(tempOrder);
 			}
 			return new Bestellungsliste(liste);
 		} catch (SQLException e) {
@@ -197,12 +194,11 @@ public class Datenbank {
 		return user;
 	}
 
-	private static Bestellungsartikel[] getOrderArticles(String idOrder) {
+	private static ArrayList<Bestellungsartikel> getOrderArticles(String idOrder) {
 		try {
-			ResultSet rscount = getTable("select Count(*) from " + ORDERARTICLES + " where " + Bestellungsartikel.ID + " = '" + idOrder + "'");
-			Bestellungsartikel[] liste = new Bestellungsartikel[rscount.getInt(1)];
+			ArrayList<Bestellungsartikel> liste = new ArrayList<>();
 			ResultSet rs = getTable("select * from " + ORDERARTICLES + " where " + Bestellungsartikel.IDORDER + " = '" + idOrder + "'");
-			for(int i = 0;rs.next();i++){
+			while(rs.next()){
 				Bestellungsartikel tempBestellungsartikel = new Bestellungsartikel();
 				tempBestellungsartikel.setId(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.ID)));
 				tempBestellungsartikel.setIdOrder(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.IDORDER)));
@@ -210,7 +206,7 @@ public class Datenbank {
 				tempBestellungsartikel.setAnzahl(rs.getInt(Bestellungsartikel.ANZAHL));
 				tempBestellungsartikel.setPrice(rs.getDouble(Bestellungsartikel.PRICE));
 				tempBestellungsartikel.setName(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.NAME)));
-				liste[i]= tempBestellungsartikel;
+				liste.add(tempBestellungsartikel);
 			}
 			return liste;
 		} catch (SQLException e) {
@@ -237,10 +233,10 @@ public class Datenbank {
 		
 	}
 
-	private static Review[] getReviews(String id) {
+	private static ArrayList<Review> getReviews(String id) {
 		try {
 			statement = connection.createStatement();
-			Review[] reviews = new Review[getCount(ARTICLES)];
+			ArrayList<Review> reviews = new ArrayList<>();
 			
 			ResultSet rs = getTable("select * from " + REVIEWS + " where " + Review.IDARTICLE + " = '" + id + "'");
 			
@@ -252,7 +248,7 @@ public class Datenbank {
 				tempReview.setAuthor(Util.deleteLastWhitespaces(rs.getString(Review.AUTHOR)));
 				tempReview.setTitle(Util.deleteLastWhitespaces(rs.getString(Review.TITLE)));
 				tempReview.setMessage(Util.deleteLastWhitespaces(rs.getString(Review.MESSAGE)));
-				reviews[rs.getRow()-1] = tempReview;
+				reviews.add(tempReview);
 			}
 			
 			
@@ -288,11 +284,11 @@ public class Datenbank {
 	
 	}
 
-	private static void insertOrderArticles(Bestellungsartikel[] liste, String idOrder) {
+	private static void insertOrderArticles(ArrayList<Bestellungsartikel> liste, String idOrder) {
 		try {
-			
-			for (int i = 0; i < liste.length - 1; i++) {
-				Bestellungsartikel ba = liste[i];
+			ListIterator<Bestellungsartikel> it =  liste.listIterator();
+			while(it.hasNext()) {
+				Bestellungsartikel ba = it.next();
 				String id = getNextID(ORDERARTICLES);
 	
 				statement.executeUpdate("insert into " + ORDERARTICLES + " values('" 
@@ -308,12 +304,12 @@ public class Datenbank {
 		}
 	}
 
-	private static void insertPlatforms(String[] platforms,String id){
+	private static void insertPlatforms(ArrayList<String> platforms,String id){
 		try {
-			for(int i=0;i<platforms.length-1;i++){
+			for(String x:platforms){
 				statement.executeUpdate("insert into " + PLATFORMS + " values('" 
 						+ id + "', '" 
-						+ platforms[i] + "')");
+						+ x + "')");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -343,6 +339,7 @@ public class Datenbank {
 
 			while (rs.next()) {
 				if (Util.deleteLastWhitespaces(rs.getString(User.BENUTZERNAME)).equals(username)) {
+					System.out.println("User existiert bereits.");
 					return true;
 				}
 			}
@@ -360,6 +357,7 @@ public class Datenbank {
 
 			while (rs.next()) {
 				if (Util.deleteLastWhitespaces(rs.getString(Article.NAME)).equals(name)) {
+					System.out.println("Artikel existiert bereits.");
 					return true;
 				}
 			}
@@ -478,16 +476,6 @@ public class Datenbank {
 			System.out.println(e);
 			return null;
 		}
-	}
-	
-	private static int getCount(String tabelle){
-		try {
-			ResultSet countrs = statement.executeQuery("select count(*) from " + tabelle);
-			return countrs.getInt(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return 0;
 	}
 	
 }

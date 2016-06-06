@@ -1,5 +1,6 @@
 package webshop.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.JSONArray;
@@ -32,23 +33,23 @@ public class Article {
 	private String genre;
 	private double price;
 	private int fsk;
-	private String[] platforms;
+	private ArrayList<String> platforms;
 	private Date release;
 	private String language;
 	private int minRam;
 	private double minProcessor;
 	// Image image;
 	private String description;
-	private Review[] reviews;
+	private ArrayList<Review> reviews;
 
 	public Article() {
 
 	}
 
-	public Article(String id, String name, String genre, double price, int fsk, String[] platforms, Date release,
+	public Article(String id, String name, String genre, double price, int fsk, ArrayList<String> platforms, Date release,
 			String language, int minRam, double minProcessor,
 
-			String description, Review[] reviews) {
+			String description, ArrayList<Review> reviews) {
 		this.id = id;
 		this.name = name;
 		this.genre = genre;
@@ -71,9 +72,8 @@ public class Article {
 		this.price = obj.getDouble(PRICE);
 		this.fsk = obj.getInt(FSK);
 		JSONArray arr = obj.getJSONArray(PLATFORMS);
-		this.platforms = new String[arr.length()];
 		for (int i = 0; i < arr.length(); i++) {
-			platforms[i] = arr.getString(i);
+			platforms.add(arr.getString(i));
 		}
 		this.release = (Date) obj.get(RELEASE);
 		this.language = obj.getString(LANGUAGE);
@@ -81,11 +81,10 @@ public class Article {
 		this.minProcessor = obj.getDouble(MINPROCESSOR);
 		this.description = obj.getString(DESCRIPTION);
 		JSONArray arrRev = obj.getJSONArray(REVIEW);
-		this.reviews = new Review[arrRev.length()];
 		for (int i = 0; i < arrRev.length(); i++) {
-			reviews[i] = new Review(arrRev.getString(i));
+			reviews.add(new Review(arrRev.getString(i)));
 		}
-		
+
 	}
 	public String toJSON() {
 		String json = "{"
@@ -95,9 +94,9 @@ public class Article {
 				+ "\"" + PRICE + "\": \"" + price + " \"," 
 				+ "\"" + FSK + "\": \"" + fsk + " \"," 
 				+ "\"" + PLATFORMS + "\": [";
-		for(int i=0;i<platforms.length;i++){
-			json+="\"" + platforms[i] + "\"";
-			if(i!=platforms.length-1)json+=",";
+		for(String x:platforms){
+			json+="\"" + x + "\"";
+			if(platforms.indexOf(x)!=platforms.size()-1)json+=",";
 		}
 		json+="],"			
 				+ "\"" + RELEASE + "\": \"" + release + " \"," 
@@ -107,9 +106,9 @@ public class Article {
 				+ "\"" + DESCRIPTION + "\": \"" + description + " \"," 
 
 				+ " \"" + REVIEW + "\": [" ;
-		for(int i=0;i<reviews.length;i++){
-			json+="\"" + reviews[i].toJSON() + "\"";
-			if(i!=reviews.length-1)json+=",";
+		for(Review x:reviews){
+			json+="\"" + x.toJSON() + "\"";
+			if(reviews.indexOf(x)!=reviews.size()-1)json+=",";
 		}
 		
 
@@ -157,7 +156,7 @@ public class Article {
 		this.fsk = fsk;
 	}
 
-	public String[] getPlatforms() {
+	public ArrayList<String> getPlatforms() {
 		
 		return platforms;
 	}
@@ -206,11 +205,11 @@ public class Article {
 		this.description = description;
 	}
 
-	public Review[] getReviews() {
+	public ArrayList<Review> getReviews() {
 		return reviews;
 	}
 
-	public void setReviews(Review[] reviews) {
+	public void setReviews(ArrayList<Review> reviews) {
 		this.reviews = reviews;
 	}
 
