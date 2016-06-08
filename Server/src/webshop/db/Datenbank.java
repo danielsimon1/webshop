@@ -27,12 +27,11 @@ public class Datenbank {
 		try {
 //			connection = DriverManager.getConnection(
 //					"jdbc:hsqldb:file:D:/users/dsimon/Documents/datenbank-webshop; shutdown=true", "sa", "");
-			connection = DriverManager.getConnection(
-					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering/Datenbank/hsqldb; shutdown=true",
-					"sa", "");
-			statement = connection.createStatement();
-			return true;
-
+				connection = DriverManager.getConnection(
+						"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering/Datenbank/hsqldb; shutdown=true",
+						"sa", "");
+				statement = connection.createStatement();
+				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
