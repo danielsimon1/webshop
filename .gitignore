@@ -10,7 +10,7 @@ node_modules/
 .metadata/.plugins/
 .metadata/version.ini
 Server/.classpath
-Server/.project
+
 Server/.settings/org.eclipse.jdt.core.prefs
 Server/bin/
 .recommenders/
