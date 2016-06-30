@@ -22,10 +22,7 @@ public class ServerFrame extends JFrame {
 	private static JLabel message;
 	private static JButton serverButton;
 	private static JButton resetTablesButton;
-	private static JButton connectToDBButton;
-	private static JButton closeConnectionTuDBButton;
 	private static boolean serverStarted = false;
-	private static boolean connectedToDB = false;
 
 	public ServerFrame() {
 
@@ -51,7 +48,7 @@ public class ServerFrame extends JFrame {
 						RestServer.stopServer();
 						Datenbank.closeConnectionToDB();
 						serverButton.setText("Server starten");
-						serverStarted=false;
+						serverStarted = false;
 					}
 				} catch (IllegalArgumentException | IOException e1) {
 					e1.printStackTrace();
@@ -67,67 +64,19 @@ public class ServerFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (connectedToDB == true) {
+					if(Datenbank.connectToBD()){
 						Datenbank.resetTables();
-						message.setText("Tabellen wurden erstellt");
-
-					} else {
-						message.setText("Bitte Verbindung mit Datenbank herstellen");
+						message.setText("Tabellen wurden resetet");
+						
 					}
+
+
 				} catch (IllegalArgumentException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		c.add(resetTablesButton);
-
-		
-
-		connectToDBButton = new JButton("mit Datenbank verbinden");
-		connectToDBButton.setFont(new Font("Hallo", Font.ITALIC, 20));
-		connectToDBButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (!connectedToDB) {
-						connectedToDB = Datenbank.connectToBD();
-						message.setText("");
-						if (connectedToDB) {
-							statusDB.setText("Status Datenbank:  ist verbunden");
-						} else {
-							statusDB.setText("Status Datenbank:  es konnte nicht verbunden werden");
-						}
-					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		c.add(connectToDBButton);
-
-		closeConnectionTuDBButton = new JButton("Verbindung beenden");
-		closeConnectionTuDBButton.setFont(new Font("Hallo", Font.ITALIC, 20));
-		closeConnectionTuDBButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if (connectedToDB) {
-						connectedToDB = Datenbank.closeConnectionToDB();
-
-						if (!connectedToDB) {
-							statusDB.setText("Status Datenbank: keine Verbindung");
-						} else {
-							statusDB.setText("Status Datenbank: Verbindung konnte nicht beendet werden");
-						}
-					}
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		c.add(closeConnectionTuDBButton);
 
 		statusDB = new JLabel("Status Datenbank: keine Verbindung");
 		c.add(statusDB);

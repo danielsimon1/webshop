@@ -1,5 +1,6 @@
 package webshop.db;
 
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -20,19 +21,23 @@ public class Datenbank {
 	private static User user;
 	private static Statement statement;
 
+	
+	public static File startdir;
 
+	public static void dir() {
+		String userdir = System.getProperty("user.dir");
+		startdir = new File(userdir);
+	}
+	
+	
 	public static boolean connectToBD() {
 		connection = null;
-
+		dir();
 		try {
-//			connection = DriverManager.getConnection(
-//					"jdbc:hsqldb:file:D:/users/dsimon/Documents/datenbank-webshop; shutdown=true", "sa", "");
 			connection = DriverManager.getConnection(
-					"jdbc:hsqldb:file:C:/Users/MMU/Documents/Theorie-DHBW/2.Semester/Webengineering/Datenbank/hsqldb; shutdown=true",
-					"sa", "");
-			statement = connection.createStatement();
-			return true;
-
+					"jdbc:hsqldb:file:" + startdir.getAbsolutePath() + "; shutdown=true", "sa", "");
+				statement = connection.createStatement();
+				return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
