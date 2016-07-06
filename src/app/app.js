@@ -16,6 +16,7 @@ angular.module('app', [
     'app.cart',
     'app.checkout',
     'app.orders',
+    'app.userAdministration',
     'app.register',
     'app.passwordForget'
 ])

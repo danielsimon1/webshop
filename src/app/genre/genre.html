@@ -1,8 +1,18 @@
-<div class="col-md-3">
-    <h4>{{ genre }}</h4>
-    <input class="form-control" placeholder="Suche" ng-model="searchInput.name" ng-show="isArticles"/>
+<div class="row">
+    <div class="col-md-3">
+        <h4>{{ genre }}</h4>
+        <input class="form-control" placeholder="Suche" ng-model="searchInput.name" ng-show="isArticles"/>
+    </div>
 </div>
-<div class="col-md-12 games-list" ng-repeat="article in articles">
-    <a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span class="badge">{{ article.price }}€</span></a>
+<div class="col-md-12" style="margin-top: 20px;">
+    <div class="panel panel-default game-panels" ng-repeat="article in articles">
+        <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span
+                class="badge">{{ article.price }}€</span></a></div>
+        <div class="panel-body"><a ui-sref="gameDetail({id: article.id})"><img ng-src="{{article.image}}" class="panel-image"/></a></div>
+    </div>
 </div>
+
+<!--<div class="col-md-12 games-list" ng-repeat="article in articles">-->
+<!--<a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span class="badge">{{ article.price }}€</span></a>-->
+<!--</div>-->
 <div class="col-md-12" ng-show="!isArticles">Für dieses Genre gibt es keine Spiele!</div>

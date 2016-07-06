@@ -18,6 +18,7 @@ angular.module('app', [
     'app.cart',
     'app.checkout',
     'app.orders',
+    'app.userAdministration',
     'app.register',
     'app.passwordForget'
 ])
@@ -385,6 +386,20 @@ angular.module('app.genre', [])
         }
     }]);
 
+angular.module('app.home', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('home', {
+            url: '/home',
+            templateUrl: 'app/home/home.html',
+            controller: 'HomeCtrl'
+        });
+    }])
+
+    .controller('HomeCtrl', function () {
+
+    });
+
 angular.module('app.login', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -453,6 +468,20 @@ angular.module('app.login', [])
         }
     }]);
 
+angular.module('app.newGames', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('newGames', {
+            url: '/newGames',
+            templateUrl: 'app/newGames/newGames.html',
+            controller: 'NewGamesCtrl'
+        });
+    }])
+
+    .controller('NewGamesCtrl', function () {
+
+    });
+
 angular.module('app.orders', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -482,34 +511,6 @@ angular.module('app.orders', [])
                 console.log(error);
             });
     }]);
-
-angular.module('app.home', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('home', {
-            url: '/home',
-            templateUrl: 'app/home/home.html',
-            controller: 'HomeCtrl'
-        });
-    }])
-
-    .controller('HomeCtrl', function () {
-
-    });
-
-angular.module('app.newGames', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('newGames', {
-            url: '/newGames',
-            templateUrl: 'app/newGames/newGames.html',
-            controller: 'NewGamesCtrl'
-        });
-    }])
-
-    .controller('NewGamesCtrl', function () {
-
-    });
 
 angular.module('app')
     .factory('articles', ["$q", "$http", "localStorageService", function ($q, $http, localStorageService) {
@@ -610,6 +611,20 @@ angular.module('app.topGames', [])
     }])
 
     .controller('TopGamesCtrl', function () {
+
+    });
+
+angular.module('app.userAdministration', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('userAdministration', {
+            url: '/userAdministration',
+            templateUrl: 'app/userAdministration/userAdministration.html',
+            controller: 'UserAdministrationCtrl'
+        });
+    }])
+
+    .controller('UserAdministrationCtrl', function () {
 
     });
 

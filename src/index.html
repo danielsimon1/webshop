@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="assets/css/bower.css">
 </head>
 <body ng-controller="AppCtrl">
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -70,6 +70,12 @@
 <div class="ui-view-container">
     <div ui-view class="content"></div>
 </div>
+
+<footer class="footer navbar-fixed-bottom">
+    <div class="footer-container">
+        <p class="text-muted text-center">Copyright etc.</p>
+    </div>
+</footer>
 
 <script src="assets/js/bower.js"></script>
 <script src="assets/js/templates.js"></script>
