@@ -142,6 +142,7 @@ public class Datenbank {
 				
 				tempArtikel.setPlatforms(getPlatforms(tempArtikel.getId()));
 				
+				tempArtikel.setImage(rs.getString(Article.IMAGE));
 				artikelliste.add(tempArtikel);
 			}
 			return new Artikelliste(artikelliste);
@@ -280,7 +281,8 @@ public class Datenbank {
 					+ article.getLanguage() + "', '"
 					+ article.getMinRam() + "', '" 
 					+ article.getMinProcessor() + "', '" 
-					+ article.getDescription() + "')");
+					+ article.getDescription() + "', '" 
+					+ article.getImage() + "')");
 			insertPlatforms(article.getPlatforms(),id);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -402,6 +404,7 @@ public class Datenbank {
 					+ Article.MINRAM + " int NOT NULL, " 
 					+ Article.MINPROCESSOR + " double NOT NULL, "
 					+ Article.DESCRIPTION + " char(8000) NOT NULL, " 
+					+ Article.IMAGE + " clob NOT NULL, " 
 					+ "PRIMARY KEY (" + Article.ID + ")" + ");");
 			// OrderArticles / BestellArtikel
 			statement.executeUpdate("create table if not exists " + ORDERARTICLES + " ( " 

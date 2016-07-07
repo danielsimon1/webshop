@@ -24,7 +24,7 @@ public class Article {
 	public static final String PLAYSTATION = "ps";
 	public static final String XBOX = "xbox";
 	public static final String WINDOWS = "windows";
-	
+	public static final String IMAGE = "image";
 	
 	
 	
@@ -38,18 +38,18 @@ public class Article {
 	private String language;
 	private int minRam;
 	private double minProcessor;
-	// Image image;
 	private String description;
 	private ArrayList<Review> reviews;
+	private String image;
 
 	public Article() {
 
 	}
 
-	public Article(String id, String name, String genre, double price, int fsk, ArrayList<String> platforms, Date release,
-			String language, int minRam, double minProcessor,
+	public Article(String id, String name, String genre, double price, int fsk, ArrayList<String> platforms,
+			Date release, String language, int minRam, double minProcessor,
 
-			String description, ArrayList<Review> reviews) {
+			String description, ArrayList<Review> reviews, String image) {
 		this.id = id;
 		this.name = name;
 		this.genre = genre;
@@ -62,6 +62,7 @@ public class Article {
 		this.minProcessor = minProcessor;
 		this.description = description;
 		this.reviews = reviews;
+		this.image = image;
 	}
 	
 	public Article(String json) {
@@ -84,6 +85,7 @@ public class Article {
 		for (int i = 0; i < arrRev.length(); i++) {
 			reviews.add(new Review(arrRev.getString(i)));
 		}
+		this.image = obj.getString(IMAGE);
 
 	}
 	public String toJSON() {
@@ -110,7 +112,10 @@ public class Article {
 			json+="\"" + x.toJSON() + "\"";
 			if(reviews.indexOf(x)!=reviews.size()-1)json+=",";
 		}
-		
+		json+="],";		
+
+		json += "\"" + IMAGE + "\": \"" + image + " \"" ;
+
 
 		json+="}";
 		return json;
@@ -157,7 +162,7 @@ public class Article {
 	}
 
 	public ArrayList<String> getPlatforms() {
-		
+
 		return platforms;
 	}
 
@@ -213,6 +218,12 @@ public class Article {
 		this.reviews = reviews;
 	}
 
-	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 
 }

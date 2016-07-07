@@ -49,7 +49,7 @@ public class TestObjekte {
 				+ "Infinity Ward, Inc. ist ein US-amerikanischer Spieleentwickler. Das Unternehmen wurde im August 2001 von 22 ehemaligen Entwicklern des Spiels Medal of Honor Allied Assault gegründet. "
 				+ "Die erste Veröffentlichung von Infinity Ward war Call of Duty, das zahlreiche Auszeichnungen als bestes Spiel gewann und neue Maßstäbe für zukünftige First Person Action Games setzte.";
 		Article article = new Article("0000", "Call of Duty: Modern Warfare 2", "Shooter", 9.99, 18, platforms, release,
-				"Deutsch ", 2, 2.2, description, null);
+				"Deutsch ", 2, 2.2, description, null,null);
 		return article;
 	}
 	
