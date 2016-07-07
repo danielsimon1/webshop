@@ -23,6 +23,23 @@ angular.module('app', [
     .config(function ($urlRouterProvider, localStorageServiceProvider) {
         $urlRouterProvider.otherwise('/home');
         localStorageServiceProvider.setPrefix('webshop');
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
     })
     .run(function (localStorageService, articles, $rootScope, $log) {
         articles.getAllArticles()
@@ -55,14 +72,14 @@ angular.module('app', [
         $rootScope.$on('login', function () {
             getUserData();
         });
-        
+
         $rootScope.$on('genresLoaded', function () {
-             articles.getAllGenres()
-                 .then(function (response) {
-                     $scope.genres = response;
-                 }, function (error) {
-                     $log.error(error);
-                 })
+            articles.getAllGenres()
+                .then(function (response) {
+                    $scope.genres = response;
+                }, function (error) {
+                    $log.error(error);
+                })
         });
 
         $scope.logout = function () {
@@ -92,18 +109,32 @@ angular.module('app', [
         };
         countCartItems();
     })
-    .directive('imageonload', function() {
+    .directive('imageonload', function () {
         return {
             restrict: 'A',
-            link: function(scope, element, attrs) {
-                element.bind('load', function() {
+            link: function (scope, element, attrs) {
+                element.bind('load', function () {
                     scope.isImage = true;
                     scope.$apply();
                 });
-                element.bind('error', function(){
+                element.bind('error', function () {
                     scope.isImage = false;
                     scope.$apply();
                 });
             }
         };
+    })
+    .filter('objectFilter', function () {
+        return function (items, search) {
+            var result = [];
+            search = search ? search.toLowerCase() : '';
+            angular.forEach(items, function (value, key) {
+                if (value.name.toLowerCase().indexOf(search) !== -1) {
+                    result.push(value);
+                }
+            });
+            return result;
+
+        }
     });
+

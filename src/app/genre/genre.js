@@ -10,6 +10,7 @@ angular.module('app.genre', [])
 
     .controller('GenreCtrl', function ($stateParams, localStorageService, $scope) {
         // TODO: order objects by id
+        $scope.searchInout = {};
         $scope.genre = $stateParams.name;
         var articles = localStorageService.get('articles');
         $scope.articles = {};

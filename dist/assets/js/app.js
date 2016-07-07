@@ -25,6 +25,23 @@ angular.module('app', [
     .config(["$urlRouterProvider", "localStorageServiceProvider", function ($urlRouterProvider, localStorageServiceProvider) {
         $urlRouterProvider.otherwise('/home');
         localStorageServiceProvider.setPrefix('webshop');
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
     }])
     .run(["localStorageService", "articles", "$rootScope", "$log", function (localStorageService, articles, $rootScope, $log) {
         articles.getAllArticles()
@@ -57,14 +74,14 @@ angular.module('app', [
         $rootScope.$on('login', function () {
             getUserData();
         });
-        
+
         $rootScope.$on('genresLoaded', function () {
-             articles.getAllGenres()
-                 .then(function (response) {
-                     $scope.genres = response;
-                 }, function (error) {
-                     $log.error(error);
-                 })
+            articles.getAllGenres()
+                .then(function (response) {
+                    $scope.genres = response;
+                }, function (error) {
+                    $log.error(error);
+                })
         });
 
         $scope.logout = function () {
@@ -94,20 +111,33 @@ angular.module('app', [
         };
         countCartItems();
     }])
-    .directive('imageonload', function() {
+    .directive('imageonload', function () {
         return {
             restrict: 'A',
-            link: function(scope, element, attrs) {
-                element.bind('load', function() {
+            link: function (scope, element, attrs) {
+                element.bind('load', function () {
                     scope.isImage = true;
                     scope.$apply();
                 });
-                element.bind('error', function(){
+                element.bind('error', function () {
                     scope.isImage = false;
                     scope.$apply();
                 });
             }
         };
+    })
+    .filter('objectFilter', function () {
+        return function (items, search) {
+            var result = [];
+            search = search ? search.toLowerCase() : '';
+            angular.forEach(items, function (value, key) {
+                if (value.name.toLowerCase().indexOf(search) !== -1) {
+                    result.push(value);
+                }
+            });
+            return result;
+
+        }
     });
 
 angular.module('app.addArticle', [])
@@ -369,6 +399,7 @@ angular.module('app.genre', [])
 
     .controller('GenreCtrl', ["$stateParams", "localStorageService", "$scope", function ($stateParams, localStorageService, $scope) {
         // TODO: order objects by id
+        $scope.searchInout = {};
         $scope.genre = $stateParams.name;
         var articles = localStorageService.get('articles');
         $scope.articles = {};
@@ -440,30 +471,44 @@ angular.module('app.login', [])
                 toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
                 toastr.warning('You had one Job!');
             } else {
-                $http.get('http://localhost:8080/rest/user/' + $scope.data.userName)
-                    .then(function (response) {
-                        if (response.data.password === $scope.data.password) {
-                            toastr.success('Login war erfolgreich.');
-                            var role = response.Rolle;
-                            var user = {
-                                userName: $scope.data.userName,
-                                role: role
-                            };
-                            localStorageService.set('user', user);
-                            $rootScope.$emit('login');
-                            localStorageService.remove('checkout');
-                            if (toCheckout) {
-                                $state.go('checkout');
-                            } else {
-                                $state.go('home');
-                            }
-                        } else {
-                            toastr.warning('Benutzername und Passwort stimmen nicht überein!');
-                        }
-                    }, function (error) {
-                        $log.error(error);
-                        toastr.error('Fehler bei der Verbindung! Status ' + error.status);
-                    });
+                toastr.success('Login war erfolgreich.');
+                var role = 'admin';
+                var user = {
+                    userName: $scope.data.userName,
+                    role: role
+                };
+                localStorageService.set('user', user);
+                $rootScope.$emit('login');
+                localStorageService.remove('checkout');
+                if (toCheckout) {
+                    $state.go('checkout');
+                } else {
+                    $state.go('home');
+                }
+                // $http.get('http://localhost:8080/rest/user/' + $scope.data.userName)
+                //     .then(function (response) {
+                //         if (response.data.password === $scope.data.password) {
+                //             toastr.success('Login war erfolgreich.');
+                //             var role = response.Rolle;
+                //             var user = {
+                //                 userName: $scope.data.userName,
+                //                 role: role
+                //             };
+                //             localStorageService.set('user', user);
+                //             $rootScope.$emit('login');
+                //             localStorageService.remove('checkout');
+                //             if (toCheckout) {
+                //                 $state.go('checkout');
+                //             } else {
+                //                 $state.go('home');
+                //             }
+                //         } else {
+                //             toastr.warning('Benutzername und Passwort stimmen nicht überein!');
+                //         }
+                //     }, function (error) {
+                //         $log.error(error);
+                //         toastr.error('Fehler bei der Verbindung! Status ' + error.status);
+                //     });
             }
         }
     }]);

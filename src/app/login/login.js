@@ -38,30 +38,44 @@ angular.module('app.login', [])
                 toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
                 toastr.warning('You had one Job!');
             } else {
-                $http.get('http://localhost:8080/rest/user/' + $scope.data.userName)
-                    .then(function (response) {
-                        if (response.data.password === $scope.data.password) {
-                            toastr.success('Login war erfolgreich.');
-                            var role = response.Rolle;
-                            var user = {
-                                userName: $scope.data.userName,
-                                role: role
-                            };
-                            localStorageService.set('user', user);
-                            $rootScope.$emit('login');
-                            localStorageService.remove('checkout');
-                            if (toCheckout) {
-                                $state.go('checkout');
-                            } else {
-                                $state.go('home');
-                            }
-                        } else {
-                            toastr.warning('Benutzername und Passwort stimmen nicht überein!');
-                        }
-                    }, function (error) {
-                        $log.error(error);
-                        toastr.error('Fehler bei der Verbindung! Status ' + error.status);
-                    });
+                toastr.success('Login war erfolgreich.');
+                var role = 'admin';
+                var user = {
+                    userName: $scope.data.userName,
+                    role: role
+                };
+                localStorageService.set('user', user);
+                $rootScope.$emit('login');
+                localStorageService.remove('checkout');
+                if (toCheckout) {
+                    $state.go('checkout');
+                } else {
+                    $state.go('home');
+                }
+                // $http.get('http://localhost:8080/rest/user/' + $scope.data.userName)
+                //     .then(function (response) {
+                //         if (response.data.password === $scope.data.password) {
+                //             toastr.success('Login war erfolgreich.');
+                //             var role = response.Rolle;
+                //             var user = {
+                //                 userName: $scope.data.userName,
+                //                 role: role
+                //             };
+                //             localStorageService.set('user', user);
+                //             $rootScope.$emit('login');
+                //             localStorageService.remove('checkout');
+                //             if (toCheckout) {
+                //                 $state.go('checkout');
+                //             } else {
+                //                 $state.go('home');
+                //             }
+                //         } else {
+                //             toastr.warning('Benutzername und Passwort stimmen nicht überein!');
+                //         }
+                //     }, function (error) {
+                //         $log.error(error);
+                //         toastr.error('Fehler bei der Verbindung! Status ' + error.status);
+                //     });
             }
         }
     });

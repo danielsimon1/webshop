@@ -42,24 +42,37 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown" ng-class="{active: currentStateName == 'cart' ||  currentStateName == 'cart' ||
+                <li ng-class="{active: currentStateName == 'cart' ? true : false}"><a ui-sref="cart"><span
+                        class="glyphicon glyphicon-shopping-cart"></span> <span class="badge" ng-show="quantity">{{ quantity }}</span></a>
+                </li>
+                <li class="dropdown" ng-class="{active: currentStateName == 'userAdministration' ||
                 currentStateName == 'orders' || currentStateName == 'login' || currentStateName == 'addArticle' ? true : false}">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">{{ userName }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li ng-class="{active: currentStateName == 'cart' ? true : false}">
-                            <a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a>
-                        </li>
+                        <!--<li ng-class="{active: currentStateName == 'cart' ? true : false}">-->
+                        <!--<a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a>-->
+                        <!--</li>-->
                         <li ng-class="{active: currentStateName == 'orders' ? true : false}"
-                            ng-show="userName != 'Benutzer'"><a ui-sref="orders">Bestellungen</a></li>
+                            ng-show="userName != 'Benutzer'">
+                            <a ui-sref="orders"><span class="glyphicon glyphicon-th-list list-thumb"></span> Bestellungen</a>
+                        </li>
                         <li ng-show="userRole == 'admin'"
                             ng-class="{active: currentStateName == 'addArticle' ? true : false}">
-                            <a ui-sref="addArticle">Artikel anlegen</a>
+                            <a ui-sref="addArticle"><span class="glyphicon glyphicon-plus list-thumb"></span> Artikel anlegen</a>
                         </li>
-                        <li role="separator" class="divider"></li>
-                        <li ng-show="userName != 'Benutzer'"><a ng-click="logout()" href="">Logout</a></li>
+                        <li ng-show="userRole == 'admin'"
+                            ng-class="{active: currentStateName == 'userAdministration' ? true : false}">
+                            <a ui-sref="userAdministration"><span class="glyphicon glyphicon-user list-thumb"></span> Userverwaltung</a>
+                        </li>
+                        <li role="separator" class="divider" ng-show="userName != 'Benutzer'"></li>
+                        <li ng-show="userName != 'Benutzer'">
+                            <a ng-click="logout()" href=""><span class="glyphicon glyphicon-log-out list-thumb"></span> Logout</a>
+                        </li>
                         <li ng-class="{active: currentStateName == 'login' ? true : false}"
-                            ng-show="userName == 'Benutzer'"><a ui-sref="login">Login</a></li>
+                            ng-show="userName == 'Benutzer'">
+                            <a ui-sref="login"><span class="glyphicon glyphicon-log-in list-thumb"></span> Login</a>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -72,9 +85,11 @@
 </div>
 
 <footer class="footer navbar-fixed-bottom">
-    <div class="footer-container">
-        <p class="text-muted text-center">Copyright etc.</p>
-    </div>
+    <!--<div class="footer-container">-->
+        <p class="text-muted text-center" style="margin-top: 10px">
+            Copyright &copy; 2016 Webshop GmbH - <a class="text-muted">Impressum</a>
+        </p>
+    <!--</div>-->
 </footer>
 
 <script src="assets/js/bower.js"></script>
