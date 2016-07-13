@@ -132,7 +132,7 @@ public class Datenbank {
 				tempArtikel.setGenre(Util.deleteLastWhitespaces(rs.getString(Article.GENRE)));
 				tempArtikel.setPrice(rs.getDouble(Article.PRICE));
 				tempArtikel.setFsk(rs.getInt(Article.FSK));
-				tempArtikel.setRelease(rs.getDate(Article.RELEASE));
+				tempArtikel.setRelease(rs.getString(Article.RELEASE));
 				tempArtikel.setLanguage(Util.deleteLastWhitespaces(rs.getString(Article.LANGUAGE)));
 				tempArtikel.setMinRam(rs.getInt(Article.MINRAM));
 				tempArtikel.setMinProcessor(rs.getDouble(Article.MINPROCESSOR));
@@ -161,7 +161,7 @@ public class Datenbank {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
-				tempOrder.setDate(rs.getTimestamp(Bestellung.DATE));
+				tempOrder.setDate(rs.getString(Bestellung.DATE));
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
@@ -399,7 +399,7 @@ public class Datenbank {
 					+ Article.PRICE + " double NOT NULL, "
 					+ Article.FSK + " int NOT NULL,  " 
 					+ Article.PLATFORMS + " char(100) NOT NULL, " 
-					+ Article.RELEASE + " date NOT NULL, "
+					+ Article.RELEASE + " char(20) NOT NULL, "
 					+ Article.LANGUAGE + " char(15) NOT NULL, " 
 					+ Article.MINRAM + " int NOT NULL, " 
 					+ Article.MINPROCESSOR + " double NOT NULL, "
@@ -418,7 +418,7 @@ public class Datenbank {
 			statement.executeUpdate("create table if not exists " + ORDERS + " ( " 
 					+ Bestellung.ID + " char(4) not null," 
 					+ Bestellung.IDUSER + " char(4) not null,"
-					+ Bestellung.DATE + " timestamp not null," 
+					+ Bestellung.DATE + " char(40) not null," 
 					+ Bestellung.PRICE + " int not null, " 
 					+ "PRIMARY KEY (" + Bestellung.ID + ")" + ");");
 			// Platforms / Plattformen
