@@ -8,7 +8,8 @@ angular.module('app.gameDetail', [])
         });
     })
 
-    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $rootScope, $uibModal) {
+    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $rootScope, $uibModal, $state) {
+        // TODO check if game exists
         $scope.tab = {};
         $scope.tab.active = 'description';
         $scope.quantity = 1;
@@ -33,9 +34,13 @@ angular.module('app.gameDetail', [])
         var id = $stateParams.id;
         $scope.articles = localStorageService.get('articles');
         $scope.actualGame = $scope.articles[id];
+        if (!$scope.actualGame) {
+            toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
+            $state.go('home');
+        }
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-        document.getElementById("description").innerHTML = $scope.actualGame.description;
+        document.getElementById("description").innerHTML = $scope.actualGame.description; 
 
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
