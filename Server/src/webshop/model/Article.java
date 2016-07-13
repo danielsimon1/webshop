@@ -1,7 +1,6 @@
 package webshop.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,7 +33,7 @@ public class Article {
 	private double price;
 	private int fsk;
 	private ArrayList<String> platforms;
-	private Date release;
+	private String release;
 	private String language;
 	private int minRam;
 	private double minProcessor;
@@ -47,7 +46,7 @@ public class Article {
 	}
 
 	public Article(String id, String name, String genre, double price, int fsk, ArrayList<String> platforms,
-			Date release, String language, int minRam, double minProcessor,
+			String release, String language, int minRam, double minProcessor,
 
 			String description, ArrayList<Review> reviews, String image) {
 		this.id = id;
@@ -76,7 +75,7 @@ public class Article {
 		for (int i = 0; i < arr.length(); i++) {
 			platforms.add(arr.getString(i));
 		}
-		this.release = (Date) obj.get(RELEASE);
+		this.release = obj.getString(RELEASE);
 		this.language = obj.getString(LANGUAGE);
 		this.minRam = obj.getInt(MINRAM);
 		this.minProcessor = obj.getDouble(MINPROCESSOR);
@@ -170,11 +169,11 @@ public class Article {
 		this.platforms = platforms;
 	}
 
-	public Date getRelease() {
+	public String getRelease() {
 		return release;
 	}
 
-	public void setRelease(Date release) {
+	public void setRelease(String release) {
 		this.release = release;
 	}
 
