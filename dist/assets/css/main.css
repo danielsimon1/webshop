@@ -18,6 +18,9 @@
 .rating {
   position: absolute; }
 
+.rating-reviews > span.rating {
+  color: gold; }
+
 .platform {
   height: 40px;
   margin-right: 15px; }
@@ -34,6 +37,10 @@
 
 .star-active {
   color: black; }
+
+.price {
+  color: #EB2323;
+  font-weight: bold; }
 
 .games-list {
   margin-top: 10px; }

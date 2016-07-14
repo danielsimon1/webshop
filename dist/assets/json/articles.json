@@ -1,5 +1,5 @@
-[
-  {
+{
+  "1": {
     "id": 1,
     "name": "Call of Duty: Black Ops 2",
     "genre": "Action",
@@ -34,7 +34,7 @@
       }
     ]
   },
-  {
+  "2": {
     "id": 2,
     "name": "FIFA 16",
     "genre": "Sport",
@@ -70,4 +70,4 @@
       }
     ]
   }
-]
+}

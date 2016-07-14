@@ -2,9 +2,9 @@ angular.module('app.gameDetail', [])
 
     .config(function ($stateProvider) {
         $stateProvider.state('gameDetail', {
-            url: '/gameDetail/:id',
-            templateUrl: 'app/gameDetail/gameDetail.html',
-            controller: 'GameDetailCtrl'
+            url : '/gameDetail/:id',
+            templateUrl : 'app/gameDetail/gameDetail.html',
+            controller : 'GameDetailCtrl'
         });
     })
 
@@ -34,13 +34,17 @@ angular.module('app.gameDetail', [])
         var id = $stateParams.id;
         $scope.articles = localStorageService.get('articles');
         $scope.actualGame = $scope.articles[id];
+        console.log($scope.actualGame);
         if (!$scope.actualGame) {
             toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
             $state.go('home');
         }
+        angular.forEach($scope.actualGame.reviews, function (item) {
+            item.date = parseInt(item.date);
+        });
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-        document.getElementById("description").innerHTML = $scope.actualGame.description; 
+        document.getElementById("description").innerHTML = $scope.actualGame.description;
 
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
@@ -49,20 +53,18 @@ angular.module('app.gameDetail', [])
                     cart[$scope.actualGame.id].quantity = parseInt(cart[$scope.actualGame.id].quantity) + parseInt($scope.quantity)
                 } else {
                     cart[$scope.actualGame.id] = {
-                        itemId: $scope.actualGame.id,
-                        quantity: parseInt($scope.quantity)
+                        itemId : $scope.actualGame.id,
+                        quantity : parseInt($scope.quantity)
                     };
                 }
                 localStorageService.set('cart', cart);
                 $rootScope.$emit('itemAddedToCart');
                 toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
                 toastr.success('<img src="assets/img/giphy.gif" ng-show="inCart"/>');
-                $scope.quantity = 1;
             } else {
                 toastr.warning('Bitte geben Sie eine gültige Zahl ein!')
             }
         };
-
         $scope.starsActivator = {};
         $scope.numbers = [1, 2, 3, 4, 5];
         for (var i = 0; i <= 4; i++) {
@@ -82,6 +84,21 @@ angular.module('app.gameDetail', [])
             }
         };
 
+        $scope.isValidQuantity = true;
+        $scope.calcPrice = function () {
+            var price = $scope.actualGame.price * $scope.quantity;
+            if (isNaN(price) || $scope.quantity < 1 || $scope.quantity > 20) {
+                //&#8209; : minus without line break
+                $scope.price = "Bitte gültige Anzahl (1&#8209;20) angeben!";
+                $scope.isValidQuantity = false;
+            } else {
+                $scope.price = Math.round(price * 100) / 100;
+                $scope.isValidQuantity = true;
+            }
+        };
+
+        $scope.calcPrice();
+
         $scope.rate = function (stars) {
             if (userName) {
                 var newReviewId = 1;
@@ -98,17 +115,17 @@ angular.module('app.gameDetail', [])
                     }
                 });
                 var modalInstance = $uibModal.open({
-                    animation: true,
-                    templateUrl: 'app/gameDetail/rating/rating.html',
-                    controller: 'RatingCtrl',
-                    resolve: {
-                        stars: function () {
+                    animation : true,
+                    templateUrl : 'app/gameDetail/rating/rating.html',
+                    controller : 'RatingCtrl',
+                    resolve : {
+                        stars : function () {
                             return stars;
                         },
-                        title: function () {
+                        title : function () {
                             return title;
                         },
-                        message: function () {
+                        message : function () {
                             return message;
                         }
                     }
@@ -116,11 +133,11 @@ angular.module('app.gameDetail', [])
 
                 modalInstance.result.then(function (result) {
                     $scope.actualGame.reviews[newReviewId] = {
-                        id: newReviewId,
-                        stars: result.stars,
-                        title: result.title,
-                        message: result.message,
-                        author: userName
+                        id : newReviewId,
+                        stars : result.stars,
+                        title : result.title,
+                        message : result.message,
+                        author : userName
                     };
                     $scope.articles[id].reviews = $scope.actualGame.reviews;
                     localStorageService.set('articles', $scope.articles);
