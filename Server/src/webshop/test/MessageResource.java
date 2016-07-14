@@ -1,4 +1,4 @@
-package webshop.rest.resources;
+package webshop.test;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

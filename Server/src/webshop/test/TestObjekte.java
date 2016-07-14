@@ -54,7 +54,7 @@ public class TestObjekte {
 	}
 	
 	public static Review getTestReview(){
-		return 	new Review("0000", "0000", 5, "Matze", "beschtes Spiel", "wirklich gut gemacht von Infinity Ward");
+		return 	new Review("0000", "0000", 5, "Matze", "beschtes Spiel", "wirklich gut gemacht von Infinity Ward", "xx.xx.xxxxx");
 	}
 	
 	public static User getTestUser(){

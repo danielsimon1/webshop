@@ -11,7 +11,9 @@ public class AddOrder {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addingOrder(String json) {
-		Datenbank.addOrder(new Bestellung(json));
+	@Produces(MediaType.APPLICATION_JSON)
+	public String addingOrder(String json) {
+		Bestellung bestellung = new Bestellung(json);
+		return Datenbank.addOrder(bestellung);
 	}
 }

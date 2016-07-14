@@ -11,8 +11,7 @@ public class OrderResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getUser(@PathParam("id") String id) {
-		Bestellungsliste liste = Datenbank.getOrders(id);
 
-		return liste.toJSON();
+		return Datenbank.getOrders(id);
 	}
 }
