@@ -148,7 +148,7 @@ public class Datenbank {
 				tempArtikel.setGenre(Util.deleteLastWhitespaces(rs.getString(Article.GENRE)));
 				tempArtikel.setPrice(rs.getDouble(Article.PRICE));
 				tempArtikel.setFsk(rs.getInt(Article.FSK));
-				tempArtikel.setRelease(rs.getString(Article.RELEASE));
+				tempArtikel.setRelease(Util.deleteLastWhitespaces(rs.getString(Article.RELEASE)));
 				tempArtikel.setLanguage(Util.deleteLastWhitespaces(rs.getString(Article.LANGUAGE)));
 				tempArtikel.setMinRam(rs.getInt(Article.MINRAM));
 				tempArtikel.setMinProcessor(rs.getDouble(Article.MINPROCESSOR));
@@ -182,7 +182,7 @@ public class Datenbank {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
-				tempOrder.setDate(rs.getString(Bestellung.DATE));
+				tempOrder.setDate(Util.deleteLastWhitespaces(rs.getString(Bestellung.DATE)));
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));

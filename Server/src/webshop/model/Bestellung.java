@@ -22,9 +22,10 @@ public class Bestellung {
 
 	}
 
-	public Bestellung(String id, String date, int price, ArrayList<Bestellungsartikel> liste) {
+	public Bestellung(String id, String idUser, String date, int price, ArrayList<Bestellungsartikel> liste) {
 
 		this.id = id;
+		this.idUser = idUser;
 		this.date = date;
 		this.price = price;
 		this.liste = liste;
@@ -35,11 +36,12 @@ public class Bestellung {
 	}
 
 	public String toJSON() {
-		String json = "{" + "\"" + ID + "\": \"" + id + "\"," 
-				+ " \"" + IDUSER + "\": \"" + idUser + "\"," 
-				+ " \"" + DATE + "\": \"" + date + "\"," 
-				+ " \"" + PRICE + "\": \"" + price+ " \"," 
-				+ " \"" + ORDERARTICLES + "\": [";
+		String json = "{" 
+				+ "\"" + ID + "\": \"" + id + "\"," 
+				+ "\"" + IDUSER + "\": \"" + idUser + "\"," 
+				+ "\"" + DATE + "\": \"" + date + "\"," 
+				+ "\"" + PRICE + "\": \"" + price+ "\"," 
+				+ "\"" + ORDERARTICLES + "\": [";
 		for (Bestellungsartikel x:liste) {
 			json += x.toJSON();
 			if (liste.indexOf(x) != liste.size() - 1) {

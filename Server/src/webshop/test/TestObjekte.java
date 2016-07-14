@@ -1,6 +1,5 @@
 package webshop.test;
 
-import java.sql.Date;
 import java.util.ArrayList;
 
 import webshop.model.Article;
@@ -9,14 +8,13 @@ import webshop.model.User;
 
 public class TestObjekte {
 	
-	public static Article getTestArticle() {
+	public static Article getTestArticle1() {
 		ArrayList<String> platforms = new ArrayList<>();
 		platforms.add(Article.PLAYSTATION);
 		platforms.add(Article.WINDOWS);
 		platforms.add(Article.XBOX);
 		platforms.add(Article.OSX);
-		@SuppressWarnings("deprecation")
-		String release = "xx.xx.xxxxx";
+		String release = "12345678";
 		String description = "Im Herbst 2009 kehrt Entwickler Infinity Ward mit Call of Duty: Modern Warfare 2 auf die Bildschirme zurück. "
 				+ "Das wohl am sehnlichsten erwartete Spiel des Jahresist die Fortsetzung zu Call of Duty 4: Modern Warfare, dem wohl meistverkauften Ego-Actionspiel aller Zeiten. "
 				+ "Modern Warfare 2 setzt die packende Saga mitbeispielloser Action fort und konfrontiert die Spieler mit einer neuen Bedrohung, welche die Welt an den Rand des Zusammenbruchs bringen könnte."
@@ -48,8 +46,9 @@ public class TestObjekte {
 				+ "Über den Entwickler: Infinity Ward"
 				+ "Infinity Ward, Inc. ist ein US-amerikanischer Spieleentwickler. Das Unternehmen wurde im August 2001 von 22 ehemaligen Entwicklern des Spiels Medal of Honor Allied Assault gegründet. "
 				+ "Die erste Veröffentlichung von Infinity Ward war Call of Duty, das zahlreiche Auszeichnungen als bestes Spiel gewann und neue Maßstäbe für zukünftige First Person Action Games setzte.";
+		String image = "aHR0cDovL2kwLmt5bS1jZG4uY29tL3Bob3Rvcy9pbWFnZXMvbmV3c2ZlZWQvMDAwLzA5Ni8wNDQvdHJvbGxmYWNlLmpwZz8xMjk2NDk0MTE3";
 		Article article = new Article("0000", "Call of Duty: Modern Warfare 2", "Shooter", 9.99, 18, platforms, release,
-				"Deutsch ", 2, 2.2, description, null,null);
+				"Deutsch ", 2, 2.2, description, null,image);
 		return article;
 	}
 	
