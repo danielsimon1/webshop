@@ -92,29 +92,29 @@ public class Article {
 		String json = "{"
 				+ "\"" + ID +  "\": \"" + id + "\"," 
 				+ "\"" + NAME + "\": \"" + name + "\"," 
-				+ "\"" + GENRE + "\": \"" + genre +" \"," 
-				+ "\"" + PRICE + "\": \"" + price + " \"," 
-				+ "\"" + FSK + "\": \"" + fsk + " \"," 
+				+ "\"" + GENRE + "\": \"" + genre +"\"," 
+				+ "\"" + PRICE + "\": \"" + price + "\"," 
+				+ "\"" + FSK + "\": \"" + fsk + "\"," 
 				+ "\"" + PLATFORMS + "\": [";
 		for(String x:platforms){
 			json+="\"" + x + "\"";
 			if(platforms.indexOf(x)!=platforms.size()-1)json+=",";
 		}
 		json+="],"			
-				+ "\"" + RELEASE + "\": \"" + release + " \"," 
-				+ "\"" + LANGUAGE + "\": \"" + language + " \"," 
-				+ "\"" + MINRAM + "\": \"" + minRam + " \"," 
-				+ "\"" + MINPROCESSOR + "\": \"" + minProcessor + " \"," 
-				+ "\"" + DESCRIPTION + "\": \"" + description + " \"," 
+				+ "\"" + RELEASE + "\": \"" + release + "\"," 
+				+ "\"" + LANGUAGE + "\": \"" + language + "\"," 
+				+ "\"" + MINRAM + "\": \"" + minRam + "\"," 
+				+ "\"" + MINPROCESSOR + "\": \"" + minProcessor + "\"," 
+				+ "\"" + DESCRIPTION + "\": \"" + description + "\"," 
 
 				+ " \"" + REVIEW + "\": [" ;
 		for(Review x:reviews){
-			json+="\"" + x.toJSON() + "\"";
+			json += x.toJSON();
 			if(reviews.indexOf(x)!=reviews.size()-1)json+=",";
 		}
 		json+="],";		
 
-		json += "\"" + IMAGE + "\": \"" + image + " \"" ;
+		json += "\"" + IMAGE + "\": \"" + image + "\"" ;
 
 
 		json+="}";

@@ -40,7 +40,7 @@ public class Bestellungsartikel {
 				+ "\"" + ID + "\": \""+ id+"\","
 				+ "\"" + IDARTICLE + "\": \""+ idArticle +"\","
 				+ "\"" + ANZAHL + "\": \"" + anzahl + "\","
-				+ "\"" + PRICE + "\": \"" + price + " \","
+				+ "\"" + PRICE + "\": \"" + price + "\","
 				+ "\"" + NAME + "\": \"" + name + "\"}";
 		return json;		
 	}

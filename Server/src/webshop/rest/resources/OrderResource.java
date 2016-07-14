@@ -4,7 +4,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import webshop.db.Datenbank;
-import webshop.model.Bestellungsliste;
 
 @Path("/order/{id}")
 public class OrderResource {

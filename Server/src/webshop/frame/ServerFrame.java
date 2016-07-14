@@ -18,10 +18,9 @@ public class ServerFrame extends JFrame {
 
 	private static Container c;
 	private static JLabel text;
-	private static JLabel statusDB;
+	private static JLabel statusServer;
 	private static JLabel message;
 	private static JButton serverButton;
-	private static JButton resetTablesButton;
 	private static boolean serverStarted = false;
 
 	public ServerFrame() {
@@ -44,11 +43,13 @@ public class ServerFrame extends JFrame {
 						RestServer.startServer();
 						serverButton.setText("Server anhalten");
 						serverStarted = true;
+						statusServer.setText("Server läuft");
 					} else {
 						RestServer.stopServer();
 						Datenbank.closeConnectionToDB();
 						serverButton.setText("Server starten");
 						serverStarted = false;
+						statusServer.setText("Server läuft nicht");
 					}
 				} catch (IllegalArgumentException | IOException e1) {
 					e1.printStackTrace();
@@ -57,32 +58,11 @@ public class ServerFrame extends JFrame {
 		});
 		c.add(serverButton);
 
-		resetTablesButton = new JButton("Tabellen reseten");
-		resetTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
-		resetTablesButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					if(Datenbank.connectToBD()){
-						Datenbank.resetTables();
-						message.setText("Tabellen wurden resetet");
-						
-					}
-
-
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-		c.add(resetTablesButton);
-
-		statusDB = new JLabel("Status Datenbank: keine Verbindung");
-		c.add(statusDB);
-
 		message = new JLabel("");
 		c.add(message);
+		
+		statusServer = new JLabel("Server läuft nicht");
+		c.add(statusServer);
 	}
 
 	public static void startFrame() {
