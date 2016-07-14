@@ -7,7 +7,7 @@ import webshop.db.Datenbank;
 import webshop.model.Review;
 
 
-@Path("review")
+@Path("/review/add")
 public class AddReview {
 	
 	

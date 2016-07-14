@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 
 import webshop.db.Datenbank;
 
-@Path("/user/{username}")
+@Path("/user/get/{username}")
 public class UserResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

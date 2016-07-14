@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 import webshop.db.Datenbank;
 import webshop.model.User;
 
-@Path("user")
+@Path("/user/add")
 public class AddUser {
 
 	@POST

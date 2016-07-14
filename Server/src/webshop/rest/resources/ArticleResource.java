@@ -5,7 +5,7 @@ import javax.ws.rs.core.MediaType;
 
 import webshop.db.Datenbank;
 
-@Path("/article/{attribute}")
+@Path("/article/get/{attribute}")
 public class ArticleResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
