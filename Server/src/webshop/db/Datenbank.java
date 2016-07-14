@@ -135,11 +135,7 @@ public class Datenbank {
 			} else {
 				rs = getTable("select * from " + ARTICLES + " where "+  Article.GENRE + " = '" + attribute + "'");
 			}
-			rs.last();
-			if(rs.getRow()==0){
-				return "\"Keine Artikel vorhanden\"";
-			}
-			rs.beforeFirst();
+			
 			ArrayList<Article> artikelliste = new ArrayList<>();
 			while(rs.next()){
 				Article tempArtikel = new Article();
@@ -173,11 +169,7 @@ public class Datenbank {
 		try {
 			ArrayList<Bestellung> liste = new ArrayList<>();
 			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.ID + " = '" + id + "'");
-			rs.last();
-			if(rs.getRow()==0){
-				return "\"Keine Bestellungen vorhanden\"";
-			}
-			rs.beforeFirst();
+			
 			while (rs.next()) {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
@@ -199,11 +191,7 @@ public class Datenbank {
 		try {
 			User user = new User();
 			ResultSet rs = getTable("select * from " + USERS + " where " +  User.BENUTZERNAME + " = '" + username + "'");
-			rs.last();
-			if(rs.getRow()==0){
-				return "\"User nicht vorhanden\"";
-			}
-			rs.beforeFirst();
+			
 			while (rs.next()) {
 				user.setId(Util.deleteLastWhitespaces(rs.getString(User.ID)));
 				user.setBenutzername(Util.deleteLastWhitespaces(rs.getString(User.BENUTZERNAME)));
