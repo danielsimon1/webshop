@@ -5,7 +5,7 @@ import javax.ws.rs.core.MediaType;
 
 import webshop.db.Datenbank;
 
-@Path("/order/{id}")
+@Path("/order/get/{id}")
 public class OrderResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

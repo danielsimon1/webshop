@@ -6,7 +6,7 @@ import javax.ws.rs.core.MediaType;
 import webshop.db.Datenbank;
 import webshop.model.Article;
 
-@Path("article")
+@Path("article/add")
 public class AddArticle {
 
 	@POST
