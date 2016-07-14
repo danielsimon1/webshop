@@ -182,7 +182,7 @@ public class Datenbank {
 				Bestellung tempOrder = new Bestellung();
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
-				tempOrder.setDate(Util.deleteLastWhitespaces(rs.getString(Bestellung.DATE));
+				tempOrder.setDate(Util.deleteLastWhitespaces(rs.getString(Bestellung.DATE)));
 				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
