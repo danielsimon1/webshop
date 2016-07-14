@@ -9,6 +9,7 @@ public class Review {
 	public static final String AUTHOR = "Autor";
 	public static final String TITLE = "Titel";
 	public static final String MESSAGE = "Text";
+	public static final String DATE = "Datum";
 
 	private String id;
 	private String idArticle;
@@ -16,6 +17,8 @@ public class Review {
 	private String author;
 	private String title;
 	private String message;
+	private String date;
+
 
 	public Review() {
 
@@ -29,25 +32,28 @@ public class Review {
 		this.author = obj.getString(AUTHOR);
 		this.title = obj.getString(TITLE);
 		this.message = obj.getString(MESSAGE);
+		this.date = obj.getString(DATE);
 	}
 
-	public Review(String id, String idArticle, int stars, String author, String title, String message) {
+	public Review(String id, String idArticle, int stars, String author, String title, String message, String date) {
 		this.id = id;
 		this.idArticle = idArticle;
 		this.stars = stars;
 		this.author = author;
 		this.title = title;
 		this.message = message;
+		this.date = date;
 	}
 
 	public String toJSON() {
 		String json = "{"
-				+ "\"ID\": \"" + id + "\"," 
-				+ "\"IDArticle\": \"" + idArticle + "\"," 
-				+ " \"Sterne\": \"" + stars + "\"," 
-				+ " \"Autor\": \"" + author +" \"," 
-				+ " \"Titel\": \"" + title + " \"," 
-				+ " \"Text\": \"" + message + "\""
+				+ "\"" + ID + "\": \"" + id + "\"," 
+				+ "\"" + IDARTICLE + "\": \"" + idArticle + "\"," 
+				+ "\"" + STARS + "\": \"" + stars + "\"," 
+				+ "\"" + AUTHOR + "\": \"" + author +"\"," 
+				+ "\"" + TITLE + "\": \"" + title + "\"," 
+				+ "\"" + MESSAGE + "\": \"" + message + "\"," 
+				+ "\"" + DATE + "\": \"" + date + "\""
 				+ "}";
 		return json;
 	}
@@ -98,5 +104,12 @@ public class Review {
 	
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 }

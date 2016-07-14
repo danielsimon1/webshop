@@ -13,7 +13,9 @@ public class AddReview {
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void addingReview(String json) {
-		Datenbank.addReview(new Review(json));
+	@Produces(MediaType.APPLICATION_JSON)
+	public String addingReview(String json) {
+		Review review = new Review(json);
+		return Datenbank.addReview(review);
 	}
 }

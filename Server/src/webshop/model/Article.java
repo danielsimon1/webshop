@@ -66,7 +66,6 @@ public class Article {
 	
 	public Article(String json) {
 		JSONObject obj = new JSONObject(json);
-		this.id = obj.getString(ID);
 		this.name = obj.getString(NAME);
 		this.genre = obj.getString(GENRE);
 		this.price = obj.getDouble(PRICE);
@@ -87,6 +86,8 @@ public class Article {
 		this.image = obj.getString(IMAGE);
 
 	}
+	
+	
 	public String toJSON() {
 		String json = "{"
 				+ "\"" + ID +  "\": \"" + id + "\"," 
