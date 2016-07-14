@@ -1,14 +1,19 @@
 <div class="row">
-    <div class="col-md-9">
-        <img ng-src="{{ actualGame.image }}" width="140px" style="display: inline-block; vertical-align: top"/>
+    <div class="col-md-6">
+        <img ng-src="{{ actualGame.image }}" width="300px" style="display: inline-block; vertical-align: top"/>
         <div style="display: inline-block; margin-left: 50px">
-            <p class="h3">{{ actualGame.name }}</p>
-            <p class="h4">{{ actualGame.genre }}</p>
+            <p class="h2">{{ actualGame.name }}</p>
+            <p class="h4"><span class="label label-primary"> {{ actualGame.genre }}</span></p>
+            <p class="h3">Preis: <span class="price">{{ actualGame.price }} € *</span><br>
+                <span class="h5" style="vertical-align: top">*inklusive MwSt.</span></p>
+            <p class="h4" style="font-size: 16px">Keine Versandkosten für alle Produkte!</p>
+            <p class="h4" style="color: #04B404; font-weight: bold;">Auf Lager</p>
             <p class="h5">
-                <img ng-repeat="image in actualGame.platforms" ng-src="assets/img/{{image}}.png" class="platform"/>
+                Verfügbar auf folgenden Plattformen:<br>
+                <img ng-repeat="image in actualGame.platforms" ng-src="assets/img/{{image}}.png" class="platform" style="margin-top:10px"/>
             </p>
-            <p class="h5">Altersfreigabe: FSK {{ actualGame.fsk }}</p>
-            <p class="h5">Durchschnittliche Bewertung:
+            <p>Altersfreigabe: <b>FSK {{ actualGame.fsk }}</b></p>
+            <p>Durchschnittliche Bewertung:
             <span class="stars" uib-tooltip="Bewerten">
                 <span class="rating">
                     <span class="star-active" ng-class="{'star-selected': starsActivator[1]}"
@@ -38,20 +43,30 @@
             </p>
         </div>
     </div>
-    <div class="col-md-3">
-        <h3>Preis: <b>{{ actualGame.price }} €</b></h3>
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Anzahl" ng-model="quantity">
+    <div class="col-md-6 panel panel-default" style="width: 250px">
+        <div class="panel-body">
+            <h3 style="margin-top: 0" ng-show="isValidQuantity">
+                <span>Preis:&nbsp;</span><b>{{ price | number: 2 }}<span ng-show="isValidQuantity"> €</span></b>
+            </h3>
+            <h4 style="margin-top: 0" ng-show="!isValidQuantity" ng-bind-html="price"></h4>
+
+
+            <div class="input-group" uib-tooltip="In den Warenkorb legen" tooltip-placement="bottom" style="width: 150px">
+                <span class="input-group-addon">Anzahl</span>
+                <input type="text" class="form-control" ng-model="quantity" ng-change="calcPrice()"/>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button" ng-click="toCart()">In den Warenkorb legen</button>
+                <button class="btn btn-default" type="button" ng-click="toCart()" ng-disabled="!isValidQuantity">
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                </button>
             </span>
+            </div>
         </div>
     </div>
 </div>
-<hr>
+<!--<hr>-->
 <div class="row">
     <div class="col-md-12" style="margin-top: 18px">
-        <ul class="nav nav-pills nav-justified">
+        <ul class="nav nav-tabs">
             <li role="presentation" ng-class="{active: tab.active == 'description'}">
                 <a ng-click="changeTab('description')">Beschreibung</a>
             </li>
@@ -65,23 +80,27 @@
     </div>
 </div>
 <div class="row">
-    <div ng-show="tab.active == 'description'" class="col-md-10 col-md-offset-1 description" id="description"></div>
-    <div ng-show="tab.active == 'reviews'" class="col-md-10 col-md-offset-1 description">
-        <div ng-repeat="review in actualGame.reviews" class="review">
-            <p class="h5">
+    <div ng-show="tab.active == 'description'" class="col-md-10 description" id="description"></div>
+    <div ng-show="tab.active == 'reviews'" class="col-md-10 description">
+        <div ng-repeat="review in actualGame.reviews | orderBy:'date':true" class="review">
+            <p class="h4 rating-reviews">
                 <span class="rating">
                     <span>★</span><span ng-show="review.stars >= 1.5">★</span><span
                         ng-show="review.stars >= 2.5">★</span><span
                         ng-show="review.stars >= 3.5">★</span><span ng-show="review.stars >= 4.5">★</span>
                 </span>
                 <span>☆☆☆☆☆</span>
+                {{ review.title }}
             </p>
-            <p class="h5">{{ review.author }}: {{ review.title }}</p>
+            <p class="h5">Von: <b>{{ review.author }}</b> am {{ review.date | date:'dd.MM.yyyy'}}</p>
             <p>{{ review.message }}</p>
             <hr>
         </div>
+        <div ng-if="actualGame.reviews.length == 0">
+            <span class="h4">Für dieses Spiel sind noch keine Rezensionen verfügbar!</span>
+        </div>
     </div>
-    <div ng-show="tab.active == 'requirements'" class="col-md-10 col-md-offset-1 description">
+    <div ng-show="tab.active == 'requirements'" class="col-md-10 description">
         <p>Minimum RAM: {{ actualGame.minRam }}</p>
         <p>Minimum Prozessor: {{ actualGame.minProcessor }}</p>
     </div>
