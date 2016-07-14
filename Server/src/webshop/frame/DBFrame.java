@@ -19,6 +19,7 @@ public class DBFrame extends JFrame {
 	private static Container c;
 	private static JLabel text;
 	private static JLabel message;
+	private static JButton connectToDBButton;
 	private static JButton resetTablesButton;
 
 	public DBFrame() {
@@ -29,6 +30,16 @@ public class DBFrame extends JFrame {
 		text = new JLabel("Das hier ist der Server des Webshops.");
 		c.add(text);
 
+		connectToDBButton = new JButton("Connect to DB");
+		connectToDBButton.setFont(new Font("Hallo", Font.ITALIC, 20));
+		connectToDBButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Datenbank.connectToBD();
+			}
+		});
+		
 		resetTablesButton = new JButton("Tabellen reseten");
 		resetTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
 		resetTablesButton.addActionListener(new ActionListener() {
