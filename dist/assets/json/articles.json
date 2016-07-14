@@ -38,7 +38,7 @@
     "id": 2,
     "name": "FIFA 16",
     "genre": "Sport",
-    "price": 39.99,
+    "price": 40.00,
     "fsk": 0,
     "platforms": [
       "gameboy",
@@ -59,14 +59,32 @@
         "stars": 4,
         "author": "Enes",
         "title": "Geiles Spiel",
-        "message": "Macht Bock! Aber ein paar Bugs gibts leider noch"
+        "message": "Macht Bock! Aber ein paar Bugs gibts leider noch",
+        "date": "1468501828150"
       },
       {
         "id": 2,
         "stars": 2,
         "author": "MirDochEgal",
         "title": "So ein Scheiß !!!!111!",
-        "message": "Die werden echtr jedes jahr schlecher ....... "
+        "message": "Die werden echtr jedes jahr schlecher ....... ",
+        "date": "1462108441"
+      },
+      {
+        "id": 3,
+        "stars": 3,
+        "author": "gasdga",
+        "title": "So ein asdgasdg !!!!111!",
+        "message": "asdgasdgasdges jahrgasdgasdg.... ",
+        "date": "681462108441"
+      },
+      {
+        "id": 4,
+        "stars": 4,
+        "author": "gasdfdga",
+        "title": "afdsfn asdgasdg !!!!111!",
+        "message": "asdgafdsfsdsdg.... ",
+        "date": "981462108441"
       }
     ]
   }

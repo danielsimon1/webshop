@@ -13,6 +13,7 @@
                 <img ng-repeat="image in actualGame.platforms" ng-src="assets/img/{{image}}.png" class="platform" style="margin-top:10px"/>
             </p>
             <p>Altersfreigabe: <b>FSK {{ actualGame.fsk }}</b></p>
+            <p>Release-Datum: <b>{{ actualGame.release }}</b></p>
             <p>Durchschnittliche Bewertung:
             <span class="stars" uib-tooltip="Bewerten">
                 <span class="rating">

@@ -109,18 +109,19 @@ angular.module('app')
         }
 
         var _mapReviews = function (reviews) {
-            var mappedItems = {};
+            var mappedItems = [];
             angular.forEach(reviews, function (item) {
                 var mappedItem = {
-                    id: item.id,
-                    stars: item.stars,
-                    author: item.author,
-                    title: item.title,
-                    message: item.message
+                    id: parseInt(item.ID),
+                    stars: parseInt(item.stars),
+                    author: item.Autor,
+                    title: item.Titel,
+                    message: item.Text,
+                    date: 1254567890123
                 };
-                mappedItems[mappedItem.id] = mappedItem;
+                mappedItems.push(mappedItem);
             });
-            return mappedItems;
+            return mappedItems || [];
         };
         return service;
     });
