@@ -115,10 +115,10 @@ public class Datenbank {
 	public static String addUser(User user) {
 		try {
 			if (Datenbank.doesUserAlreadyExists(user.getBenutzername())) {
-				return "User existiert bereits";	
+				return "\"User existiert bereits\"";	
 			} else {
 				Datenbank.insertUser(user);
-				return "User wurde erfolgreich angelegt.";
+				return "\"User wurde erfolgreich angelegt.\"";
 
 			}
 		} catch (SQLException | KeineNeueIDException e) {
@@ -183,7 +183,7 @@ public class Datenbank {
 			return new Bestellungsliste(liste).toJSON();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "\"Bestellungen konnten icht geladen werden\"";
+			return "\"Bestellungen konnten nicht geladen werden\"";
 		}
 	}
 	
