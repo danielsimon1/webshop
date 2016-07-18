@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import webshop.db.Datenbank;
 import webshop.rest.*;
+import webshop.test.TestObjekte;
 
 public class DBFrame extends JFrame {
 
@@ -21,6 +22,8 @@ public class DBFrame extends JFrame {
 	private static JLabel message;
 	private static JButton connectToDBButton;
 	private static JButton resetTablesButton;
+	private static JButton insertTestDataButton;
+	private static boolean connected = false;
 
 	public DBFrame() {
 
@@ -36,9 +39,14 @@ public class DBFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Datenbank.connectToBD();
+				if(!connected){
+					Datenbank.connectToBD();
+					connected = true;
+				}
 			}
 		});
+		c.add(connectToDBButton);
+		
 		
 		resetTablesButton = new JButton("Tabellen reseten");
 		resetTablesButton.setFont(new Font("Hallo", Font.ITALIC, 20));
@@ -47,7 +55,7 @@ public class DBFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(Datenbank.connectToBD()){
+					if(connected){
 						Datenbank.resetTables();
 						message.setText("Tabellen wurden resetet");
 						
@@ -61,7 +69,24 @@ public class DBFrame extends JFrame {
 		});
 		c.add(resetTablesButton);
 
-		
+		insertTestDataButton = new JButton("Testdaten einfügen");
+		insertTestDataButton.setFont(new Font("Hallo", Font.ITALIC, 20));
+		insertTestDataButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(connected){
+						Datenbank.addArticle(TestObjekte.getTestArticle1());
+					}
+
+
+				} catch (IllegalArgumentException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		c.add(insertTestDataButton);
 
 		message = new JLabel("");
 		c.add(message);
@@ -74,6 +99,48 @@ public class DBFrame extends JFrame {
 		frame.setLocation(1000, 50);
 		frame.setSize(400, 900);
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Datenbank.closeConnectionToDB();
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				Datenbank.closeConnectionToDB();
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				
+			}
+		});
 	}
 
 }
