@@ -8,8 +8,7 @@ angular.module('app.gameDetail', [])
         });
     })
 
-    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $rootScope, $uibModal, $state) {
-        // TODO check if game exists
+    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $rootScope, $uibModal, $state, articles) {
         $scope.tab = {};
         $scope.tab.active = 'description';
         $scope.quantity = 1;
@@ -42,6 +41,8 @@ angular.module('app.gameDetail', [])
         angular.forEach($scope.actualGame.reviews, function (item) {
             item.date = parseInt(item.date);
         });
+        console.log($scope.actualGame.image);
+        document.getElementById('image').setAttribute('src', "data:image/jpeg;base64," + $scope.actualGame.image);
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
         document.getElementById("description").innerHTML = $scope.actualGame.description;
@@ -132,17 +133,31 @@ angular.module('app.gameDetail', [])
                 });
 
                 modalInstance.result.then(function (result) {
-                    $scope.actualGame.reviews[newReviewId] = {
-                        id : newReviewId,
+                    // $scope.actualGame.reviews[newReviewId] = {
+                    //     id : newReviewId,
+                    //     stars : result.stars,
+                    //     title : result.title,
+                    //     message : result.message,
+                    //     author : userName
+                    // };
+                    // $scope.articles[id].reviews = $scope.actualGame.reviews;
+                    // localStorageService.set('articles', $scope.articles);
+                    // $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+                    var data = {
+                        id : 0,
                         stars : result.stars,
                         title : result.title,
                         message : result.message,
-                        author : userName
+                        author : userName,
+                        articleId : $scope.actualGame.id
                     };
-                    $scope.articles[id].reviews = $scope.actualGame.reviews;
-                    localStorageService.set('articles', $scope.articles);
-                    $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-                    toastr.success('Bewertung hinzugefügt!');
+                    console.log(data);
+                    articles.addReview(data)
+                        .then(function () {
+                            toastr.success('Bewertung hinzugefügt!');
+                        }, function (error) {
+                            toastr.error(error);
+                        });
                 }, function () {
                     console.log('Modal dismissed');
                 });

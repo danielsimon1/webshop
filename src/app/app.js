@@ -104,7 +104,10 @@ angular.module('app', [
             var cart = localStorageService.get('cart');
             $scope.quantity = 0;
             angular.forEach(cart, function (item) {
-                $scope.quantity += item.quantity;
+                var articles = localStorageService.get('articles') || {};
+                if (articles[item.itemId]) {
+                    $scope.quantity += item.quantity;
+                }
             });
         };
         countCartItems();

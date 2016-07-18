@@ -35,6 +35,10 @@ angular.module('app.checkout', [])
                 }
             });
         });
+
+        $scope.addOrder = function () {
+            toastr.error("Diese Funktion ist noch nicht verfügbar!");
+        };
         $scope.updateTotalPrice();
 
     });

@@ -8,7 +8,7 @@ angular.module('app.register', [])
         });
     })
 
-    .controller('RegisterCtrl', function ($scope, $http, $log) {
+    .controller('RegisterCtrl', function ($scope, user) {
         $scope.data = {};
         $scope.data.userName = '';
         $scope.data.email = '';
@@ -23,14 +23,18 @@ angular.module('app.register', [])
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!')
             } else {
-                var user = {
-                    id: '0000',
-                    username: $scope.data.userName,
+                var data = {
+                    userName: $scope.data.userName,
                     password: $scope.data.password,
                     email: $scope.data.email,
                     role: 'user'
                 };
-                // $http.post('http://localhost:8080/rest/user/' + JSON.stringify(user)+'');
+                user.addUser(data)
+                    .then(function() {
+                        toastr.success("Der Benutzer wurde erfolgreich angelegt!");
+                    }, function (error) {
+                        toastr.error(error);
+                    });
             }
         }
     });

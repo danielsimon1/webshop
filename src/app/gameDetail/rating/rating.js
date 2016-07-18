@@ -1,5 +1,5 @@
 angular.module('app.gameDetail')
-    .controller('RatingCtrl', function ($scope, $uibModalInstance, stars, title, message) {
+    .controller('RatingCtrl', function ($scope, $uibModalInstance, stars, title, message, articles) {
         
         $scope.stars = stars;
         $scope.message = message;
