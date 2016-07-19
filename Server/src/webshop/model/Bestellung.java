@@ -15,14 +15,14 @@ public class Bestellung {
 	private String id;
 	private String idUser;
 	private String date;
-	private int price;
+	private double price;
 	private ArrayList<Bestellungsartikel> liste;
 
 	public Bestellung() {
 
 	}
 
-	public Bestellung(String id, String idUser, String date, int price, ArrayList<Bestellungsartikel> liste) {
+	public Bestellung(String id, String idUser, String date, double price, ArrayList<Bestellungsartikel> liste) {
 
 		this.id = id;
 		this.idUser = idUser;
@@ -76,11 +76,11 @@ public class Bestellung {
 		this.date = date;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

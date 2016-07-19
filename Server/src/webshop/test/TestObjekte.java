@@ -3,6 +3,8 @@ package webshop.test;
 import java.util.ArrayList;
 
 import webshop.model.Article;
+import webshop.model.Bestellung;
+import webshop.model.Bestellungsartikel;
 import webshop.model.Review;
 import webshop.model.User;
 
@@ -65,5 +67,14 @@ public class TestObjekte {
 	
 	public static User getTestUser(){
 		return new User("Matthias", "secret", "m@gmail.com", "0000", "admin");
+	}
+
+	public static Bestellung getTestOrder() {
+		ArrayList<Bestellungsartikel> testBestellungsartikelListe = new ArrayList<>();
+		Bestellungsartikel testBestellungsartikel = new Bestellungsartikel("0000","0000","Call of Duty: Modern Warfare 2", "0000", 5, 9.99);
+		testBestellungsartikelListe.add(testBestellungsartikel);
+		Bestellung testOrder = new Bestellung("0000", "0000","1459694665", 1000, testBestellungsartikelListe);
+		
+		return testOrder;
 	}
 }
