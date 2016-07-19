@@ -168,7 +168,7 @@ public class Datenbank {
 	public static String getOrders(String id) {
 		try {
 			ArrayList<Bestellung> liste = new ArrayList<>();
-			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.ID + " = '" + id + "'");
+			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.IDUSER + " = '" + id + "'");
 			
 			while (rs.next()) {
 				Bestellung tempOrder = new Bestellung();
