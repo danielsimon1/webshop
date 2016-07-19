@@ -28,6 +28,9 @@ public class Review {
 		JSONObject obj = new JSONObject(json);
 		this.id = obj.getString(ID);
 		this.idArticle = obj.getString(IDARTICLE);
+		while(this.idArticle.length()<4){
+			this.idArticle="0" + this.idArticle;
+		}
 		this.stars = obj.getInt(STARS);
 		this.author = obj.getString(AUTHOR);
 		this.title = obj.getString(TITLE);
