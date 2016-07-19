@@ -2,13 +2,11 @@ package webshop.frame;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 
 import javax.swing.*;
 
 import webshop.db.Datenbank;
-import webshop.rest.*;
-import webshop.test.TestObjekte;
+import webshop.test.TestDB;
 
 public class DBFrame extends JFrame {
 
@@ -18,7 +16,7 @@ public class DBFrame extends JFrame {
 	private static final long serialVersionUID = -6315566547156813007L;
 
 	private static Container c;
-	private static JLabel text;
+	private static JLabel connectionStatus;
 	private static JLabel message;
 	private static JButton connectToDBButton;
 	private static JButton resetTablesButton;
@@ -30,8 +28,8 @@ public class DBFrame extends JFrame {
 		c = getContentPane();
 		c.setLayout(new FlowLayout());
 
-		text = new JLabel("Das hier ist der Server des Webshops.");
-		c.add(text);
+		connectionStatus = new JLabel("Verbindungsstatus: keine Verbindung");
+
 
 		connectToDBButton = new JButton("Connect to DB");
 		connectToDBButton.setFont(new Font("Hallo", Font.ITALIC, 20));
@@ -42,10 +40,15 @@ public class DBFrame extends JFrame {
 				if(!connected){
 					Datenbank.connectToBD();
 					connected = true;
+					connectionStatus.setText("Verbindungsstatus: Verbindung besteht");
+					resetTablesButton.setVisible(true);
+					insertTestDataButton.setVisible(true);
 				}
 			}
 		});
 		c.add(connectToDBButton);
+		
+		c.add(connectionStatus);
 		
 		
 		resetTablesButton = new JButton("Tabellen reseten");
@@ -67,8 +70,11 @@ public class DBFrame extends JFrame {
 				}
 			}
 		});
+		resetTablesButton.setVisible(false);
 		c.add(resetTablesButton);
 
+		
+		
 		insertTestDataButton = new JButton("Testdaten einfügen");
 		insertTestDataButton.setFont(new Font("Hallo", Font.ITALIC, 20));
 		insertTestDataButton.addActionListener(new ActionListener() {
@@ -77,7 +83,8 @@ public class DBFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(connected){
-						Datenbank.addArticle(TestObjekte.getTestArticle1());
+						TestDB.insertTestData();
+						message.setText("Testdaten wurden eingefügt");
 					}
 
 
@@ -86,6 +93,7 @@ public class DBFrame extends JFrame {
 				}
 			}
 		});
+		insertTestDataButton.setVisible(false);
 		c.add(insertTestDataButton);
 
 		message = new JLabel("");
