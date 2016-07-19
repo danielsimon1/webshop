@@ -41,7 +41,7 @@ angular.module('app.gameDetail', [])
         angular.forEach($scope.actualGame.reviews, function (item) {
             item.date = parseInt(item.date);
         });
-        console.log($scope.actualGame.image);
+        // console.log($scope.actualGame.image);
         document.getElementById('image').setAttribute('src', "data:image/jpeg;base64," + $scope.actualGame.image);
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);

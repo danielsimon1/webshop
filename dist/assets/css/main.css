@@ -66,6 +66,12 @@
   border-color: red;
   color: red; }
 
+.invalid-register > span, .invalid-register > input {
+  border-color: red; }
+
+.text-error {
+  color: red; }
+
 body {
   width: 100%;
   height: 100%; }

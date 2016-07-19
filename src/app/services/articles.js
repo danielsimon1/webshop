@@ -6,6 +6,7 @@ angular.module('app')
             var q = $q.defer();
             $http.get('http://localhost:8080/rest/article/get/all')
                 .then(function (response) {
+                    console.log(response.data);
                     if (typeof response.data == 'string') {
                         q.reject(response.data);
                     } else {
