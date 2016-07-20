@@ -8,7 +8,7 @@ angular.module('app.checkout', [])
         });
     })
 
-    .controller('CheckoutCtrl', function ($scope, localStorageService, $state) {
+    .controller('CheckoutCtrl', function ($scope, localStorageService, $state, orders) {
         var user = localStorageService.get('user') || {};
         if (!user.userName) {
             localStorageService.set('fromCheckout', true);
@@ -37,7 +37,14 @@ angular.module('app.checkout', [])
         });
 
         $scope.addOrder = function () {
-            toastr.error("Diese Funktion ist noch nicht verfügbar!");
+            var cart = localStorageService.get("cart");
+            var data = {
+                userId: user.id,
+                date: new Date().getTime(),
+                totalPrice: $scope.totalPrice,
+                items: cart
+            };
+            orders.addOrder(data);
         };
         $scope.updateTotalPrice();
 

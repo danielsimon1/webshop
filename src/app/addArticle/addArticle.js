@@ -102,7 +102,7 @@ angular.module('app.addArticle', [])
                         .then(function (response) {
 
                         }, function (error) {
-
+                            toastr.error(error);
                         })
                 }
             } else {

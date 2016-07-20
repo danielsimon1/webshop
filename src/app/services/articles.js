@@ -1,5 +1,5 @@
 angular.module('app')
-    .factory('articles', function ($q, $http, localStorageService) {
+    .factory('articles', function ($q, $http, localStorageService, $log) {
         var service = {};
 
         service.getAllArticles = function () {
@@ -58,19 +58,22 @@ angular.module('app')
             console.log(data);
             $http.post('http://localhost:8080/rest/article/add', data)
                 .then(function (response) {
-                    console.log(response);
-                    q.resolve(response);
+                    if (response.data == "Artikel existiert bereits") {
+                        q.reject(response.data);
+                    } else if (response.data == "Artikel konnte nicht hinzugefügt werden") {
+                        q.reject(response.data);
+                    } else {
+                        q.resolve(response.data);
+                    }
                 }, function (error) {
-                    console.log(error);
-                    q.reject(error);
+                    q.reject(error.statusText);
                 });
             return q.promise;
         };
 
         service.addReview = function (input) {
             var q = $q.defer();
-            var date = new Date();
-            var day = date.getDay() + '.' + date.getMonth() + '.' + date.getFullYear();
+            var date = new Date().getTime();
             var data = {
                 ID : '0',
                 idArticle : input.articleId.toString(),
@@ -78,7 +81,7 @@ angular.module('app')
                 Autor : input.author,
                 Titel : input.title,
                 Text : input.message,
-                Datum : day
+                Datum : date.toString()
             };
             console.log(data);
             $http.post('http://localhost:8080/rest/review/add', data)
@@ -149,8 +152,9 @@ angular.module('app')
                     author : item.Autor,
                     title : item.Titel,
                     message : item.Text,
-                    date : 1254567890123
+                    date : parseInt(item.Datum)
                 };
+                console.log(mappedItem.date);
                 mappedItems.push(mappedItem);
             });
             return mappedItems || [];

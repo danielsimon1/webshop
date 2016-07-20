@@ -38,11 +38,11 @@ angular.module('app.gameDetail', [])
             toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
             $state.go('home');
         }
-        angular.forEach($scope.actualGame.reviews, function (item) {
-            item.date = parseInt(item.date);
-        });
+        // angular.forEach($scope.actualGame.reviews, function (item) {
+        //     item.date = Date.parse(item.date);
+        // });
         // console.log($scope.actualGame.image);
-        document.getElementById('image').setAttribute('src', "data:image/jpeg;base64," + $scope.actualGame.image);
+        document.getElementById('image').setAttribute('src', "" + $scope.actualGame.image);
 
         $scope.stars = calculateAverageStars($scope.actualGame.reviews);
         document.getElementById("description").innerHTML = $scope.actualGame.description;
