@@ -1,10 +1,12 @@
 package webshop.model;
 
+import org.json.JSONObject;
+
 public class Bestellungsartikel {
 	public static final String ID = "ID";
 	public static final String IDORDER = "idOrder";
-	public static final String NAME = "Name";
 	public static final String IDARTICLE = "idArticle";
+	public static final String NAME = "Name";
 	public static final String ANZAHL = "Anzahl";
 	public static final String PRICE = "Preis";
 	
@@ -32,7 +34,13 @@ public class Bestellungsartikel {
 	}
 
 	public Bestellungsartikel(String json) {
-
+		JSONObject obj = new JSONObject(json);
+		this.id = obj.getString(ID);
+		this.idOrder = obj.getString(IDORDER);
+		this.idArticle = obj.getString(IDARTICLE);
+		this.name = obj.getString(NAME);
+		this.anzahl = obj.getInt(ANZAHL);
+		this.price = obj.getDouble(PRICE);
 	}
 	
 	public String toJSON(){

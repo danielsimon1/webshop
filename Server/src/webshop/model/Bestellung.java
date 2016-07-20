@@ -2,6 +2,9 @@ package webshop.model;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 
 public class Bestellung {
@@ -15,14 +18,14 @@ public class Bestellung {
 	private String id;
 	private String idUser;
 	private String date;
-	private int price;
+	private double price;
 	private ArrayList<Bestellungsartikel> liste;
 
 	public Bestellung() {
 
 	}
 
-	public Bestellung(String id, String idUser, String date, int price, ArrayList<Bestellungsartikel> liste) {
+	public Bestellung(String id, String idUser, String date, double price, ArrayList<Bestellungsartikel> liste) {
 
 		this.id = id;
 		this.idUser = idUser;
@@ -32,7 +35,17 @@ public class Bestellung {
 	}
 
 	public Bestellung(String json) {
-
+		JSONObject obj = new JSONObject(json);
+		this.id = obj.getString(ID);
+		this.idUser = obj.getString(IDUSER);
+		this.date = obj.getString(DATE);
+		this.price = obj.getDouble(PRICE);
+		liste = new ArrayList<>();
+		JSONArray arr = obj.getJSONArray(ORDERARTICLES);
+		for (int i = 0; i < arr.length(); i++) {
+			liste.add(new Bestellungsartikel(arr.getString(i)));
+		}
+		
 	}
 
 	public String toJSON() {
@@ -76,11 +89,11 @@ public class Bestellung {
 		this.date = date;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 

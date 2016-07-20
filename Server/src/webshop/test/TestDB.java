@@ -17,6 +17,7 @@ public class TestDB {
 			Datenbank.addReview(x);
 		}
 		Datenbank.addUser(TestObjekte.getTestUser());
+		Datenbank.addOrder(TestObjekte.getTestOrder());
 	}
 
 }

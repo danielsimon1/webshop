@@ -168,7 +168,7 @@ public class Datenbank {
 	public static String getOrders(String id) {
 		try {
 			ArrayList<Bestellung> liste = new ArrayList<>();
-			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.ID + " = '" + id + "'");
+			ResultSet rs = getTable("select * from " + ORDERS + " where " + Bestellung.IDUSER + " = '" + id + "'");
 			
 			while (rs.next()) {
 				Bestellung tempOrder = new Bestellung();
@@ -425,7 +425,7 @@ public class Datenbank {
 					+ Bestellung.ID + " char(4) not null," 
 					+ Bestellung.IDUSER + " char(4) not null,"
 					+ Bestellung.DATE + " char(40) not null," 
-					+ Bestellung.PRICE + " int not null, " 
+					+ Bestellung.PRICE + " double not null, " 
 					+ "PRIMARY KEY (" + Bestellung.ID + ")" + ");");
 			// Platforms / Plattformen
 			statement.executeUpdate("create table if not exists " + PLATFORMS + " ( " 
