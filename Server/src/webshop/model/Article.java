@@ -66,6 +66,7 @@ public class Article {
 	
 	public Article(String json) {
 		JSONObject obj = new JSONObject(json);
+		platforms = new ArrayList<>();
 		this.name = obj.getString(NAME);
 		this.genre = obj.getString(GENRE);
 		this.price = obj.getDouble(PRICE);

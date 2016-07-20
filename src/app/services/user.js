@@ -26,6 +26,7 @@ angular.module('app')
             var q = $q.defer();
             $http.get('http://localhost:8080/rest/user/get/' + input.userName)
                 .then(function (response) {
+                    console.log(response);
                     if (response.data == "User konnten nicht geladen werden") {
                         q.reject(response.data);
                     } else if (response.data.Benutzername == "null") {

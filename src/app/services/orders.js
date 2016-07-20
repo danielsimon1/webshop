@@ -14,13 +14,65 @@ angular.module('app')
             console.log(data);
             $http.post("http://localhost:8080/rest/order/add", data)
                 .then(function(response) {
-                    console.log(response);
+                    if (response.data == "Bestellung konnte nicht hinzugefügt werden") {
+                        q.reject(response.data);
+                    } else {
+                        q.resolve(response.data);
+                    }
                 }, function (error) {
-                    console.log(error);
                     q.reject(error.statusText);
                 });
             return q.promise;
         };
+
+        service.getOrders = function (id) {
+            var q = $q.defer();
+            $http.get("http://localhost:8080/rest/order/get/" + id)
+                .then(function (response) {
+                    if(response.data == "Bestellungen konnten nicht geladen werden") {
+                        q.reject(response.data);
+                    } else {
+                        var orders = _mapOrders(response.data);
+                        console.log(orders);
+                        q.resolve(orders);
+                    }
+                }, function (error) {
+                    q.reject(error.statusText);
+                });
+
+            return q.promise;
+        };
+
+        function _mapOrders(input) {
+            var mapped = [];
+            angular.forEach(input, function (order) {
+                var mappedOrder = {};
+                mappedOrder = {
+                    id: parseInt(order.ID),
+                    userId: parseInt(order.idUser),
+                    date: parseInt(order.Datum),
+                    totalPrice: parseFloat(order.Preis),
+                    articles: _mapArticles(order.Bestellungsartikel)
+                };
+                mapped.push(mappedOrder);
+            });
+            return mapped;
+        }
+
+        function _mapArticles(input) {
+            var mapped = [];
+            angular.forEach(input, function (item) {
+                var mappedItem = {};
+                mappedItem = {
+                    id: parseInt(item.idArticle),
+                    quantity: parseInt(item.Anzahl),
+                    price: parseFloat(item.Preis),
+                    name: item.Name
+                };
+                mapped.push(mappedItem);
+            });
+            return mapped;
+        }
 
         function mapCartItems(input) {
             var articles = localStorageService.get("articles") || {};
@@ -28,21 +80,18 @@ angular.module('app')
             angular.forEach(input, function (item) {
                 var mappedItem = {};
                 if (articles[item.itemId]) {
-                    var price = parseInt(articles[item.itemId].price) * parseInt(item.quantity);
                     mappedItem = {
                         idArticle : item.itemId.toString(),
+                        Name: articles[item.itemId].name,
                         Anzahl : item.quantity.toString(),
-                        ID : '0',
                         idOrder : '0',
-                        Preis : price.toString()
+                        Preis : articles[item.itemId].price.toString()
                     };
                     mapped.push(mappedItem);
                 }
             });
             return mapped;
         }
-        
-        //TODO server -> input: user ID; output: orders
 
         return service;
     });

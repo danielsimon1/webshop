@@ -44,7 +44,14 @@ angular.module('app.checkout', [])
                 totalPrice: $scope.totalPrice,
                 items: cart
             };
-            orders.addOrder(data);
+            orders.addOrder(data)
+                .then(function (response) {
+                    toastr.success(response);
+                    localStorageService.set("cart", {});
+                    $state.go("orders");
+                }, function (error) {
+                    toastr.error(error);
+                });
         };
         $scope.updateTotalPrice();
 

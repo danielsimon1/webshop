@@ -18,7 +18,6 @@
                 <label for="newGenre" style="margin-top: 10px" ng-show="isCustomGenre">Neues Genre:</label>
                 <input id="newGenre" class="form-control" ng-show="isCustomGenre" ng-model="customGenre"/>
             </div>
-            <button ng-click="test()">test</button>
             <div class="form-group" ng-class="{'invalid': (!price || isPriceInvalid) && isPriceTouched}"
                  uib-tooltip="Centbeträge mit Punkt trennen! (z.B. 12.99)" tooltip-enable="isPriceInvalid">
                 <label for="price">Preis:</label>
@@ -62,11 +61,13 @@
                 <label for="language">Sprache:</label>
                 <input type="text" class="form-control" id="language" ng-model="language">
             </div>
-            <div class="form-group" ng-class="{'invalid': !minRam && isTouched}">
+            <div class="form-group" ng-class="{'invalid': (!minRam || !isInt(minRam)) && isTouched}"
+                 uib-tooltip="Bitte eine Zahl eingeben!" tooltip-enable="!isInt(minRam)">
                 <label for="minRam">Minimaler Arbeitsspeicher:</label>
                 <input type="text" class="form-control" id="minRam" ng-model="minRam">
             </div>
-            <div class="form-group" ng-class="{'invalid': !minProcessor && isTouched}">
+            <div class="form-group" ng-class="{'invalid': (!minProcessor || (!isFloat(minProcessor) && !isInt(minProcessor))) && isTouched}"
+                 uib-tooltip="Bitte eine Zahl eingeben und Nachkommastellen mit einem Punkt trennen!" tooltip-enable="!isFloat(minProcessor) && !isInt(minProcessor)">
                 <label for="minProcessor">Minimaler Prozessor:</label>
                 <input type="text" class="form-control" id="minProcessor" ng-model="minProcessor">
             </div>

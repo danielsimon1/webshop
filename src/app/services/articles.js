@@ -105,7 +105,7 @@ angular.module('app')
                 // Genres
                 var isNewGenre = true;
                 angular.forEach(genres, function (genre) {
-                    if (item.genre == genre) {
+                    if (item.Genre == genre) {
                         isNewGenre = false;
                     }
                 });
