@@ -5,8 +5,12 @@
     <p>Bestellte Artikel:</p>
     <div>
         <div class="list-group-item" ng-repeat="article in order.articles">
-            {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
-            {{ article.quantity * article.price }}€
+            <img ng-src="{{articles[article.id].image}}" height="100px" style="display: inline-block;">
+            <div style="display: inline-block; margin-left: 20px">
+                {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
+                <span class="h4">{{ article.quantity * article.price }}€</span>
+
+            </div>
         </div>
     </div>
 </div>

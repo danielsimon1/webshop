@@ -17,7 +17,7 @@
             <p>Durchschnittliche Bewertung:
             <span class="stars" uib-tooltip="Bewerten">
                 <span class="rating">
-                    <span class="star-active" ng-class="{'star-selected': starsActivator[1]}"
+                    <span ng-class="{'star-selected': starsActivator[1],'star-inactive': stars === 0, 'star-active': stars >= 1}"
                           ng-mouseover="starHover(1)" ng-mouseleave="leave()" ng-click="rate(1)">★</span><span
                         ng-class="{'star-inactive': stars < 1.5, 'star-active': stars >= 1.5, 'star-selected': starsActivator[2] }"
                         ng-mouseover="starHover(2)" ng-mouseleave="leave()" ng-click="rate(2)">★</span><span
@@ -41,6 +41,7 @@
                         ng-mouseover="starHover(5)" ng-mouseleave="leave()">☆</span>
                 </span>
             </span>
+                aus {{ reviewsCount }} Bewertungen
             </p>
         </div>
     </div>

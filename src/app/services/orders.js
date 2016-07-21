@@ -33,7 +33,6 @@ angular.module('app')
                         q.reject(response.data);
                     } else {
                         var orders = _mapOrders(response.data);
-                        console.log(orders);
                         q.resolve(orders);
                     }
                 }, function (error) {

@@ -13,8 +13,10 @@ angular.module('app.cart', [])
         var cart = localStorageService.get('cart');
         // articles only
         var articles = localStorageService.get('articles');
+        $scope.articles = articles;
         // cart and articles merged
         $scope.cart = {};
+        $scope.isInvalid = false;
 
         $scope.updateTotalPrice = function () {
             $scope.totalPrice = 0;
@@ -36,11 +38,22 @@ angular.module('app.cart', [])
         });
         $scope.updateTotalPrice();
 
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
         $scope.quantityChange = function (id) {
-            cart[id].quantity = parseInt($scope.cart[id].quantity);
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
-            $rootScope.$emit('itemAddedToCart');
+            var newQuantity = parseInt($scope.cart[id].quantity);
+            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
+                $scope.isInvalid = true;
+            } else {
+                $scope.isInvalid = false;
+                cart[id].quantity = newQuantity;
+                $scope.updateTotalPrice();
+                localStorageService.set('cart', cart);
+                $rootScope.$emit('itemAddedToCart');
+            }
         };
 
         $scope.remove = function (id) {

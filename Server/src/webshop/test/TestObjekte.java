@@ -55,9 +55,9 @@ public class TestObjekte {
 	}
 	
 	public static ArrayList<Review> getTestReview(){
-		Review testReview1 = new Review("0000", "0000", 5, "Matze", "beschtes Spiel", "wirklich gut gemacht von Infinity Ward", "20.07.2012");
-		Review testReview2 = new Review("0001", "0000", 2, "Tobi", "richtiger Müll", "wirklich schlecht gemacht von Infinity Ward", "21.07.2013");
-		Review testReview3 = new Review("0002", "0000", 3, "Kai", "ganz ok", "wirklich ok gemacht von Infinity Ward", "22.07.2014");
+		Review testReview1 = new Review("0000", "0000", 5, "Matze", "beschtes Spiel", "wirklich gut gemacht von Infinity Ward", "1459699665123");
+		Review testReview2 = new Review("0001", "0000", 2, "Tobi", "richtiger Müll", "wirklich schlecht gemacht von Infinity Ward", "1449694665123");
+		Review testReview3 = new Review("0002", "0000", 3, "Kai", "ganz ok", "wirklich ok gemacht von Infinity Ward", "1459094665123");
 		ArrayList<Review> testReviews = new ArrayList<>();
 		testReviews.add(testReview1);
 		testReviews.add(testReview2);
@@ -73,7 +73,7 @@ public class TestObjekte {
 		ArrayList<Bestellungsartikel> testBestellungsartikelListe = new ArrayList<>();
 		Bestellungsartikel testBestellungsartikel = new Bestellungsartikel("0000","Call of Duty: Modern Warfare 2", "0000", 5, 9.99);
 		testBestellungsartikelListe.add(testBestellungsartikel);
-		Bestellung testOrder = new Bestellung("0000", "0000","1459694665", 1000, testBestellungsartikelListe);
+		Bestellung testOrder = new Bestellung("0000", "0000","1459694665123", 1000, testBestellungsartikelListe);
 		
 		return testOrder;
 	}

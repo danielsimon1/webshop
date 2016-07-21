@@ -59,7 +59,11 @@ angular.module('app.login', [])
                                 $state.go('home');
                             }
                     }, function (error) {
-                        toastr.error(error);
+                        if (error) {
+                            toastr.error(error);
+                        } else {
+                            toastr.error("Fehler bei der Verbindung zum Server!");
+                        }
                     });
             }
         }

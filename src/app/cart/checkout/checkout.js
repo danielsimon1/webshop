@@ -2,9 +2,9 @@ angular.module('app.checkout', [])
 
     .config(function ($stateProvider) {
         $stateProvider.state('checkout', {
-            url: '/checkout',
-            templateUrl: 'app/cart/checkout/checkout.html',
-            controller: 'CheckoutCtrl'
+            url : '/checkout',
+            templateUrl : 'app/cart/checkout/checkout.html',
+            controller : 'CheckoutCtrl'
         });
     })
 
@@ -39,18 +39,22 @@ angular.module('app.checkout', [])
         $scope.addOrder = function () {
             var cart = localStorageService.get("cart");
             var data = {
-                userId: user.id,
-                date: new Date().getTime(),
-                totalPrice: $scope.totalPrice,
-                items: cart
+                userId : user.id,
+                date : new Date().getTime(),
+                totalPrice : $scope.totalPrice,
+                items : cart
             };
             orders.addOrder(data)
                 .then(function (response) {
                     toastr.success(response);
-                    localStorageService.set("cart", {});
+                    localStorageService.remove("cart");
                     $state.go("orders");
                 }, function (error) {
-                    toastr.error(error);
+                    if (!error) {
+                        toastr.error("Fehler bei der Verbindung zum Server!");
+                    } else {
+                        toastr.error(error);
+                    }
                 });
         };
         $scope.updateTotalPrice();

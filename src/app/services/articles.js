@@ -1,22 +1,23 @@
 angular.module('app')
-    .factory('articles', function ($q, $http, localStorageService, $log) {
+    .factory('articles', function ($q, $http, localStorageService, $rootScope, $log) {
         var service = {};
 
         service.getAllArticles = function () {
             var q = $q.defer();
             $http.get('http://localhost:8080/rest/article/get/all')
                 .then(function (response) {
-                    console.log(response.data);
                     if (typeof response.data == 'string') {
                         q.reject(response.data);
                     } else {
-                        //Mapping
                         var mapped = _mapArticles(response.data);
                         localStorageService.set('articles', mapped);
+                        $rootScope.$emit("articles-loaded");
+                        $log.info("articles loaded");
                         q.resolve(mapped);
                     }
                 }, function (error) {
-                    q.reject(error);
+                    $log.error('loading articles failed: ', error);
+                    q.reject(error.statusText);
                 });
             return q.promise;
         };
@@ -25,12 +26,12 @@ angular.module('app')
             var q = $q.defer();
             var genres = localStorageService.get('genres') || [];
             if (!genres) {
-                this.getAllArticles()
+                service.getAllArticles()
                     .then(function () {
                         genres = localStorageService.get('genres') || [];
                         q.resolve(genres);
                     }, function (error) {
-                        q.reject(error);
+                        q.reject(error.statusText);
                     })
             } else {
                 q.resolve(genres);
@@ -55,7 +56,6 @@ angular.module('app')
                 image : input.image,
                 Rezensionen : []
             };
-            console.log(data);
             $http.post('http://localhost:8080/rest/article/add', data)
                 .then(function (response) {
                     if (response.data == "Artikel existiert bereits") {
@@ -63,6 +63,7 @@ angular.module('app')
                     } else if (response.data == "Artikel konnte nicht hinzugefügt werden") {
                         q.reject(response.data);
                     } else {
+                        service.getAllArticles();
                         q.resolve(response.data);
                     }
                 }, function (error) {
@@ -83,15 +84,17 @@ angular.module('app')
                 Text : input.message,
                 Datum : date.toString()
             };
-            console.log(data);
             $http.post('http://localhost:8080/rest/review/add', data)
                 .then(function (response) {
-                    console.log(response);
                     if (response.data == 'Rezension konnte nicht hinzugefügt werden') {
                         q.reject(response.data);
                     } else {
+                        service.getAllArticles();
                         q.resolve(response.data);
                     }
+                }, function (error) {
+                    $log.error("error adding review:", error);
+                    q.reject(error.statusText);
                 });
             return q.promise;
         };
@@ -129,7 +132,6 @@ angular.module('app')
                     genres.push(mappedItem.genre);
                 }
                 mappedItems[mappedItem.id] = mappedItem;
-                console.log(mappedItem);
             });
             localStorageService.set('genres', genres);
             return mappedItems;
@@ -154,7 +156,6 @@ angular.module('app')
                     message : item.Text,
                     date : parseInt(item.Datum)
                 };
-                console.log(mappedItem.date);
                 mappedItems.push(mappedItem);
             });
             return mappedItems || [];

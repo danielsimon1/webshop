@@ -18,6 +18,8 @@ angular.module('app')
                     } else {
                         q.resolve(response.data);
                     }
+                }, function (error) {
+                    q.reject(error.statusText);
                 });
             return q.promise;
         };
@@ -32,13 +34,12 @@ angular.module('app')
                     } else if (response.data.Benutzername == "null") {
                         q.reject("Benutzer existiert nicht!")
                     } else if (response.data.Passwort === input.password) {
-                        console.log(response);
                         q.resolve({role: response.data.Rolle, id: response.data.ID});
                     } else {
                         q.reject("Passwort falsch!");
                     }
                 }, function (error) {
-                    q.reject(error.message);
+                    q.reject(error.statusText);
                 });
 
             return q.promise;

@@ -22,7 +22,7 @@ angular.module('app.register', [])
             $scope.isTouched = true;
             if (!$scope.data.userName || !$scope.data.password || !$scope.data.passwordConfirm) {
                 toastr.warning('Alle Felder müssen ausgefüllt werden!', 'Fehlende Informationen!');
-            } else if (!$scope.data.email || !pattern.test($scope.data.email)) {
+            } else if (!$scope.data.email || !$scope.pattern.test($scope.data.email)) {
                 toastr.warning('Die Email-Adresse ist ungültig!', 'Fehlerhafte Informationen!');
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!');
@@ -43,7 +43,11 @@ angular.module('app.register', [])
                         $state.go('login');
                         toastr.info("Bitte loggen Sie sich mit den neuen Daten an.");
                     }, function (error) {
-                        toastr.error(error);
+                        if (error) {
+                            toastr.error(error);
+                        } else {
+                            toastr.error("Fehler bei der Verbindung zum Server!");
+                        }
                     });
             }
         }
