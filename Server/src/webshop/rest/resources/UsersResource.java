@@ -30,13 +30,16 @@ public class UsersResource {
 
 	private String toJSON(ArrayList<User> userList) {
 		String userListToJSON = "[";
-		int size = userList.size();
-		for(int i=0;i<size;i++){
-			userList.get(i).toJSON();
-			if(i!=size-1){
-				userListToJSON += ",";
-			}
+		for(User x : userList){
+			userListToJSON += x.toJSON() + ",";
 		}
+		char[] arrchar = new char[userListToJSON.length()-1];
+		userListToJSON.getChars(0, userListToJSON.length()-1, arrchar, 0);
+		userListToJSON = "";
+		for(char x : arrchar){
+			userListToJSON+=x;
+		}
+		
 		userListToJSON += "]";	
 		return userListToJSON;
 	}

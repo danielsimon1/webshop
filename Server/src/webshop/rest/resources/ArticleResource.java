@@ -14,7 +14,7 @@ import webshop.model.Artikelliste;
 public class ArticleResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getUser(@PathParam("attribute") String attribute) {
+	public String getArticle(@PathParam("attribute") String attribute) {
 		try {
 			Artikelliste liste = new Artikelliste();
 			if (attribute.equals("top")) {
@@ -22,22 +22,36 @@ public class ArticleResource {
 				Article[] arrArticle = new Article[5];
 				ArrayList<Article> arrliste = liste.getListe();
 				for (Article x : arrliste) {
-					if (x.getPrice() > arrArticle[4].getPrice()) {
-						arrArticle[4] = x;
-						int j = 4;
-						while (j > 0 && arrArticle[j].getPrice() > arrArticle[j - 1].getPrice()) {
-							Article temp = arrArticle[j];
-							arrArticle[j]=arrArticle[j-1];
-							arrArticle[j-1]=temp;
+					if (arrArticle[4] == null) {
+						for (int i = 0; i < 5; i++) {
+							if (arrArticle[i] == null) {
+								arrArticle[i] = x;
+								break;
+							}
 						}
+					} else {
+						if (x.getPrice() > arrArticle[4].getPrice()) {
+							arrArticle[4] = x;
+							int j = 4;
+							while (j > 0 && arrArticle[j].getPrice() > arrArticle[j - 1].getPrice()) {
+								Article temp = arrArticle[j];
+								arrArticle[j] = arrArticle[j - 1];
+								arrArticle[j - 1] = temp;
+							}
 
+						}
 					}
 				}
 				ArrayList<Article> finalList = new ArrayList<>();
-				for(Article x : arrArticle){
+				for (Article x : arrArticle) {
 					finalList.add(x);
 				}
-				return new Artikelliste(finalList).toJSON();
+				if(finalList==null){
+					return "fdsajf";
+				}
+				Artikelliste finalArtikelliste =  new Artikelliste(finalList);
+				
+				return finalArtikelliste.toJSON();
 			} else if (attribute.equals("new")) {
 				liste = Datenbank.getArticles("all");
 			} else {
