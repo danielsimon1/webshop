@@ -127,7 +127,7 @@ public class Datenbank {
 		}
 	}
 
-	public static String getArticles(String attribute) {
+	public static Artikelliste getArticles(String attribute) throws SQLException {
 		try {
 			ResultSet rs;
 			if (attribute.equals("all")) {
@@ -157,11 +157,12 @@ public class Datenbank {
 				tempArtikel.setImage(rs.getString(Article.IMAGE));
 				artikelliste.add(tempArtikel);
 			}
-			return new Artikelliste(artikelliste).toJSON();
+			return new Artikelliste(artikelliste);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "\"Artikel konnten nicht geladen werden\"";
+			
 		}
+		return null;
 	
 	}
 
