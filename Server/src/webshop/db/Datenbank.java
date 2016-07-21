@@ -206,6 +206,27 @@ public class Datenbank {
 			return "\"User konnten nicht geladen werden\"";
 		}
 	}
+	
+	public static ArrayList<User> getUsers()throws SQLException {
+		try {
+			ResultSet rs = getTable("select * from " + USERS);
+			ArrayList<User> userList = new ArrayList<>();
+			while (rs.next()) {
+				User user = new User();
+				user.setId(Util.deleteLastWhitespaces(rs.getString(User.ID)));
+				user.setBenutzername(Util.deleteLastWhitespaces(rs.getString(User.BENUTZERNAME)));
+				user.setPassword("");
+				user.setEmail(Util.deleteLastWhitespaces(rs.getString(User.EMAIL)));
+				user.setRole(Util.deleteLastWhitespaces(rs.getString(User.ROLE)));
+				userList.add(user);
+			}
+			return userList;
+	
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	private static ArrayList<Bestellungsartikel> getOrderArticles(String idOrder) {
 		try {
@@ -498,5 +519,7 @@ public class Datenbank {
 		String userdir = System.getProperty("user.dir");
 		startdir = new File(userdir);
 	}
+
+	
 	
 }
