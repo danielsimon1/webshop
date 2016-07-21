@@ -99,6 +99,20 @@ angular.module('app')
             return q.promise;
         };
 
+        service.getTopGames = function () {
+            var q = $q.defer();
+            $http.get("http://localhost:8080/rest/article/get/top")
+                .then(function (response) {
+                    var top = [];
+                    angular.forEach(response.data, function (item) {
+                        top.push(parseInt(item.ID));
+                        localStorageService.set("top-games", top);
+                    });
+                    q.resolve(top);
+                });
+            return q.promise;
+        };
+
 
         var _mapArticles = function (articles) {
             var mappedItems = {};

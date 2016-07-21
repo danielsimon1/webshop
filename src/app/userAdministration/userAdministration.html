@@ -9,11 +9,11 @@
     </tr>
     </thead>
     <tbody>
-    <tr>
-        <td>1</td>
-        <td>Admin</td>
-        <td>daniel</td>
-        <td>daniel.s1mon@icloud.com</td>
+    <tr ng-repeat="user in users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.userName }}</td>
+        <td>{{ user.email }}</td>
         <td><button class="btn btn-default glyphicon glyphicon-trash"></button> </td>
     </tr>
     </tbody>

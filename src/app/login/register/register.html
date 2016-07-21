@@ -4,8 +4,8 @@
             <h4 style="border-bottom: 1px solid #c5c5c5;"> Registrieren </h4>
             <div style="padding: 20px;">
                 <fieldset>
-                    <label class="text-error" ng-show="isTouched && data.userName.length < 4">Der Benutzername muss mindestens 4 Zeichen lang sein!</label>
-                    <div class="form-group input-group" ng-class="{'invalid-register': isTouched && data.userName.length < 4}">
+                    <label class="text-error" ng-show="isTouched && (data.userName.length < 4 || !data.userName)">Der Benutzername muss mindestens 4 Zeichen lang sein!</label>
+                    <div class="form-group input-group" ng-class="{'invalid-register': isTouched && (data.userName.length < 4 || !data.userName)}">
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-user"></i>
                         </span>
@@ -18,8 +18,8 @@
                         <input class="form-control" placeholder="Email" type="email" ng-model="data.email"
                                autofocus required id="Email">
                     </div>
-                    <label class="text-error" ng-show="isTouched && data.password.length < 6">Das Passwort muss mindestens 6 Zeichen lang sein!</label>
-                    <div class="form-group input-group" ng-class="{'invalid-register': isTouched && (data.password != data.passwordConfirm || data.password.length < 6)}">
+                    <label class="text-error" ng-show="isTouched && (data.password.length < 6 ||!data.password)">Das Passwort muss mindestens 6 Zeichen lang sein!</label>
+                    <div class="form-group input-group" ng-class="{'invalid-register': isTouched && (data.password != data.passwordConfirm || data.password.length < 6 || !data.password)}">
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-lock"></i>
                         </span>

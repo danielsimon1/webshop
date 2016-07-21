@@ -83,6 +83,10 @@ angular.module('app', [
                 })
         });
 
+        $rootScope.$on("articles-loaded", function () {
+            $scope.genres = localStorageService.get("genres");
+        });
+
         $scope.logout = function () {
             localStorageService.remove('user');
             localStorageService.remove('orders');

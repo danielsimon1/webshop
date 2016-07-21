@@ -8,6 +8,9 @@ angular.module('app.topGames', [])
         });
     })
 
-    .controller('TopGamesCtrl', function () {
-
+    .controller('TopGamesCtrl', function (articles) {
+        articles.getTopGames()
+            .then(function (response) {
+                console.log(response);
+            });
     });

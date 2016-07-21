@@ -26,9 +26,9 @@ angular.module('app.register', [])
                 toastr.warning('Die Email-Adresse ist ungültig!', 'Fehlerhafte Informationen!');
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!');
-            } else if ($scope.userName.length < 4) {
+            } else if ($scope.data.userName.length < 4) {
                 toastr.warning('Benutzername zu kurz!');
-            } else if ($scope.password < 6) {
+            } else if ($scope.data.password.length < 6) {
                 toastr.warning('Passwort zu kurz!');
             } else {
                 var data = {

@@ -150,7 +150,6 @@ angular.module('app.gameDetail', [])
                         author : userName,
                         articleId : $scope.actualGame.id
                     };
-                    console.log(data);
                     articles.addReview(data)
                         .then(function () {
                             toastr.success('Bewertung hinzugefügt!');
