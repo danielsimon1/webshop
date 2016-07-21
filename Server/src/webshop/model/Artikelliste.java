@@ -13,10 +13,6 @@ public class Artikelliste {
 		this.liste = liste;
 	}
 
-	public Artikelliste(String json) {
-
-	}
-
 	public String toJSON() {
 		String json = "[";
 		for (Article x:liste) {
@@ -27,5 +23,9 @@ public class Artikelliste {
 		}
 		json += "]";
 		return json;
+	}
+	
+	public ArrayList<Article> getListe(){
+		return liste;
 	}
 }
