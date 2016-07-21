@@ -8,43 +8,68 @@ angular.module('app.gameDetail', [])
         });
     })
 
-    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $rootScope, $uibModal, $state) {
-        // TODO check if game exists
+    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $uibModal, $state, articles, $rootScope) {
         $scope.tab = {};
         $scope.tab.active = 'description';
+
         $scope.quantity = 1;
+
+        $scope.isValidQuantity = true;
+        $scope.calcPrice = function () {
+            var price = $scope.actualGame.price * $scope.quantity;
+            if (isNaN(price) || $scope.quantity < 1 || $scope.quantity > 20) {
+                //&#8209; : minus without line break
+                $scope.price = "Bitte gültige Anzahl (1&#8209;20) angeben!";
+                $scope.isValidQuantity = false;
+            } else {
+                $scope.price = Math.round(price * 100) / 100;
+                $scope.isValidQuantity = true;
+            }
+        };
+        
+        loadGame();
+
+        function loadGame() {
+            var id = $stateParams.id;
+            $scope.articles = localStorageService.get('articles');
+            $scope.actualGame = $scope.articles[id];
+            if (!$scope.actualGame) {
+                toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
+                $state.go('home');
+            } else {
+                document.getElementById('image').setAttribute('src', "" + $scope.actualGame.image);
+
+                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+                document.getElementById("description").innerHTML = $scope.actualGame.description;
+                $scope.calcPrice();
+            }
+        }
+
+        $rootScope.$on("articles-loaded", function () {
+            loadGame();
+        });
 
         var user = localStorageService.get('user') || {};
         var userName = user.userName;
 
-        var calculateAverageStars = function (data) {
+        function calculateAverageStars(data) {
             var count = 0;
             var stars = 0;
             angular.forEach(data, function (item) {
                 count++;
                 stars += item.stars;
             });
-            return stars / count;
-        };
+            $scope.reviewsCount = count;
+            if (count === 0) {
+                return 0;
+            } else {
+                return stars / count;
+            }
+        }
 
         $scope.changeTab = function (type) {
             $scope.tab.active = type;
         };
-
-        var id = $stateParams.id;
-        $scope.articles = localStorageService.get('articles');
-        $scope.actualGame = $scope.articles[id];
-        console.log($scope.actualGame);
-        if (!$scope.actualGame) {
-            toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
-            $state.go('home');
-        }
-        angular.forEach($scope.actualGame.reviews, function (item) {
-            item.date = parseInt(item.date);
-        });
-
-        $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-        document.getElementById("description").innerHTML = $scope.actualGame.description;
 
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
@@ -84,21 +109,6 @@ angular.module('app.gameDetail', [])
             }
         };
 
-        $scope.isValidQuantity = true;
-        $scope.calcPrice = function () {
-            var price = $scope.actualGame.price * $scope.quantity;
-            if (isNaN(price) || $scope.quantity < 1 || $scope.quantity > 20) {
-                //&#8209; : minus without line break
-                $scope.price = "Bitte gültige Anzahl (1&#8209;20) angeben!";
-                $scope.isValidQuantity = false;
-            } else {
-                $scope.price = Math.round(price * 100) / 100;
-                $scope.isValidQuantity = true;
-            }
-        };
-
-        $scope.calcPrice();
-
         $scope.rate = function (stars) {
             if (userName) {
                 var newReviewId = 1;
@@ -108,7 +118,7 @@ angular.module('app.gameDetail', [])
                 var title = '';
                 var message = '';
                 angular.forEach($scope.actualGame.reviews, function (review) {
-                    if (review.author == user) {
+                    if (review.author == user.userName) {
                         title = review.title;
                         message = review.message;
                         newReviewId = review.id;
@@ -132,17 +142,25 @@ angular.module('app.gameDetail', [])
                 });
 
                 modalInstance.result.then(function (result) {
-                    $scope.actualGame.reviews[newReviewId] = {
-                        id : newReviewId,
+                    var data = {
+                        id : 0,
                         stars : result.stars,
                         title : result.title,
                         message : result.message,
-                        author : userName
+                        author : userName,
+                        articleId : $scope.actualGame.id
                     };
-                    $scope.articles[id].reviews = $scope.actualGame.reviews;
-                    localStorageService.set('articles', $scope.articles);
-                    $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-                    toastr.success('Bewertung hinzugefügt!');
+                    console.log(data);
+                    articles.addReview(data)
+                        .then(function () {
+                            toastr.success('Bewertung hinzugefügt!');
+                        }, function (error) {
+                            if (error) {
+                                toastr.error(error);
+                            } else {
+                                toastr.error("Fehler bei der Verbindung zum Server!");
+                            }
+                        });
                 }, function () {
                     console.log('Modal dismissed');
                 });

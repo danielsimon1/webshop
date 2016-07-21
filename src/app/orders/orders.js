@@ -8,22 +8,23 @@ angular.module('app.orders', [])
         });
     })
 
-    .controller('OrdersCtrl', function ($scope, $http, localStorageService) {
-        var date = new Date();
-        console.log(date);
-        $http.get('../assets/json/orders.json')
-            .then(function (response) {
-                localStorageService.set('orders', response.data);
-                $scope.orders = response.data;
-                console.log($scope.orders);
-            }, function (error) {
-                var data = localStorageService.get('orders');
-                if (data) {
-                    toastr.warning('Bestellungen konnten nicht geladen werden! Daten sind möglicherweise veraltet.');
-                    $scope.orders = data;
-                } else {
-                    toastr.error('Bestellungen konnten nicht geladen werden! Bitte verbinden Sie sich mit dem Internet.');
-                }
-                console.log(error);
-            });
+    .controller('OrdersCtrl', function ($scope, $http, localStorageService, $state, orders) {
+        var user = localStorageService.get("user");
+        $scope.articles = localStorageService.get("articles");
+        if (typeof user.id != "number") {
+            toastr.warning("Dieser Bereich ist geschützt. Bitte loggen Sie sich ein!");
+            $state.go("home");
+        } else {
+            orders.getOrders(user.id)
+                .then(function (response) {
+                    localStorageService.set("orders", response);
+                    $scope.orders = response;
+                }, function (error) {
+                    if (error) {
+                        toastr.error(error);
+                    } else {
+                        toastr.error("Fehler bei der Verbindung zum Server!");
+                    }
+                });
+        }
     });

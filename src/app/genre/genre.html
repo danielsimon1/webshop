@@ -8,7 +8,10 @@
     <div class="panel panel-default game-panels" ng-repeat="article in articles | objectFilter: searchInput.name">
         <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span
                 class="badge">{{ article.price }}€</span></a></div>
-        <div class="panel-body"><a ui-sref="gameDetail({id: article.id})"><img ng-src="{{article.image}}" class="panel-image"/></a></div>
+        <div class="panel-body">
+            <div class="label label-success" ng-if="isAllGenres">{{ article.genre }}</div>
+            <a ui-sref="gameDetail({id: article.id})"><img ng-src="{{article.image}}" class="panel-image"/></a>
+        </div>
     </div>
 </div>
 

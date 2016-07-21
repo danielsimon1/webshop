@@ -11,6 +11,7 @@ angular.module('app.genre', [])
     .controller('GenreCtrl', function ($stateParams, localStorageService, $scope) {
         // TODO: order objects by id
         $scope.searchInout = {};
+        $scope.isAllGenres = false;
         $scope.genre = $stateParams.name;
         var articles = localStorageService.get('articles');
         $scope.articles = {};
@@ -24,6 +25,7 @@ angular.module('app.genre', [])
             });
         } else {
             $scope.isArticles = true;
+            $scope.isAllGenres = true;
             $scope.articles = articles;
         }
     });

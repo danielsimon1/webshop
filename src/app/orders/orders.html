@@ -1,12 +1,16 @@
-<div ng-repeat="order in orders">
+<div ng-repeat="order in orders" class="list-group col-md-3">
     <!-- TODO: Date filter-->
-    <p class="h4">Bestellung {{ order.id }} vom {{ order.date | date:'dd.MM.yyyy' }}</p>
-    <p class="h5">{{ order.price }}€</p>
+    <p class="h3">Bestellung {{ order.id }} vom {{ order.date | date:'dd.MM.yyyy' }}</p>
+    <p class="h4">Gesamtpreis: <span class="label label-primary">{{ order.totalPrice }}€</span></p>
     <p>Bestellte Artikel:</p>
-    <div class="list-group col-md-3">
+    <div>
         <div class="list-group-item" ng-repeat="article in order.articles">
-            {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
-            {{ article.quantity * article.price }}€
+            <img ng-src="{{articles[article.id].image}}" height="100px" style="display: inline-block;">
+            <div style="display: inline-block; margin-left: 20px">
+                {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
+                <span class="h4">{{ article.quantity * article.price }}€</span>
+
+            </div>
         </div>
     </div>
 </div>

@@ -8,12 +8,12 @@ angular.module('app.login', [])
         });
     })
 
-    .controller('LoginCtrl', function ($scope, $state, localStorageService, $rootScope, $http, $log) {
+    .controller('LoginCtrl', function ($scope, $state, localStorageService, $rootScope, $http, user) {
         $scope.isFormTouched = false;
-        var user = localStorageService.get('user') || {};
+        var username = localStorageService.get('user') || {};
         var toCheckout = localStorageService.get('fromCheckout');
-        if (user.userName) {
-            toastr.info('Sie sind bereits eingeloogt als "' + user.userName + '"!');
+        if (username.userName) {
+            toastr.info('Sie sind bereits eingeloogt als "' + username.userName + '"!');
             $state.go('home');
         }
         $scope.data = {};
@@ -38,44 +38,33 @@ angular.module('app.login', [])
                 toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
                 toastr.warning('You had one Job!');
             } else {
-                toastr.success('Login war erfolgreich.');
-                var role = 'admin';
-                var user = {
+                var data = {
                     userName: $scope.data.userName,
-                    role: role
+                    password: $scope.data.password
                 };
-                localStorageService.set('user', user);
-                $rootScope.$emit('login');
-                localStorageService.remove('checkout');
-                if (toCheckout) {
-                    $state.go('checkout');
-                } else {
-                    $state.go('home');
-                }
-                // $http.get('http://localhost:8080/rest/user/' + $scope.data.userName)
-                //     .then(function (response) {
-                //         if (response.data.password === $scope.data.password) {
-                //             toastr.success('Login war erfolgreich.');
-                //             var role = response.Rolle;
-                //             var user = {
-                //                 userName: $scope.data.userName,
-                //                 role: role
-                //             };
-                //             localStorageService.set('user', user);
-                //             $rootScope.$emit('login');
-                //             localStorageService.remove('checkout');
-                //             if (toCheckout) {
-                //                 $state.go('checkout');
-                //             } else {
-                //                 $state.go('home');
-                //             }
-                //         } else {
-                //             toastr.warning('Benutzername und Passwort stimmen nicht überein!');
-                //         }
-                //     }, function (error) {
-                //         $log.error(error);
-                //         toastr.error('Fehler bei der Verbindung! Status ' + error.status);
-                //     });
+                user.login(data)
+                    .then(function (response) {
+                            toastr.success('Login war erfolgreich.');
+                            var user = {
+                                userName: $scope.data.userName,
+                                role: response.role,
+                                id: parseInt(response.id)
+                            };
+                            localStorageService.set('user', user);
+                            $rootScope.$emit('login');
+                            localStorageService.remove('checkout');
+                            if (toCheckout) {
+                                $state.go('checkout');
+                            } else {
+                                $state.go('home');
+                            }
+                    }, function (error) {
+                        if (error) {
+                            toastr.error(error);
+                        } else {
+                            toastr.error("Fehler bei der Verbindung zum Server!");
+                        }
+                    });
             }
         }
     });

@@ -8,7 +8,7 @@ angular.module('app.addArticle', [])
         });
     })
 
-    .controller('AddArticleCtrl', function ($scope, articles, $log) {
+    .controller('AddArticleCtrl', function ($scope, articles, $log, $state) {
         $scope.selected = {};
         $scope.selected.platform = {};
         $scope.selected.fsk = '0';
@@ -50,12 +50,6 @@ angular.module('app.addArticle', [])
             !validatePrice($scope.price) ? $scope.isPriceInvalid = true : $scope.isPriceInvalid = false;
         };
 
-        $scope.test = function () {
-            if ((!$scope.selected.genre && !$scope.isCustomGenre) || (!$scope.customGenre && $scope.isCustomGenre)) {
-                console.log('invalid');
-            }
-        };
-
         $scope.imageToBase64 = function (input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -70,6 +64,16 @@ angular.module('app.addArticle', [])
             }
         };
 
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.isFloat = function (n) {
+            n = parseFloat(n);
+            return Number(n) === n && n % 1 !== 0;
+        };
+
         $scope.addArticle = function () {
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
@@ -82,9 +86,13 @@ angular.module('app.addArticle', [])
                 if (!validatePrice($scope.price)) {
                     toastr.warning('Ungültiger Preis!');
                     $scope.isPriceInvalid = true;
+                } else if (!$scope.isInt($scope.minRam)) {
+                    toastr.warning('Der Arbeitsspeicher muss mit einer natürlichen Zahl angegeben werden!');
+                } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
+                    toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
                 } else {
                     var data = {
-                        id: 2,
+                        id : 2,
                         name : $scope.title,
                         genre : $scope.isCustomGenre ? $scope.customGenre : $scope.selected.genre,
                         price : $scope.price,
@@ -100,9 +108,14 @@ angular.module('app.addArticle', [])
                     console.log(data);
                     articles.addArticle(data)
                         .then(function (response) {
-
+                            toastr.success(response);
+                            $state.go("home");
                         }, function (error) {
-
+                            if (!error) {
+                                toastr.error("Fehler bei der Verbindung zum Server!");
+                            } else {
+                                toastr.error(error);
+                            }
                         })
                 }
             } else {

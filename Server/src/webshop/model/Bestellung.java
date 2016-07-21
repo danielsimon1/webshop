@@ -36,16 +36,19 @@ public class Bestellung {
 
 	public Bestellung(String json) {
 		JSONObject obj = new JSONObject(json);
-		this.id = obj.getString(ID);
+		
 		this.idUser = obj.getString(IDUSER);
+		while(this.idUser.length()<4){
+			this.idUser = "0" + this.idUser;
+		}
 		this.date = obj.getString(DATE);
 		this.price = obj.getDouble(PRICE);
 		liste = new ArrayList<>();
 		JSONArray arr = obj.getJSONArray(ORDERARTICLES);
 		for (int i = 0; i < arr.length(); i++) {
-			liste.add(new Bestellungsartikel(arr.getString(i)));
+			liste.add(new Bestellungsartikel(arr.getJSONObject(i)));
 		}
-		
+		System.out.println(json);
 	}
 
 	public String toJSON() {
@@ -61,7 +64,7 @@ public class Bestellung {
 				json += ",";
 			}
 		}
-		json += "}";
+		json += "]}";
 		return json;
 	}
 

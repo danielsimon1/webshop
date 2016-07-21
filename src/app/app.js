@@ -49,7 +49,7 @@ angular.module('app', [
             }, function (error) {
                 var data = localStorageService.get('articles');
                 if (data) {
-                    toastr.warning('Artikel konnten nicht neu geladen werden. Daten sind möglicherweise veraltet.')
+                    toastr.error('Artikel konnten nicht neu geladen werden. Daten wurden aus dem Cache geladen.')
                 } else {
                     toastr.error('Artikel konnten nicht geladen werden.');
                 }
@@ -72,6 +72,7 @@ angular.module('app', [
         $rootScope.$on('login', function () {
             getUserData();
         });
+        $scope.genres = localStorageService.get("genres");
 
         $rootScope.$on('genresLoaded', function () {
             articles.getAllGenres()
@@ -103,9 +104,15 @@ angular.module('app', [
         var countCartItems = function () {
             var cart = localStorageService.get('cart');
             $scope.quantity = 0;
+            var articles = localStorageService.get('articles') || {};
             angular.forEach(cart, function (item) {
-                $scope.quantity += item.quantity;
+                if (articles[item.itemId]) {
+                    $scope.quantity += item.quantity;
+                } else {
+                    delete cart[item.itemId];
+                }
             });
+            localStorageService.set('cart', cart);
         };
         countCartItems();
     })

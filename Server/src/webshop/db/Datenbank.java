@@ -75,7 +75,7 @@ public class Datenbank {
 	public static String addOrder(Bestellung bestellung) {
 		try {
 			String id = getNextID(ORDERS);
-			
+			bestellung.setId(id);
 			statement.executeUpdate("insert into " + ORDERS + " values('" 
 					+ id + "', '" 
 					+ bestellung.getIdUser() + "', '" 
@@ -115,10 +115,10 @@ public class Datenbank {
 	public static String addUser(User user) {
 		try {
 			if (Datenbank.doesUserAlreadyExists(user.getBenutzername())) {
-				return "User existiert bereits";	
+				return "\"User existiert bereits\"";	
 			} else {
 				Datenbank.insertUser(user);
-				return "User wurde erfolgreich angelegt.";
+				return "\"User wurde erfolgreich angelegt.\"";
 
 			}
 		} catch (SQLException | KeineNeueIDException e) {
@@ -175,7 +175,7 @@ public class Datenbank {
 				tempOrder.setId(Util.deleteLastWhitespaces(rs.getString(Bestellung.ID)));
 				tempOrder.setIdUser(Util.deleteLastWhitespaces(rs.getString(Bestellung.IDUSER)));
 				tempOrder.setDate(Util.deleteLastWhitespaces(rs.getString(Bestellung.DATE)));
-				tempOrder.setPrice(rs.getInt(Bestellung.PRICE));
+				tempOrder.setPrice(rs.getDouble(Bestellung.PRICE));
 	
 				tempOrder.setListe(getOrderArticles(tempOrder.getId()));
 				liste.add(tempOrder);
@@ -183,7 +183,7 @@ public class Datenbank {
 			return new Bestellungsliste(liste).toJSON();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "\"Bestellungen konnten icht geladen werden\"";
+			return "\"Bestellungen konnten nicht geladen werden\"";
 		}
 	}
 	
@@ -213,7 +213,6 @@ public class Datenbank {
 			ResultSet rs = getTable("select * from " + ORDERARTICLES + " where " + Bestellungsartikel.IDORDER + " = '" + idOrder + "'");
 			while(rs.next()){
 				Bestellungsartikel tempBestellungsartikel = new Bestellungsartikel();
-				tempBestellungsartikel.setId(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.ID)));
 				tempBestellungsartikel.setIdOrder(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.IDORDER)));
 				tempBestellungsartikel.setIdArticle(Util.deleteLastWhitespaces(rs.getString(Bestellungsartikel.IDARTICLE)));
 				tempBestellungsartikel.setAnzahl(rs.getInt(Bestellungsartikel.ANZAHL));
@@ -302,17 +301,15 @@ public class Datenbank {
 			ListIterator<Bestellungsartikel> it =  liste.listIterator();
 			while(it.hasNext()) {
 				Bestellungsartikel ba = it.next();
-				String id = getNextID(ORDERARTICLES);
 	
 				statement.executeUpdate("insert into " + ORDERARTICLES + " values('" 
-						+ id + "', '" 
 						+ idOrder + "', '" 
 						+ ba.getName() + "', '" 
 						+ ba.getIdArticle() + "', '" 
 						+ ba.getAnzahl() + "', '" 
 						+ ba.getPrice() + "')");
 			}
-		} catch (SQLException | KeineNeueIDException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -414,7 +411,6 @@ public class Datenbank {
 					+ "PRIMARY KEY (" + Article.ID + ")" + ");");
 			// OrderArticles / BestellArtikel
 			statement.executeUpdate("create table if not exists " + ORDERARTICLES + " ( " 
-					+ Bestellungsartikel.ID + " char(4) not null,"
 					+ Bestellungsartikel.IDORDER + " char(4) not null," 
 					+ Bestellungsartikel.NAME + " char(60) not null," 
 					+ Bestellungsartikel.IDARTICLE + " char(4) not null, "

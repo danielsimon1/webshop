@@ -3,7 +3,6 @@ package webshop.model;
 import org.json.JSONObject;
 
 public class Bestellungsartikel {
-	public static final String ID = "ID";
 	public static final String IDORDER = "idOrder";
 	public static final String IDARTICLE = "idArticle";
 	public static final String NAME = "Name";
@@ -13,7 +12,6 @@ public class Bestellungsartikel {
 	
 	
 	
-	private String id;
 	private String idOrder;
 	private String idArticle;
 	private String name;
@@ -24,8 +22,7 @@ public class Bestellungsartikel {
 
 	}
 
-	public Bestellungsartikel(String id, String idOrder, String name, String idArticle, int anzahl, double price) {
-		this.id = id;
+	public Bestellungsartikel(String idOrder, String name, String idArticle, int anzahl, double price) {
 		this.idOrder = idOrder;
 		this.name = name;
 		this.idArticle = idArticle;
@@ -35,7 +32,6 @@ public class Bestellungsartikel {
 
 	public Bestellungsartikel(String json) {
 		JSONObject obj = new JSONObject(json);
-		this.id = obj.getString(ID);
 		this.idOrder = obj.getString(IDORDER);
 		this.idArticle = obj.getString(IDARTICLE);
 		this.name = obj.getString(NAME);
@@ -43,9 +39,22 @@ public class Bestellungsartikel {
 		this.price = obj.getDouble(PRICE);
 	}
 	
+	public Bestellungsartikel(JSONObject json) {
+		
+		this.idOrder = json.getString(IDORDER);
+		
+		this.idArticle = json.getString(IDARTICLE);
+		while(this.idArticle.length()<4){
+			this.idArticle = "0" + this.idArticle;
+		}
+		this.name = json.getString(NAME);
+		this.anzahl = json.getInt(ANZAHL);
+		this.price = json.getDouble(PRICE);
+	}
+	
 	public String toJSON(){
 		String json="{"
-				+ "\"" + ID + "\": \""+ id+"\","
+				+ "\"" + IDORDER + "\": \""+ idOrder +"\","
 				+ "\"" + IDARTICLE + "\": \""+ idArticle +"\","
 				+ "\"" + ANZAHL + "\": \"" + anzahl + "\","
 				+ "\"" + PRICE + "\": \"" + price + "\","
@@ -53,13 +62,6 @@ public class Bestellungsartikel {
 		return json;		
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public String getIdOrder() {
 		return idOrder;
