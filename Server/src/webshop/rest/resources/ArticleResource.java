@@ -19,6 +19,9 @@ public class ArticleResource {
 			Artikelliste liste = new Artikelliste();
 			if (attribute.equals("top")) {
 				liste = Datenbank.getArticles("all");
+				if(liste.getListe().size()<=5){
+					return liste.toJSON();
+				}
 				Article[] arrArticle = new Article[5];
 				ArrayList<Article> arrliste = liste.getListe();
 				for (Article x : arrliste) {
