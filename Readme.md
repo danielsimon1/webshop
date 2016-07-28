@@ -6,9 +6,11 @@ Achtung: Die Anwendung ist nur unter einem Windows-Betriebssystem lauffähig!
 
 ###Datenbank
 
-Zuerst muss die Datenbank eingerichtet werden.
+Zuerst muss die HSQL-Datenbank eingerichtet werden.
 
 Diese steht [hier](https://sourceforge.net/projects/hsqldb/files/) zum Download bereit.
+
+Des Weiteren wird die aktuelleste Java-Version benötigt.
 
 Entpacken und öffnen Sie nun den heruntergeladenen Ordner und navigieren Sie zu `hsqldb-[version]/hsqldb/bin` und führen Sie `runManagerSwing.bat` aus.
 Es öffnet sich ein Fenster, um eine Verbindung mit einer Datenbank herzustellen.
@@ -18,13 +20,12 @@ Es öffnet sich ein Fenster, um eine Verbindung mit einer Datenbank herzustellen
 3. Geben Sie unter `path` den Pfad zum Server-Ordner der Anwendung an. Beispiel: `jdbc:hsqldb:file:D:\users\enes\Documents\webshop\Server`
 4. Ändern Sie nichts an den übrigen Einstellungen
 5. Bestätigen Sie Ihre Eingaben mit einem Klick auf `Ok`
-
-Wurden alle Einstellungen richtig vorgenommen, erscheinen nun links im HSQL Database Manager die einzelnen Tabellen der Datenbank.
+6. Schließen Sie nun den HSQL Database Manager, um dem Server den Zugriff auf die Datenbank zu ermöglichen.
+7. Führen Sie die Datei `dbsetup.jar` aus. Klicken Sie auf `Connect to DB`, anschließend auf `Tabellen resetten` und auf `Testdaten einfügen`.
+8. Schließen Sie das Fenster.
 
 ###Server
-Schließen Sie nun den HSQL Database Manager, um dem Server den Zugriff auf die Datenbank zu ermöglichen.
-
-Öffnen Sie die JAR-Datei und klicken Sie bei dem sich öffnenden Fenster den Knopf `Server starten`. Nun läuft der Server auf dem localhost mit dem Port 8080.
+Öffnen Sie die Datei `serverjar.jar` und klicken Sie bei dem sich öffnenden Fenster den Knopf `Server starten`. Nun läuft der Server auf dem localhost mit dem Port 8080.
 
 ###Web-Anwendung
 Da der Zugriff auf einen anderen Server als der eigene von Browsern standardmäßig blockiert wird (same origin policy), muss diese Sicherheitseinstellung übergangen werden. Auf dem Google Chrome funktioniert das folgendermaßen:
@@ -35,11 +36,27 @@ Dieses kann dann beispielsweise so aussehen: `D:\Users\enes\AppData\Local\Google
 
 Bitte beachten Sie: Diese Einstellungen sollten nicht beim Surfen verwendet werden, da sie ein Sicherheitsrisiko darstellen!
 
+Die Anwendung ist auf allen gängigen Browsern lauffähig, wenn die same origin policy deaktiviert wurde.
+
 ## Anwendung starten
 Starten Sie den Browser mit ausgeschalteter same origin policy. Navigieren Sie im Windows Explorer zum Speicherort der Anwendung und öffnen Sie im `dist/` Ordner die Datei `index.html`.
 
+## Benutzung
+Die Testdaten enthalten ein Spiel mit der ID 0 und einen User mit Admin-Rechten mit dem Benutzernamen `Matthias` und dem Passwort `secret`.
+
+## Funktionen
+* User-Registration (Alle)
+* User-Login (User, Admin)
+* User-Logout (User, Admin)
+* User-Verwaltung(Admin)
+* Artikel anlegen (Admin)
+* Artikel ansehen (Alle)
+* Bewertungen ansehen (Alle)
+* Rezension schreiben (User, Admin)
+* Artikel in den Warenkorb legen (Alle)
+* Bestellung absenden (User, Admin)
+* Bestellungen einsehen (User, Admin)
+
 ### Entwickler:
 
-Daniel Simon, Matthias Müller
-
-Others: Enes Orhan
+Daniel Simon, Matthias Müller, Enes Orhan
