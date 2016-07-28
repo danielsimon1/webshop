@@ -521,6 +521,17 @@ public class Datenbank {
 		startdir = new File(userdir);
 	}
 
+	public static String deleteUser(String username) {
+		try {
+			statement.executeUpdate("delete from " + USERS + " where " + User.BENUTZERNAME + " = '" + username + "'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "\"User " + username + " wurde erfolgreich gelöscht.";
+		}
+
+		return "\"Hat nicht funktioniert\"";
+	}
+
 	
 	
 }
