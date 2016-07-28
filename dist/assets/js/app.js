@@ -164,6 +164,133 @@ angular.module('app', [
         };
     });
 
+angular.module('app.addArticle', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('addArticle', {
+            url : '/addArticle',
+            templateUrl : 'app/addArticle/addArticle.html',
+            controller : 'AddArticleCtrl'
+        });
+    }])
+
+    .controller('AddArticleCtrl', ["$scope", "articles", "$log", "$state", function ($scope, articles, $log, $state) {
+        $scope.selected = {};
+        $scope.selected.platform = {};
+        $scope.selected.fsk = '0';
+        $scope.isTouched = false;
+        $scope.isPriceInvalid = false;
+        $scope.isPriceTouched = false;
+        $scope.isCustomGenre = false;
+        $scope.genreButtonText = 'Neues Genre anlegen';
+
+        function checkPlatforms() {
+            var selected = [];
+            angular.forEach($scope.selected.platform, function (bool, key) {
+                if (bool) {
+                    selected.push(key);
+                }
+            });
+            return selected;
+        }
+
+
+        articles.getAllGenres()
+            .then(function (response) {
+                $scope.genres = response;
+            }, function (error) {
+                $log.error(error);
+            });
+
+        function validatePrice(input) {
+            return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
+        }
+
+        $scope.changeInputStyle = function () {
+            $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
+            $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
+        };
+
+        $scope.priceValidation = function () {
+            $scope.isPriceTouched = true;
+            !validatePrice($scope.price) ? $scope.isPriceInvalid = true : $scope.isPriceInvalid = false;
+        };
+
+        $scope.imageToBase64 = function (input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    console.log('image successfully converted to Base64');
+                    $scope.image = e.target.result;
+                    $scope.$apply();
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.isFloat = function (n) {
+            n = parseFloat(n);
+            return Number(n) === n && n % 1 !== 0;
+        };
+
+        $scope.addArticle = function () {
+            $scope.isTouched = true;
+            $scope.isPriceTouched = true;
+            $scope.isPriceInvalid = false;
+            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre))
+                && $scope.price && ($scope.selected.platform.wiiu ||
+                $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
+                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
+                $scope.minProcessor && $scope.description && $scope.image) {
+                if (!validatePrice($scope.price)) {
+                    toastr.warning('Ungültiger Preis!');
+                    $scope.isPriceInvalid = true;
+                } else if (!$scope.isInt($scope.minRam)) {
+                    toastr.warning('Der Arbeitsspeicher muss mit einer natürlichen Zahl angegeben werden!');
+                } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
+                    toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
+                } else {
+                    var date = new Date($scope.release).getTime();
+                    var data = {
+                        id : 2,
+                        name : $scope.title,
+                        genre : $scope.isCustomGenre ? $scope.customGenre : $scope.selected.genre,
+                        price : $scope.price,
+                        fsk : $scope.selected.fsk,
+                        platforms : checkPlatforms(),
+                        release : date,
+                        language : $scope.language,
+                        minRam : $scope.minRam,
+                        minProcessor : $scope.minProcessor,
+                        description : $scope.description,
+                        image : $scope.image
+                    };
+                    console.log(data);
+                    articles.addArticle(data)
+                        .then(function (response) {
+                            toastr.success(response);
+                            $state.go("home");
+                        }, function (error) {
+                            if (!error) {
+                                toastr.error("Fehler bei der Verbindung zum Server!");
+                            } else {
+                                toastr.error(error);
+                            }
+                        })
+                }
+            } else {
+                toastr.warning('Fehlende Informationen!');
+            }
+        }
+    }]);
+
 angular.module('app.gameDetail', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -367,228 +494,6 @@ angular.module('app.genre', [])
         }
     }]);
 
-angular.module('app.cart', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('cart', {
-            url: '/cart',
-            templateUrl: 'app/cart/cart.html',
-            controller: 'CartCtrl'
-        });
-    }])
-
-    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
-        // cart only
-        var cart = localStorageService.get('cart');
-        // articles only
-        var articles = localStorageService.get('articles');
-        $scope.articles = articles;
-        // cart and articles merged
-        $scope.cart = {};
-        $scope.isInvalid = false;
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
-            });
-        };
-
-        // merge cart and articles
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    console.log(newObject);
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
-        $scope.updateTotalPrice();
-
-        $scope.isInt = function (n) {
-            n = parseInt(n);
-            return Number(n) === n && n % 1 === 0;
-        };
-
-        $scope.quantityChange = function (id) {
-            var newQuantity = parseInt($scope.cart[id].quantity);
-            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
-                $scope.isInvalid = true;
-            } else {
-                $scope.isInvalid = false;
-                cart[id].quantity = newQuantity;
-                $scope.updateTotalPrice();
-                localStorageService.set('cart', cart);
-                $rootScope.$emit('itemAddedToCart');
-            }
-        };
-
-        $scope.remove = function (id) {
-            delete $scope.cart[id];
-            delete cart[id];
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
-            $rootScope.$emit('itemAddedToCart');
-        }
-    }]);
-
-angular.module('app.addArticle', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('addArticle', {
-            url : '/addArticle',
-            templateUrl : 'app/addArticle/addArticle.html',
-            controller : 'AddArticleCtrl'
-        });
-    }])
-
-    .controller('AddArticleCtrl', ["$scope", "articles", "$log", "$state", function ($scope, articles, $log, $state) {
-        $scope.selected = {};
-        $scope.selected.platform = {};
-        $scope.selected.fsk = '0';
-        $scope.isTouched = false;
-        $scope.isPriceInvalid = false;
-        $scope.isPriceTouched = false;
-        $scope.isCustomGenre = false;
-        $scope.genreButtonText = 'Neues Genre anlegen';
-
-        function checkPlatforms() {
-            var selected = [];
-            angular.forEach($scope.selected.platform, function (bool, key) {
-                if (bool) {
-                    selected.push(key);
-                }
-            });
-            return selected;
-        }
-
-
-        articles.getAllGenres()
-            .then(function (response) {
-                $scope.genres = response;
-            }, function (error) {
-                $log.error(error);
-            });
-
-        function validatePrice(input) {
-            return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
-        }
-
-        $scope.changeInputStyle = function () {
-            $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
-            $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
-        };
-
-        $scope.priceValidation = function () {
-            $scope.isPriceTouched = true;
-            !validatePrice($scope.price) ? $scope.isPriceInvalid = true : $scope.isPriceInvalid = false;
-        };
-
-        $scope.imageToBase64 = function (input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    console.log('image successfully converted to Base64');
-                    $scope.image = e.target.result;
-                    $scope.$apply();
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            }
-        };
-
-        $scope.isInt = function (n) {
-            n = parseInt(n);
-            return Number(n) === n && n % 1 === 0;
-        };
-
-        $scope.isFloat = function (n) {
-            n = parseFloat(n);
-            return Number(n) === n && n % 1 !== 0;
-        };
-
-        $scope.addArticle = function () {
-            $scope.isTouched = true;
-            $scope.isPriceTouched = true;
-            $scope.isPriceInvalid = false;
-            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre))
-                && $scope.price && ($scope.selected.platform.wiiu ||
-                $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
-                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
-                $scope.minProcessor && $scope.description && $scope.image) {
-                if (!validatePrice($scope.price)) {
-                    toastr.warning('Ungültiger Preis!');
-                    $scope.isPriceInvalid = true;
-                } else if (!$scope.isInt($scope.minRam)) {
-                    toastr.warning('Der Arbeitsspeicher muss mit einer natürlichen Zahl angegeben werden!');
-                } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
-                    toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
-                } else {
-                    var date = new Date($scope.release).getTime();
-                    var data = {
-                        id : 2,
-                        name : $scope.title,
-                        genre : $scope.isCustomGenre ? $scope.customGenre : $scope.selected.genre,
-                        price : $scope.price,
-                        fsk : $scope.selected.fsk,
-                        platforms : checkPlatforms(),
-                        release : date,
-                        language : $scope.language,
-                        minRam : $scope.minRam,
-                        minProcessor : $scope.minProcessor,
-                        description : $scope.description,
-                        image : $scope.image
-                    };
-                    console.log(data);
-                    articles.addArticle(data)
-                        .then(function (response) {
-                            toastr.success(response);
-                            $state.go("home");
-                        }, function (error) {
-                            if (!error) {
-                                toastr.error("Fehler bei der Verbindung zum Server!");
-                            } else {
-                                toastr.error(error);
-                            }
-                        })
-                }
-            } else {
-                toastr.warning('Fehlende Informationen!');
-            }
-        }
-    }]);
-
-angular.module('app.home', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('home', {
-            url: '/home',
-            templateUrl: 'app/home/home.html',
-            controller: 'HomeCtrl'
-        });
-    }])
-
-    .controller('HomeCtrl', function () {
-
-    });
-
-angular.module('app.newGames', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('newGames', {
-            url: '/newGames',
-            templateUrl: 'app/newGames/newGames.html',
-            controller: 'NewGamesCtrl'
-        });
-    }])
-
-    .controller('NewGamesCtrl', function () {
-
-    });
-
 angular.module('app.login', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -659,6 +564,34 @@ angular.module('app.login', [])
             }
         }
     }]);
+
+angular.module('app.home', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('home', {
+            url: '/home',
+            templateUrl: 'app/home/home.html',
+            controller: 'HomeCtrl'
+        });
+    }])
+
+    .controller('HomeCtrl', function () {
+
+    });
+
+angular.module('app.newGames', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('newGames', {
+            url: '/newGames',
+            templateUrl: 'app/newGames/newGames.html',
+            controller: 'NewGamesCtrl'
+        });
+    }])
+
+    .controller('NewGamesCtrl', function () {
+
+    });
 
 angular.module('app.orders', [])
 
@@ -1132,6 +1065,73 @@ angular.module('app.userAdministration', [])
         }
     }]);
 
+angular.module('app.cart', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('cart', {
+            url: '/cart',
+            templateUrl: 'app/cart/cart.html',
+            controller: 'CartCtrl'
+        });
+    }])
+
+    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
+        // cart only
+        var cart = localStorageService.get('cart');
+        // articles only
+        var articles = localStorageService.get('articles');
+        $scope.articles = articles;
+        // cart and articles merged
+        $scope.cart = {};
+        $scope.isInvalid = false;
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * item.price;
+            });
+        };
+
+        // merge cart and articles
+        angular.forEach(articles, function (article) {
+            angular.forEach(cart, function (item) {
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    console.log(newObject);
+                    $scope.cart[item.itemId] = newObject;
+                }
+            });
+        });
+        $scope.updateTotalPrice();
+
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.quantityChange = function (id) {
+            var newQuantity = parseInt($scope.cart[id].quantity);
+            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
+                $scope.isInvalid = true;
+            } else {
+                $scope.isInvalid = false;
+                cart[id].quantity = newQuantity;
+                $scope.updateTotalPrice();
+                localStorageService.set('cart', cart);
+                $rootScope.$emit('itemAddedToCart');
+            }
+        };
+
+        $scope.remove = function (id) {
+            delete $scope.cart[id];
+            delete cart[id];
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', cart);
+            $rootScope.$emit('itemAddedToCart');
+        }
+    }]);
+
 angular.module('app.gameDetail')
     .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
         
@@ -1156,69 +1156,6 @@ angular.module('app.gameDetail')
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
         };
-    }]);
-
-angular.module('app.checkout', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('checkout', {
-            url : '/checkout',
-            templateUrl : 'app/cart/checkout/checkout.html',
-            controller : 'CheckoutCtrl'
-        });
-    }])
-
-    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
-        var user = localStorageService.get('user') || {};
-        if (!user.userName) {
-            localStorageService.set('fromCheckout', true);
-            toastr.info('Bitte melden Sie sich an.');
-            $state.go('login');
-        }
-        var cart = localStorageService.get('cart') || {};
-        var articles = localStorageService.get('articles') || {};
-        $scope.cart = {};
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
-            });
-        };
-
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
-
-        $scope.addOrder = function () {
-            var cart = localStorageService.get("cart");
-            var data = {
-                userId : user.id,
-                date : new Date().getTime(),
-                totalPrice : $scope.totalPrice,
-                items : cart
-            };
-            orders.addOrder(data)
-                .then(function (response) {
-                    toastr.success(response);
-                    localStorageService.remove("cart");
-                    $state.go("orders");
-                }, function (error) {
-                    if (!error) {
-                        toastr.error("Fehler bei der Verbindung zum Server!");
-                    } else {
-                        toastr.error(error);
-                    }
-                });
-        };
-        $scope.updateTotalPrice();
-
     }]);
 
 angular.module('app.passwordForget', [])
@@ -1296,6 +1233,69 @@ angular.module('app.register', [])
                     });
             }
         }
+    }]);
+
+angular.module('app.checkout', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('checkout', {
+            url : '/checkout',
+            templateUrl : 'app/cart/checkout/checkout.html',
+            controller : 'CheckoutCtrl'
+        });
+    }])
+
+    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
+        var user = localStorageService.get('user') || {};
+        if (!user.userName) {
+            localStorageService.set('fromCheckout', true);
+            toastr.info('Bitte melden Sie sich an.');
+            $state.go('login');
+        }
+        var cart = localStorageService.get('cart') || {};
+        var articles = localStorageService.get('articles') || {};
+        $scope.cart = {};
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * item.price;
+            });
+        };
+
+        angular.forEach(articles, function (article) {
+            angular.forEach(cart, function (item) {
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    $scope.cart[item.itemId] = newObject;
+                }
+            });
+        });
+
+        $scope.addOrder = function () {
+            var cart = localStorageService.get("cart");
+            var data = {
+                userId : user.id,
+                date : new Date().getTime(),
+                totalPrice : $scope.totalPrice,
+                items : cart
+            };
+            orders.addOrder(data)
+                .then(function (response) {
+                    toastr.success(response);
+                    localStorageService.remove("cart");
+                    $state.go("orders");
+                }, function (error) {
+                    if (!error) {
+                        toastr.error("Fehler bei der Verbindung zum Server!");
+                    } else {
+                        toastr.error(error);
+                    }
+                });
+        };
+        $scope.updateTotalPrice();
+
     }]);
 
 })(window, document);
