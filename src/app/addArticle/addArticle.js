@@ -8,7 +8,26 @@ angular.module('app.addArticle', [])
         });
     })
 
-    .controller('AddArticleCtrl', function ($scope, articles, $log, $state) {
+    .controller('AddArticleCtrl', function ($scope, articles, $log, $state, localStorageService, user, $rootScope) {
+        var currentUser = localStorageService.get("user") || {};
+        if (angular.equals({}, currentUser)) {
+            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
+            $state.go("login");
+        } else {
+            user.authenticate(currentUser.userName, currentUser.password)
+                .then(function (response) {
+                    localStorageService.set("user", response);
+                    currentUser = response;
+                    if (currentUser.role != "admin") {
+                        toastr.info("Diese Seite ist geschützt!");
+                        $state.go("home");
+                    }
+                }, function () {
+                    toastr.error("Fehler bei der Authentifizierung");
+                    toastr.warning("Sie werden nun automatisch ausgeloggt");
+                    $rootScope.logout();
+                });
+        }
         $scope.selected = {};
         $scope.selected.platform = {};
         $scope.selected.fsk = '0';
@@ -18,6 +37,7 @@ angular.module('app.addArticle', [])
         $scope.isCustomGenre = false;
         $scope.genreButtonText = 'Neues Genre anlegen';
 
+        // function that returns all selected checkboxes
         function checkPlatforms() {
             var selected = [];
             angular.forEach($scope.selected.platform, function (bool, key) {
@@ -28,18 +48,19 @@ angular.module('app.addArticle', [])
             return selected;
         }
 
-
-        articles.getAllGenres()
-            .then(function (response) {
-                $scope.genres = response;
+        $scope.genres = localStorageService.get("genres") || [];
+        articles.getAllArticles()
+            .then(function () {
+                $scope.genres = localStorageService.get("genres") || [];
             }, function (error) {
-                $log.error(error);
+                toastr.error(error);
             });
 
         function validatePrice(input) {
             return /(?=.)^\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|[0-9]+)?(\.[0-9]{1,2})?$/.test(input);
         }
 
+        // toggle between selecting existing genres and typing in a new genre
         $scope.changeInputStyle = function () {
             $scope.isCustomGenre ? $scope.isCustomGenre = false : $scope.isCustomGenre = true;
             $scope.genreButtonText == 'Neues Genre anlegen' ? $scope.genreButtonText = 'Vorhandenes Genre auswählen' : $scope.genreButtonText = 'Neues Genre anlegen';
@@ -113,7 +134,7 @@ angular.module('app.addArticle', [])
                             $state.go("home");
                         }, function (error) {
                             if (!error) {
-                                toastr.error("Fehler bei der Verbindung zum Server!");
+                                toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                             } else {
                                 toastr.error(error);
                             }

@@ -5,6 +5,7 @@ angular.module('app', [
     'ngAnimate',
     'templates',
     'textAngular',
+    'angular-md5',
     // 'ngSanitize',
     'app.home',
     'app.addArticle',
@@ -17,8 +18,7 @@ angular.module('app', [
     'app.checkout',
     'app.orders',
     'app.userAdministration',
-    'app.register',
-    'app.passwordForget'
+    'app.register'
 ])
     .config(function ($urlRouterProvider, localStorageServiceProvider) {
         $urlRouterProvider.otherwise('/home');
@@ -26,7 +26,7 @@ angular.module('app', [
         toastr.options = {
             "closeButton": false,
             "debug": false,
-            "newestOnTop": true,
+            "newestOnTop": false,
             "progressBar": false,
             "positionClass": "toast-bottom-right",
             "preventDuplicates": false,
@@ -57,7 +57,8 @@ angular.module('app', [
             });
         localStorageService.set('fromCheckout', false);
     })
-    .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state, articles, $log) {
+    // controller for the navbar
+    .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state, articles) {
         localStorageService.remove('checkout');
         $rootScope.$on('$stateChangeSuccess',
             function (event, toState, toParams) {
@@ -72,22 +73,14 @@ angular.module('app', [
         $rootScope.$on('login', function () {
             getUserData();
         });
+
+        // load genres initially and when articles are loaded
         $scope.genres = localStorageService.get("genres");
-
-        $rootScope.$on('genresLoaded', function () {
-            articles.getAllGenres()
-                .then(function (response) {
-                    $scope.genres = response;
-                }, function (error) {
-                    $log.error(error);
-                })
-        });
-
         $rootScope.$on("articles-loaded", function () {
             $scope.genres = localStorageService.get("genres");
         });
 
-        $scope.logout = function () {
+        $rootScope.logout = function () {
             localStorageService.remove('user');
             localStorageService.remove('orders');
             localStorageService.remove('checkout');
@@ -98,6 +91,7 @@ angular.module('app', [
             $state.go('login');
         };
 
+        // get user data, display user name in navbar, show more options in navbar if the user is an admin
         var getUserData = function () {
             var user = localStorageService.get('user') || {};
             $scope.userName = user.userName || 'Benutzer';
@@ -105,6 +99,7 @@ angular.module('app', [
         };
         getUserData();
 
+        // count the total items in the cart
         var countCartItems = function () {
             var cart = localStorageService.get('cart');
             $scope.quantity = 0;
@@ -113,27 +108,13 @@ angular.module('app', [
                 if (articles[item.itemId]) {
                     $scope.quantity += item.quantity;
                 } else {
+                    // remove items from cart which have no valid article ID
                     delete cart[item.itemId];
                 }
             });
             localStorageService.set('cart', cart);
         };
         countCartItems();
-    })
-    .directive('imageonload', function () {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                element.bind('load', function () {
-                    scope.isImage = true;
-                    scope.$apply();
-                });
-                element.bind('error', function () {
-                    scope.isImage = false;
-                    scope.$apply();
-                });
-            }
-        };
     })
     .filter('objectFilter', function () {
         return function (items, search) {
@@ -147,19 +128,6 @@ angular.module('app', [
             return result;
 
         }
-    })
-    .filter('orderObjectBy', function() {
-        return function(items, field, reverse) {
-            var filtered = [];
-            angular.forEach(items, function(item) {
-                filtered.push(item);
-            });
-            filtered.sort(function (a, b) {
-                return (a[field] > b[field] ? 1 : -1);
-            });
-            if(reverse) filtered.reverse();
-            return filtered;
-        };
     });
 
 

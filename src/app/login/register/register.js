@@ -15,6 +15,8 @@ angular.module('app.register', [])
         $scope.data.password = '';
         $scope.data.passwordConfirm = '';
         $scope.isTouched = false;
+
+        // email regex
         $scope.pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 

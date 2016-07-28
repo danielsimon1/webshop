@@ -1,5 +1,5 @@
 angular.module('app')
-    .factory('orders', function ($q, $http, localStorageService) {
+    .factory('orders', function ($q, $http, localStorageService, $log) {
         var service = {};
 
         service.addOrder = function (input) {
@@ -11,15 +11,17 @@ angular.module('app')
                 Preis: input.totalPrice.toString(),
                 Bestellungsartikel: mapCartItems(input.items)
             };
-            console.log(data);
             $http.post("http://localhost:8080/rest/order/add", data)
                 .then(function(response) {
                     if (response.data == "Bestellung konnte nicht hinzugefügt werden") {
+                        $log.error("error adding order");
                         q.reject(response.data);
                     } else {
+                        $log.info("order added");
                         q.resolve(response.data);
                     }
                 }, function (error) {
+                    $log.error("error adding order: ", error);
                     q.reject(error.statusText);
                 });
             return q.promise;
@@ -30,12 +32,15 @@ angular.module('app')
             $http.get("http://localhost:8080/rest/order/get/" + id)
                 .then(function (response) {
                     if(response.data == "Bestellungen konnten nicht geladen werden") {
+                        $log.error("error loading orders");
                         q.reject(response.data);
                     } else {
                         var orders = _mapOrders(response.data);
+                        $log.info("orders loaded");
                         q.resolve(orders);
                     }
                 }, function (error) {
+                    $log.error("error loading orders: ", error);
                     q.reject(error.statusText);
                 });
 

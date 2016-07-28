@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/font-awesome.css">
     <link rel="stylesheet" href="assets/css/bower.css">
 </head>
 <body ng-controller="AppCtrl">
@@ -50,9 +49,6 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">{{ userName }}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <!--<li ng-class="{active: currentStateName == 'cart' ? true : false}">-->
-                        <!--<a ui-sref="cart">Warenkorb <span class="badge" ng-show="quantity">{{ quantity }}</span></a>-->
-                        <!--</li>-->
                         <li ng-class="{active: currentStateName == 'orders' ? true : false}"
                             ng-show="userName != 'Benutzer'">
                             <a ui-sref="orders"><span class="glyphicon glyphicon-th-list list-thumb"></span> Bestellungen</a>
@@ -85,11 +81,9 @@
 </div>
 
 <footer class="footer navbar-fixed-bottom">
-    <!--<div class="footer-container">-->
         <p class="text-muted text-center" style="margin-top: 10px">
-            Copyright &copy; 2016 Webshop GmbH - <a class="text-muted">Impressum</a>
+            Copyright &copy; 2016 Webshop GmbH<!-- - <a class="text-muted">Impressum</a>-->
         </p>
-    <!--</div>-->
 </footer>
 
 <script src="assets/js/bower.js"></script>

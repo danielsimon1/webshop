@@ -9,12 +9,18 @@ angular.module('app.genre', [])
     })
 
     .controller('GenreCtrl', function ($stateParams, localStorageService, $scope) {
-        // TODO: order objects by id
-        $scope.searchInout = {};
+        $scope.searchInput = "";
         $scope.isAllGenres = false;
+
+        // get genre from URL parameters
         $scope.genre = $stateParams.name;
+
+        // all articles
         var articles = localStorageService.get('articles');
+
+        // only articles with matching genre
         $scope.articles = {};
+
         $scope.isArticles = false;
         if ($scope.genre != 'Alle Spiele') {
             angular.forEach(articles, function (item) {

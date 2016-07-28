@@ -26,10 +26,12 @@ angular.module('app.gameDetail', [])
                 $scope.isValidQuantity = true;
             }
         };
-        
+
+        // load game at initial start
         loadGame();
 
         function loadGame() {
+            // get the id from the url parameters
             var id = $stateParams.id;
             $scope.articles = localStorageService.get('articles');
             $scope.actualGame = $scope.articles[id];
@@ -37,8 +39,6 @@ angular.module('app.gameDetail', [])
                 toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
                 $state.go('home');
             } else {
-                document.getElementById('image').setAttribute('src', "" + $scope.actualGame.image);
-
                 $scope.stars = calculateAverageStars($scope.actualGame.reviews);
                 document.getElementById("description").innerHTML = $scope.actualGame.description;
                 $scope.calcPrice();
@@ -46,7 +46,11 @@ angular.module('app.gameDetail', [])
         }
 
         $rootScope.$on("articles-loaded", function () {
-            loadGame();
+            // not every time the event is fired, the game detail site is opened
+            // only react to the event when the site is opened
+            if ($state.current.name == "gameDetail") {
+                loadGame();
+            }
         });
 
         var user = localStorageService.get('user') || {};
@@ -74,6 +78,7 @@ angular.module('app.gameDetail', [])
         $scope.toCart = function () {
             if ($scope.quantity >= 1) {
                 var cart = localStorageService.get('cart') || {};
+                // merge item quantity with cart quantity
                 if (cart[$scope.actualGame.id] && cart[$scope.actualGame.id].quantity) {
                     cart[$scope.actualGame.id].quantity = parseInt(cart[$scope.actualGame.id].quantity) + parseInt($scope.quantity)
                 } else {
@@ -84,31 +89,30 @@ angular.module('app.gameDetail', [])
                 }
                 localStorageService.set('cart', cart);
                 $rootScope.$emit('itemAddedToCart');
-                toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
                 toastr.success('<img src="assets/img/giphy.gif" ng-show="inCart"/>');
+                toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
             } else {
                 toastr.warning('Bitte geben Sie eine gültige Zahl ein!')
             }
         };
+
+        // logic for rating
         $scope.starsActivator = {};
         $scope.numbers = [1, 2, 3, 4, 5];
         for (var i = 0; i <= 4; i++) {
             $scope.starsActivator[$scope.numbers[i]] = false;
         }
-
         $scope.starHover = function (number) {
             while (number > 0) {
                 $scope.starsActivator[number] = true;
                 number--;
             }
         };
-
         $scope.leave = function () {
             for (var i = 0; i <= 4; i++) {
                 $scope.starsActivator[$scope.numbers[i]] = false;
             }
         };
-
         $scope.rate = function (stars) {
             if (userName) {
                 var newReviewId = 1;
@@ -124,10 +128,12 @@ angular.module('app.gameDetail', [])
                         newReviewId = review.id;
                     }
                 });
+                // modal
                 var modalInstance = $uibModal.open({
                     animation : true,
                     templateUrl : 'app/gameDetail/rating/rating.html',
                     controller : 'RatingCtrl',
+                    // if user wrote a review before, pre-filling the input fields
                     resolve : {
                         stars : function () {
                             return stars;
@@ -140,8 +146,9 @@ angular.module('app.gameDetail', [])
                         }
                     }
                 });
-
+                // code when modal is closed
                 modalInstance.result.then(function (result) {
+                    // modal has been closed because user wants to send a review
                     var data = {
                         id : 0,
                         stars : result.stars,
@@ -154,13 +161,15 @@ angular.module('app.gameDetail', [])
                         .then(function () {
                             toastr.success('Bewertung hinzugefügt!');
                         }, function (error) {
+                            toastr.error("Bewertung wurde nicht hinzugefügt!");
                             if (error) {
                                 toastr.error(error);
                             } else {
-                                toastr.error("Fehler bei der Verbindung zum Server!");
+                                toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                             }
                         });
                 }, function () {
+                    // modal has been closed because user pressed the cancel button
                     console.log('Modal dismissed');
                 });
             } else {

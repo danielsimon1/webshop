@@ -9,33 +9,16 @@ angular.module('app.cart', [])
     })
 
     .controller('CartCtrl', function (localStorageService, $scope, $rootScope) {
-        // cart only
-        var cart = localStorageService.get('cart');
-        // articles only
-        var articles = localStorageService.get('articles');
-        $scope.articles = articles;
-        // cart and articles merged
-        $scope.cart = {};
+        $scope.cart = localStorageService.get('cart');
+        $scope.articles = localStorageService.get('articles');
         $scope.isInvalid = false;
 
         $scope.updateTotalPrice = function () {
             $scope.totalPrice = 0;
             angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
+                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
             });
         };
-
-        // merge cart and articles
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    console.log(newObject);
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
         $scope.updateTotalPrice();
 
         $scope.isInt = function (n) {
@@ -49,18 +32,17 @@ angular.module('app.cart', [])
                 $scope.isInvalid = true;
             } else {
                 $scope.isInvalid = false;
-                cart[id].quantity = newQuantity;
+                $scope.cart[id].quantity = newQuantity;
                 $scope.updateTotalPrice();
-                localStorageService.set('cart', cart);
+                localStorageService.set('cart', $scope.cart);
                 $rootScope.$emit('itemAddedToCart');
             }
         };
 
         $scope.remove = function (id) {
             delete $scope.cart[id];
-            delete cart[id];
             $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
+            localStorageService.set('cart', $scope.cart);
             $rootScope.$emit('itemAddedToCart');
         }
     });

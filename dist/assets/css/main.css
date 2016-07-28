@@ -62,6 +62,9 @@
 .invalid > label, .invalid-select > label, .invalid-textarea > label, .fileinput-invalid > span {
   color: red; }
 
+.invalid > div > table {
+  color: red; }
+
 .datepicker > table {
   outline: none; }
 

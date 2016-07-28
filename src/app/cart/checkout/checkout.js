@@ -11,30 +11,26 @@ angular.module('app.checkout', [])
     .controller('CheckoutCtrl', function ($scope, localStorageService, $state, orders) {
         var user = localStorageService.get('user') || {};
         if (!user.userName) {
+            // if user wants to order something but isn't logged in, he will be directed to the checkout after login
             localStorageService.set('fromCheckout', true);
             toastr.info('Bitte melden Sie sich an.');
             $state.go('login');
         }
-        var cart = localStorageService.get('cart') || {};
-        var articles = localStorageService.get('articles') || {};
-        $scope.cart = {};
+        $scope.cart = localStorageService.get('cart') || {};
+
+        // if nothing in cart, no checkout
+        if (angular.equals({}, $scope.cart)) {
+            $state.go("home");
+        }
+
+        $scope.articles = localStorageService.get('articles') || {};
 
         $scope.updateTotalPrice = function () {
             $scope.totalPrice = 0;
             angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
+                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
             });
         };
-
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
 
         $scope.addOrder = function () {
             var cart = localStorageService.get("cart");
@@ -51,7 +47,7 @@ angular.module('app.checkout', [])
                     $state.go("orders");
                 }, function (error) {
                     if (!error) {
-                        toastr.error("Fehler bei der Verbindung zum Server!");
+                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                     } else {
                         toastr.error(error);
                     }

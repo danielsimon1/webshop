@@ -48,11 +48,13 @@ angular.module('app.login', [])
                             var user = {
                                 userName: $scope.data.userName,
                                 role: response.role,
-                                id: parseInt(response.id)
+                                id: parseInt(response.id),
+                                // md5 encrypted
+                                password: response.password
                             };
                             localStorageService.set('user', user);
                             $rootScope.$emit('login');
-                            localStorageService.remove('checkout');
+                            localStorageService.remove('fromCheckout');
                             if (toCheckout) {
                                 $state.go('checkout');
                             } else {

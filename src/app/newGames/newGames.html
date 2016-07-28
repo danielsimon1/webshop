@@ -1,9 +1,9 @@
 <p class="h3" style="margin-top: 70px; margin-bottom: 20px">Die 5 neuesten Spiele in unserem Sortiment</p>
 <div class="panel panel-default game-panels" ng-repeat="game in newGameIds">
-    <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: article.id})">{{ articles[game].name }} <span
+    <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: game})">{{ articles[game].name }} <span
             class="badge">{{ articles[game].price }}€</span></a></div>
     <div class="panel-body">
         <div class="label label-success" ng-if="isAllGenres">{{ articles[game].genre }}</div>
-        <a ui-sref="gameDetail({id: article.id})"><img ng-src="{{articles[game].image}}" class="panel-image"/></a>
+        <a ui-sref="gameDetail({id: game})"><img ng-src="{{articles[game].image}}" class="panel-image"/></a>
     </div>
 </div>

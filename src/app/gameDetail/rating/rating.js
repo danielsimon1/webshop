@@ -6,6 +6,7 @@ angular.module('app.gameDetail')
         $scope.title = title;
         title ? $scope.isNewReview = false: $scope.isNewReview = true;
 
+        // check if inputs are empty
         $scope.checkValid = function () {
             $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
         };

@@ -8,7 +8,29 @@ angular.module('app.userAdministration', [])
         });
     })
 
-    .controller('UserAdministrationCtrl', function ($scope, user) {
+    .controller('UserAdministrationCtrl', function ($scope, user, localStorageService, $state, $rootScope) {
+        var currentUser = localStorageService.get("user") || {};
+        if (angular.equals({}, currentUser)) {
+            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
+            $state.go("login");
+        } else {
+            user.authenticate(currentUser.userName, currentUser.password)
+                .then(function (response) {
+                    localStorageService.set("user", response);
+                    currentUser = response;
+                    if (currentUser.role != "admin") {
+                        toastr.info("Diese Seite ist geschützt!");
+                        $state.go("home");
+                    } else {
+                        loadUsers();
+                    }
+                }, function () {
+                    toastr.error("Fehler bei der Authentifizierung");
+                    toastr.warning("Sie werden nun automatisch ausgeloggt");
+                    $rootScope.logout();
+                });
+        }
+
         function loadUsers() {
             user.getAllUsers()
                 .then(function (response) {
@@ -17,12 +39,10 @@ angular.module('app.userAdministration', [])
                     if (error) {
                         toastr.error(error);
                     } else {
-                        toastr.error("Verbindung zum Server fehlgeschlagen!");
+                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                     }
                 });
         }
-
-        loadUsers();
 
         $scope.deleteUser = function (userName) {
             user.deleteUser(userName)

@@ -8,23 +8,31 @@ angular.module('app.orders', [])
         });
     })
 
-    .controller('OrdersCtrl', function ($scope, $http, localStorageService, $state, orders) {
-        var user = localStorageService.get("user");
-        $scope.articles = localStorageService.get("articles");
-        if (typeof user.id != "number") {
-            toastr.warning("Dieser Bereich ist geschützt. Bitte loggen Sie sich ein!");
-            $state.go("home");
+    .controller('OrdersCtrl', function ($scope, $http, localStorageService, $state, orders, user, $rootScope) {
+        var currentUser = localStorageService.get("user") || {};
+        $scope.articles = localStorageService.get("articles") || {};
+        if (angular.equals({}, currentUser)) {
+            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
+            $state.go("login");
         } else {
-            orders.getOrders(user.id)
+            user.authenticate(currentUser.userName, currentUser.password)
                 .then(function (response) {
-                    localStorageService.set("orders", response);
-                    $scope.orders = response;
-                }, function (error) {
-                    if (error) {
-                        toastr.error(error);
-                    } else {
-                        toastr.error("Fehler bei der Verbindung zum Server!");
-                    }
+                    localStorageService.set("user", response);
+                    currentUser = response;
+                    orders.getOrders(currentUser.id)
+                        .then(function (response) {
+                            $scope.orders = response;
+                        }, function (error) {
+                            if (error) {
+                                toastr.error(error);
+                            } else {
+                                toastr.error("Ein unbekannter Fehler ist aufgetreten!");
+                            }
+                        });
+                }, function () {
+                    toastr.error("Fehler bei der Authentifizierung");
+                    toastr.warning("Sie werden nun automatisch ausgeloggt");
+                    $rootScope.logout();
                 });
         }
     });

@@ -7,9 +7,9 @@ angular.module('app')
             $http.get('http://localhost:8080/rest/article/get/all')
                 .then(function (response) {
                     if (typeof response.data == 'string') {
+                        $log.error('loading articles failed: ', response.data);
                         q.reject(response.data);
                     } else {
-                        console.log(response.data);
                         var mapped = _mapArticles(response.data);
                         localStorageService.set('articles', mapped);
                         $rootScope.$emit("articles-loaded");
@@ -21,23 +21,6 @@ angular.module('app')
                     $log.error('loading articles failed: ', error);
                     q.reject(error.statusText);
                 });
-            return q.promise;
-        };
-
-        service.getAllGenres = function () {
-            var q = $q.defer();
-            var genres = localStorageService.get('genres') || [];
-            if (!genres) {
-                service.getAllArticles()
-                    .then(function () {
-                        genres = localStorageService.get('genres') || [];
-                        q.resolve(genres);
-                    }, function (error) {
-                        q.reject(error.statusText);
-                    })
-            } else {
-                q.resolve(genres);
-            }
             return q.promise;
         };
 
@@ -61,14 +44,18 @@ angular.module('app')
             $http.post('http://localhost:8080/rest/article/add', data)
                 .then(function (response) {
                     if (response.data == "Artikel existiert bereits") {
+                        $log.error("error adding article: ", response.data);
                         q.reject(response.data);
                     } else if (response.data == "Artikel konnte nicht hinzugefügt werden") {
+                        $log.error("error adding article: ", response.data);
                         q.reject(response.data);
                     } else {
+                        $log.info("adding article was successful");
                         service.getAllArticles();
                         q.resolve(response.data);
                     }
                 }, function (error) {
+                    $log.error("error adding article: ", error);
                     q.reject(error.statusText);
                 });
             return q.promise;
@@ -89,13 +76,15 @@ angular.module('app')
             $http.post('http://localhost:8080/rest/review/add', data)
                 .then(function (response) {
                     if (response.data == 'Rezension konnte nicht hinzugefügt werden') {
+                        $log.error("error adding review: ", response.data);
                         q.reject(response.data);
                     } else {
+                        $log.info("adding review was successful");
                         service.getAllArticles();
                         q.resolve(response.data);
                     }
                 }, function (error) {
-                    $log.error("error adding review:", error);
+                    $log.error("error adding review: ", error);
                     q.reject(error.statusText);
                 });
             return q.promise;
@@ -105,16 +94,21 @@ angular.module('app')
             var q = $q.defer();
             $http.get("http://localhost:8080/rest/article/get/top")
                 .then(function (response) {
-                    var top = [];
-                    angular.forEach(response.data, function (item) {
-                        top.push(parseInt(item.ID));
-                        localStorageService.set("top-games", top);
-                    });
-                    q.resolve(top);
-                }, function (error) {
-                    if (error.statusText) {
-
+                    if (typeof response.data == 'string') {
+                        $log.error("error getting top games: ", response.data);
+                        q.reject(response.data);
+                    } else {
+                        var top = [];
+                        angular.forEach(response.data, function (item) {
+                            top.push(parseInt(item.ID));
+                            localStorageService.set("top-games", top);
+                        });
+                        $log.info("top games loaded");
+                        q.resolve(top);
                     }
+                }, function (error) {
+                    $log.error("error getting top games: ", error);
+                    q.reject(error.statusText);
                 });
             return q.promise;
         };
@@ -125,9 +119,14 @@ angular.module('app')
                 item.release = parseInt(item.release);
                 articlesArray.push(item);
             });
+            // sort articles by release date
             var sorted = $filter('orderBy')(articlesArray, 'release', true);
-            var sliced = sorted.slice(0,5);
+
+            // only take the top 5 elements
+            var sliced = sorted.slice(0, 5);
             var newGamesIds = [];
+
+            // only save the id's to prevent redundant data
             angular.forEach(sliced, function (item) {
                 newGamesIds.push(item.id);
             });
@@ -140,7 +139,7 @@ angular.module('app')
             var genres = [];
 
             angular.forEach(articles, function (item) {
-                // Genres
+                // check if current genre is a new genre
                 var isNewGenre = true;
                 angular.forEach(genres, function (genre) {
                     if (item.Genre == genre) {
@@ -172,6 +171,7 @@ angular.module('app')
             return mappedItems;
         };
 
+        // remove spaces
         function trimPlatforms(input) {
             var trimmed = [];
             angular.forEach(input, function (item) {
