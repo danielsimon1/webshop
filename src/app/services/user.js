@@ -119,7 +119,11 @@ angular.module('app')
                     }
                 }, function (error) {
                     $log.error("error deleting user: ", error);
-                    q.reject(error);
+                    if (error.statusText){
+                        q.reject(error.statusText);
+                    } else {
+                        q.reject();
+                    }
                 });
 
             return q.promise;

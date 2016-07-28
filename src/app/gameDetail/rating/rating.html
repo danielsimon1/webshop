@@ -6,14 +6,16 @@
         <span>★</span><span ng-show="stars >= 1.5">★</span><span ng-show="stars >= 2.5">★</span><span
             ng-show="stars >= 3.5">★</span><span ng-show="stars >= 4.5">★</span>
     </span>
-    <span>☆☆☆☆☆</span>
+    <span>☆☆☆☆☆</span><br>
+    <span style="color: red; font-weight: bold" ng-show="!titleRegex.test(title) && isTitleTouched">Der Titel muss zwischen 4 und 100 Zeichen haben!</span>
     <div class="form-group">
         <label for="title">Titel:</label>
-        <input type="text" class="form-control" id="title" ng-model="title" ng-change="checkValid()">
+        <input type="text" class="form-control" id="title" ng-model="title" ng-change="checkValid();isTitleTouched = true">
     </div>
+    <span style="color: red; font-weight: bold" ng-show="!messageRegex.test(message) && isMessageTouched">Der Text muss zwischen 4 und 1000 Zeichen haben!</span>
     <div class="form-group">
         <label for="message">Text:</label>
-        <textarea class="form-control" rows="5" id="message" ng-model="message" ng-change="checkValid()"></textarea>
+        <textarea class="form-control" rows="5" id="message" ng-model="message" ng-change="checkValid();isMessageTouched = true"></textarea>
     </div>
 </div>
 <div class="modal-footer">

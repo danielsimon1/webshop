@@ -21,9 +21,10 @@ angular.module('app', [
     'app.userAdministration',
     'app.register'
 ])
-    .config(function ($urlRouterProvider, localStorageServiceProvider) {
+    .config(function ($urlRouterProvider, localStorageServiceProvider, cfpLoadingBarProvider) {
         $urlRouterProvider.otherwise('/home');
         localStorageServiceProvider.setPrefix('webshop');
+        cfpLoadingBarProvider.includeSpinner = false;
         toastr.options = {
             "closeButton": false,
             "debug": false,

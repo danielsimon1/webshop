@@ -1,0 +1,8 @@
+.delete-user-button[disabled] {
+  z-index: -1;
+}
+
+.delete-button-wrapper {
+  cursor: not-allowed;
+  display: inline-block;
+}

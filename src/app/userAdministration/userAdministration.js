@@ -45,12 +45,15 @@ angular.module('app.userAdministration', [])
         }
 
         $scope.deleteUser = function (userName) {
-            user.deleteUser(userName)
-                .then(function (response) {
-                    toastr.success(response);
-                    loadUsers();
-                }, function (error) {
-                    toastr.error(error);
-                });
+            var confirm = window.confirm("Wollen Sie den Benutzer " + userName + " wirklich löschen?");
+            if (confirm) {
+                user.deleteUser(userName)
+                    .then(function (response) {
+                        toastr.success(response);
+                        loadUsers();
+                    }, function (error) {
+                        toastr.error(error);
+                    });
+            }
         }
     });

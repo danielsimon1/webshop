@@ -9,6 +9,8 @@ angular.module('app.checkout', [])
     })
 
     .controller('CheckoutCtrl', function ($scope, localStorageService, $state, orders) {
+        $scope.isLoading = false;
+
         var user = localStorageService.get('user') || {};
         if (!user.userName) {
             // if user wants to order something but isn't logged in, he will be directed to the checkout after login
@@ -33,6 +35,7 @@ angular.module('app.checkout', [])
         };
 
         $scope.addOrder = function () {
+            $scope.isLoading = true;
             var cart = localStorageService.get("cart");
             var data = {
                 userId : user.id,
@@ -42,10 +45,12 @@ angular.module('app.checkout', [])
             };
             orders.addOrder(data)
                 .then(function (response) {
+                    $scope.isLoading = false;
                     toastr.success(response);
                     localStorageService.remove("cart");
                     $state.go("orders");
                 }, function (error) {
+                    $scope.isLoading = false;
                     if (!error) {
                         toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                     } else {

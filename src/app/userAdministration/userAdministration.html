@@ -14,7 +14,11 @@
         <td>{{ user.role }}</td>
         <td>{{ user.userName }}</td>
         <td>{{ user.email }}</td>
-        <td><button class="btn btn-default glyphicon glyphicon-trash" ng-click="deleteUser(user.userName)" ng-disabled="user.role == 'admin'"></button> </td>
+        <td>
+            <div class="delete-button-wrapper" uib-tooltip="Admins können nicht gelöscht werden!" tooltip-placement="left" tooltip-enable="user.role == 'admin'">
+                <button class="btn btn-default glyphicon glyphicon-trash delete-user-button" ng-click="deleteUser(user.userName)" ng-disabled="user.role == 'admin'"></button>
+            </div>
+        </td>
     </tr>
     </tbody>
 </table>

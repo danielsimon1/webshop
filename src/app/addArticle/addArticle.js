@@ -36,6 +36,7 @@ angular.module('app.addArticle', [])
         $scope.isPriceTouched = false;
         $scope.isCustomGenre = false;
         $scope.genreButtonText = 'Neues Genre anlegen';
+        $scope.isLoading = false;
 
         // function that returns all selected checkboxes
         function checkPlatforms() {
@@ -99,11 +100,16 @@ angular.module('app.addArticle', [])
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
             $scope.isPriceInvalid = false;
-            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre))
-                && $scope.price && ($scope.selected.platform.wiiu ||
+            $scope.titleRegex = /^.{4,60}$/;
+            $scope.genreRegex = /^.{4,20}$/;
+            $scope.languageRegex = /^.{4,15}$/;
+            $scope.descriptionRegex = /^.{1,8000}$/;
+
+            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && genreRegex.test($scope.customGenre)))
+                && $scope.price && $scope.descriptionRegex.test($scope.description) && ($scope.selected.platform.wiiu ||
                 $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
-                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
-                $scope.minProcessor && $scope.description && $scope.image) {
+                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam && $scope.languageRegex.test($scope.language) &&
+                $scope.minProcessor && $scope.description && $scope.image && $scope.titleRegex.test($scope.title)) {
                 if (!validatePrice($scope.price)) {
                     toastr.warning('Ungültiger Preis!');
                     $scope.isPriceInvalid = true;
@@ -112,6 +118,7 @@ angular.module('app.addArticle', [])
                 } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
                     toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
                 } else {
+                    $scope.isLoading = true;
                     var date = new Date($scope.release).getTime();
                     var data = {
                         id : 2,
@@ -127,12 +134,13 @@ angular.module('app.addArticle', [])
                         description : $scope.description,
                         image : $scope.image
                     };
-                    console.log(data);
                     articles.addArticle(data)
                         .then(function (response) {
+                            $scope.isLoading = false;
                             toastr.success(response);
                             $state.go("home");
                         }, function (error) {
+                            $scope.isLoading = false;
                             if (!error) {
                                 toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                             } else {

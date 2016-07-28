@@ -21,11 +21,11 @@ Es öffnet sich ein Fenster, um eine Verbindung mit einer Datenbank herzustellen
 4. Ändern Sie nichts an den übrigen Einstellungen
 5. Bestätigen Sie Ihre Eingaben mit einem Klick auf `Ok`
 6. Schließen Sie nun den HSQL Database Manager, um dem Server den Zugriff auf die Datenbank zu ermöglichen.
-7. Führen Sie die Datei `dbsetup.jar` aus. Klicken Sie auf `Connect to DB`, anschließend auf `Tabellen resetten` und auf `Testdaten einfügen`.
+7. Führen Sie die Datei `dbsetup.jar` im Ordner `Server` aus. Klicken Sie auf `Connect to DB`, anschließend auf `Tabellen resetten` und auf `Testdaten einfügen`.
 8. Schließen Sie das Fenster.
 
 ###Server
-Öffnen Sie die Datei `serverjar.jar` und klicken Sie bei dem sich öffnenden Fenster den Knopf `Server starten`. Nun läuft der Server auf dem localhost mit dem Port 8080.
+Öffnen Sie die Datei `serverjar.jar` im Ordner `Server` und klicken Sie bei dem sich öffnenden Fenster den Knopf `Server starten`. Nun läuft der Server auf dem localhost mit dem Port 8080.
 
 ###Web-Anwendung
 Da der Zugriff auf einen anderen Server als der eigene von Browsern standardmäßig blockiert wird (same origin policy), muss diese Sicherheitseinstellung übergangen werden. Auf dem Google Chrome funktioniert das folgendermaßen:
@@ -39,11 +39,13 @@ Bitte beachten Sie: Diese Einstellungen sollten nicht beim Surfen verwendet werd
 Die Anwendung ist auf allen gängigen Browsern lauffähig, wenn die same origin policy deaktiviert wurde.
 
 ## Anwendung starten
-Starten Sie den Browser mit ausgeschalteter same origin policy. Navigieren Sie im Windows Explorer zum Speicherort der Anwendung und öffnen Sie im `dist/` Ordner die Datei `index.html`.
+Stellen Sie sicher, dass der Server läuft.
 
+Starten Sie dann den Browser mit ausgeschalteter same origin policy. Navigieren Sie im Windows Explorer zum Speicherort der Anwendung und öffnen Sie im `dist/` Ordner die Datei `index.html`.
+
+Testen Sie die Anwendung, indem Sie auf das Bild von Modern Warfare 2 klicken. Es sollte sich eine Seite mit den Details zum Spiel öffnen. Dann sind die Anwendung und die Datenbank ordnungsgemäß verbunden.
 ## Benutzung
 Die Testdaten enthalten ein Spiel mit der ID 0 und einen User mit Admin-Rechten mit dem Benutzernamen `Matthias` und dem Passwort `secret`.
-
 ## Funktionen
 * User-Registration (Alle)
 * User-Login (User, Admin)

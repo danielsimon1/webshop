@@ -8,6 +8,7 @@ angular.module('app', [
     'templates',
     'textAngular',
     'angular-md5',
+    'angular-loading-bar',
     // 'ngSanitize',
     'app.home',
     'app.addArticle',
@@ -22,9 +23,10 @@ angular.module('app', [
     'app.userAdministration',
     'app.register'
 ])
-    .config(["$urlRouterProvider", "localStorageServiceProvider", function ($urlRouterProvider, localStorageServiceProvider) {
+    .config(["$urlRouterProvider", "localStorageServiceProvider", "cfpLoadingBarProvider", function ($urlRouterProvider, localStorageServiceProvider, cfpLoadingBarProvider) {
         $urlRouterProvider.otherwise('/home');
         localStorageServiceProvider.setPrefix('webshop');
+        cfpLoadingBarProvider.includeSpinner = false;
         toastr.options = {
             "closeButton": false,
             "debug": false,
@@ -131,6 +133,93 @@ angular.module('app', [
 
         }
     });
+
+angular.module('app.cart', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('cart', {
+            url: '/cart',
+            templateUrl: 'app/cart/cart.html',
+            controller: 'CartCtrl'
+        });
+    }])
+
+    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
+        $scope.cart = localStorageService.get('cart');
+        $scope.articles = localStorageService.get('articles');
+        $scope.isInvalid = false;
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
+            });
+        };
+        $scope.updateTotalPrice();
+
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.quantityChange = function (id) {
+            var newQuantity = parseInt($scope.cart[id].quantity);
+            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
+                $scope.isInvalid = true;
+            } else {
+                $scope.isInvalid = false;
+                $scope.cart[id].quantity = newQuantity;
+                $scope.updateTotalPrice();
+                localStorageService.set('cart', $scope.cart);
+                $rootScope.$emit('itemAddedToCart');
+            }
+        };
+
+        $scope.remove = function (id) {
+            delete $scope.cart[id];
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', $scope.cart);
+            $rootScope.$emit('itemAddedToCart');
+        }
+    }]);
+
+angular.module('app.genre', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('genre', {
+            url: '/genre/:name',
+            templateUrl: 'app/genre/genre.html',
+            controller: 'GenreCtrl'
+        });
+    }])
+
+    .controller('GenreCtrl', ["$stateParams", "localStorageService", "$scope", function ($stateParams, localStorageService, $scope) {
+        $scope.searchInput = "";
+        $scope.isAllGenres = false;
+
+        // get genre from URL parameters
+        $scope.genre = $stateParams.name;
+
+        // all articles
+        var articles = localStorageService.get('articles');
+
+        // only articles with matching genre
+        $scope.articles = {};
+
+        $scope.isArticles = false;
+        if ($scope.genre != 'Alle Spiele') {
+            angular.forEach(articles, function (item) {
+                if (item.genre == $scope.genre) {
+                    $scope.isArticles = true;
+                    $scope.articles[item.id] = item;
+                }
+            });
+        } else {
+            $scope.isArticles = true;
+            $scope.isAllGenres = true;
+            $scope.articles = articles;
+        }
+    }]);
 
 angular.module('app.gameDetail', [])
 
@@ -312,55 +401,6 @@ angular.module('app.gameDetail', [])
         };
     }]);
 
-angular.module('app.cart', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('cart', {
-            url: '/cart',
-            templateUrl: 'app/cart/cart.html',
-            controller: 'CartCtrl'
-        });
-    }])
-
-    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
-        $scope.cart = localStorageService.get('cart');
-        $scope.articles = localStorageService.get('articles');
-        $scope.isInvalid = false;
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
-            });
-        };
-        $scope.updateTotalPrice();
-
-        $scope.isInt = function (n) {
-            n = parseInt(n);
-            return Number(n) === n && n % 1 === 0;
-        };
-
-        $scope.quantityChange = function (id) {
-            var newQuantity = parseInt($scope.cart[id].quantity);
-            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
-                $scope.isInvalid = true;
-            } else {
-                $scope.isInvalid = false;
-                $scope.cart[id].quantity = newQuantity;
-                $scope.updateTotalPrice();
-                localStorageService.set('cart', $scope.cart);
-                $rootScope.$emit('itemAddedToCart');
-            }
-        };
-
-        $scope.remove = function (id) {
-            delete $scope.cart[id];
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', $scope.cart);
-            $rootScope.$emit('itemAddedToCart');
-        }
-    }]);
-
 angular.module('app.addArticle', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -399,6 +439,7 @@ angular.module('app.addArticle', [])
         $scope.isPriceTouched = false;
         $scope.isCustomGenre = false;
         $scope.genreButtonText = 'Neues Genre anlegen';
+        $scope.isLoading = false;
 
         // function that returns all selected checkboxes
         function checkPlatforms() {
@@ -462,11 +503,16 @@ angular.module('app.addArticle', [])
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
             $scope.isPriceInvalid = false;
-            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre))
-                && $scope.price && ($scope.selected.platform.wiiu ||
+            $scope.titleRegex = /^.{4,60}$/;
+            $scope.genreRegex = /^.{4,20}$/;
+            $scope.languageRegex = /^.{4,15}$/;
+            $scope.descriptionRegex = /^.{1,8000}$/;
+
+            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && genreRegex.test($scope.customGenre)))
+                && $scope.price && $scope.descriptionRegex.test($scope.description) && ($scope.selected.platform.wiiu ||
                 $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
-                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam &&
-                $scope.minProcessor && $scope.description && $scope.image) {
+                $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam && $scope.languageRegex.test($scope.language) &&
+                $scope.minProcessor && $scope.description && $scope.image && $scope.titleRegex.test($scope.title)) {
                 if (!validatePrice($scope.price)) {
                     toastr.warning('Ungültiger Preis!');
                     $scope.isPriceInvalid = true;
@@ -475,6 +521,7 @@ angular.module('app.addArticle', [])
                 } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
                     toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
                 } else {
+                    $scope.isLoading = true;
                     var date = new Date($scope.release).getTime();
                     var data = {
                         id : 2,
@@ -490,12 +537,13 @@ angular.module('app.addArticle', [])
                         description : $scope.description,
                         image : $scope.image
                     };
-                    console.log(data);
                     articles.addArticle(data)
                         .then(function (response) {
+                            $scope.isLoading = false;
                             toastr.success(response);
                             $state.go("home");
                         }, function (error) {
+                            $scope.isLoading = false;
                             if (!error) {
                                 toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                             } else {
@@ -505,117 +553,6 @@ angular.module('app.addArticle', [])
                 }
             } else {
                 toastr.warning('Fehlende Informationen!');
-            }
-        }
-    }]);
-
-angular.module('app.genre', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('genre', {
-            url: '/genre/:name',
-            templateUrl: 'app/genre/genre.html',
-            controller: 'GenreCtrl'
-        });
-    }])
-
-    .controller('GenreCtrl', ["$stateParams", "localStorageService", "$scope", function ($stateParams, localStorageService, $scope) {
-        $scope.searchInput = "";
-        $scope.isAllGenres = false;
-
-        // get genre from URL parameters
-        $scope.genre = $stateParams.name;
-
-        // all articles
-        var articles = localStorageService.get('articles');
-
-        // only articles with matching genre
-        $scope.articles = {};
-
-        $scope.isArticles = false;
-        if ($scope.genre != 'Alle Spiele') {
-            angular.forEach(articles, function (item) {
-                if (item.genre == $scope.genre) {
-                    $scope.isArticles = true;
-                    $scope.articles[item.id] = item;
-                }
-            });
-        } else {
-            $scope.isArticles = true;
-            $scope.isAllGenres = true;
-            $scope.articles = articles;
-        }
-    }]);
-
-angular.module('app.login', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('login', {
-            url: '/login',
-            templateUrl: 'app/login/login.html',
-            controller: 'LoginCtrl'
-        });
-    }])
-
-    .controller('LoginCtrl', ["$scope", "$state", "localStorageService", "$rootScope", "$http", "user", function ($scope, $state, localStorageService, $rootScope, $http, user) {
-        $scope.isFormTouched = false;
-        var username = localStorageService.get('user') || {};
-        var toCheckout = localStorageService.get('fromCheckout');
-        if (username.userName) {
-            toastr.info('Sie sind bereits eingeloogt als "' + username.userName + '"!');
-            $state.go('home');
-        }
-        $scope.data = {};
-        $scope.data.password = '';
-        $scope.data.userName = '';
-
-        //Trigger Login when enter pressed
-        $("#username").keydown(function (event) {
-            if (event.keyCode == 13) {
-                $("#submit").click();
-            }
-        });
-        $("#password").keydown(function (event) {
-            if (event.keyCode == 13) {
-                $("#submit").click();
-            }
-        });
-
-        $scope.login = function () {
-            $scope.isFormTouched = true;
-            if (!$scope.data.userName || !$scope.data.password) {
-                toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
-                toastr.warning('You had one Job!');
-            } else {
-                var data = {
-                    userName: $scope.data.userName,
-                    password: $scope.data.password
-                };
-                user.login(data)
-                    .then(function (response) {
-                            toastr.success('Login war erfolgreich.');
-                            var user = {
-                                userName: $scope.data.userName,
-                                role: response.role,
-                                id: parseInt(response.id),
-                                // md5 encrypted
-                                password: response.password
-                            };
-                            localStorageService.set('user', user);
-                            $rootScope.$emit('login');
-                            localStorageService.remove('fromCheckout');
-                            if (toCheckout) {
-                                $state.go('checkout');
-                            } else {
-                                $state.go('home');
-                            }
-                    }, function (error) {
-                        if (error) {
-                            toastr.error(error);
-                        } else {
-                            toastr.error("Fehler bei der Verbindung zum Server!");
-                        }
-                    });
             }
         }
     }]);
@@ -633,6 +570,79 @@ angular.module('app.home', [])
     .controller('HomeCtrl', function () {
 
     });
+
+angular.module('app.login', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('login', {
+            url : '/login',
+            templateUrl : 'app/login/login.html',
+            controller : 'LoginCtrl'
+        });
+    }])
+
+    .controller('LoginCtrl', ["$scope", "$state", "localStorageService", "$rootScope", "$http", "user", function ($scope, $state, localStorageService, $rootScope, $http, user) {
+        $scope.isFormTouched = false;
+        $scope.isLoading = false;
+
+        var username = localStorageService.get('user') || {};
+        var toCheckout = localStorageService.get('fromCheckout');
+        if (username.userName) {
+            toastr.info('Sie sind bereits eingeloogt als "' + username.userName + '"!');
+            $state.go('home');
+        }
+        $scope.data = {};
+        $scope.data.password = '';
+        $scope.data.userName = '';
+
+        //Trigger Login when enter pressed
+        $("#form").keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#submit").click();
+            }
+        });
+
+        $scope.login = function () {
+            $scope.isFormTouched = true;
+            if (!$scope.data.userName || !$scope.data.password) {
+                toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
+                toastr.warning('You had one Job!');
+            } else {
+                $scope.isLoading = true;
+                var data = {
+                    userName : $scope.data.userName,
+                    password : $scope.data.password
+                };
+                user.login(data)
+                    .then(function (response) {
+                        $scope.isLoading = false;
+                        toastr.success('Login war erfolgreich.');
+                        var user = {
+                            userName : $scope.data.userName,
+                            role : response.role,
+                            id : parseInt(response.id),
+                            // md5 encrypted
+                            password : response.password
+                        };
+                        localStorageService.set('user', user);
+                        $rootScope.$emit('login');
+                        localStorageService.remove('fromCheckout');
+                        if (toCheckout) {
+                            $state.go('checkout');
+                        } else {
+                            $state.go('home');
+                        }
+                    }, function (error) {
+                        $scope.isLoading = false;
+                        if (error) {
+                            toastr.error(error);
+                        } else {
+                            toastr.error("Fehler bei der Verbindung zum Server!");
+                        }
+                    });
+            }
+        }
+    }]);
 
 angular.module('app.newGames', [])
 
@@ -691,90 +701,6 @@ angular.module('app.orders', [])
                     toastr.error("Fehler bei der Authentifizierung");
                     toastr.warning("Sie werden nun automatisch ausgeloggt");
                     $rootScope.logout();
-                });
-        }
-    }]);
-
-angular.module('app.topGames', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('topGames', {
-            url: '/topGames',
-            templateUrl: 'app/topGames/topGames.html',
-            controller: 'TopGamesCtrl'
-        });
-    }])
-
-    .controller('TopGamesCtrl', ["$scope", "articles", "localStorageService", function ($scope, articles, localStorageService) {
-        $scope.topGameIds = localStorageService.get("top-games") || [];
-        $scope.articles = localStorageService.get("articles") || {};
-        articles.getTopGames()
-            .then(function () {
-                $scope.topGameIds = localStorageService.get("top-games")
-            }, function (error) {
-                toastr.error(error);
-            });
-        articles.getAllArticles()
-            .then(function () {
-                $scope.articles = localStorageService.get("articles");
-            }, function (error) {
-                toastr.error(error);
-            });
-    }]);
-
-angular.module('app.userAdministration', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('userAdministration', {
-            url : '/userAdministration',
-            templateUrl : 'app/userAdministration/userAdministration.html',
-            controller : 'UserAdministrationCtrl'
-        });
-    }])
-
-    .controller('UserAdministrationCtrl', ["$scope", "user", "localStorageService", "$state", "$rootScope", function ($scope, user, localStorageService, $state, $rootScope) {
-        var currentUser = localStorageService.get("user") || {};
-        if (angular.equals({}, currentUser)) {
-            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
-            $state.go("login");
-        } else {
-            user.authenticate(currentUser.userName, currentUser.password)
-                .then(function (response) {
-                    localStorageService.set("user", response);
-                    currentUser = response;
-                    if (currentUser.role != "admin") {
-                        toastr.info("Diese Seite ist geschützt!");
-                        $state.go("home");
-                    } else {
-                        loadUsers();
-                    }
-                }, function () {
-                    toastr.error("Fehler bei der Authentifizierung");
-                    toastr.warning("Sie werden nun automatisch ausgeloggt");
-                    $rootScope.logout();
-                });
-        }
-
-        function loadUsers() {
-            user.getAllUsers()
-                .then(function (response) {
-                    $scope.users = response;
-                }, function (error) {
-                    if (error) {
-                        toastr.error(error);
-                    } else {
-                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
-                    }
-                });
-        }
-
-        $scope.deleteUser = function (userName) {
-            user.deleteUser(userName)
-                .then(function (response) {
-                    toastr.success(response);
-                    loadUsers();
-                }, function (error) {
-                    toastr.error(error);
                 });
         }
     }]);
@@ -1408,7 +1334,11 @@ angular.module('app')
                     }
                 }, function (error) {
                     $log.error("error deleting user: ", error);
-                    q.reject(error);
+                    if (error.statusText){
+                        q.reject(error.statusText);
+                    } else {
+                        q.reject();
+                    }
                 });
 
             return q.promise;
@@ -1433,31 +1363,91 @@ angular.module('app')
         return service;
     }]);
 
-angular.module('app.gameDetail')
-    .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
-        
-        $scope.stars = stars;
-        $scope.message = message;
-        $scope.title = title;
-        title ? $scope.isNewReview = false: $scope.isNewReview = true;
+angular.module('app.topGames', [])
 
-        // check if inputs are empty
-        $scope.checkValid = function () {
-            $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
-        };
-        $scope.checkValid();
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('topGames', {
+            url: '/topGames',
+            templateUrl: 'app/topGames/topGames.html',
+            controller: 'TopGamesCtrl'
+        });
+    }])
 
-        $scope.submit = function () {
-            var result = {
-                title: $scope.title,
-                message: $scope.message,
-                stars: $scope.stars
-            };
-            $uibModalInstance.close(result);
-        };
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        };
+    .controller('TopGamesCtrl', ["$scope", "articles", "localStorageService", function ($scope, articles, localStorageService) {
+        $scope.topGameIds = localStorageService.get("top-games") || [];
+        $scope.articles = localStorageService.get("articles") || {};
+        articles.getTopGames()
+            .then(function () {
+                $scope.topGameIds = localStorageService.get("top-games")
+            }, function (error) {
+                toastr.error(error);
+            });
+        articles.getAllArticles()
+            .then(function () {
+                $scope.articles = localStorageService.get("articles");
+            }, function (error) {
+                toastr.error(error);
+            });
+    }]);
+
+angular.module('app.userAdministration', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('userAdministration', {
+            url : '/userAdministration',
+            templateUrl : 'app/userAdministration/userAdministration.html',
+            controller : 'UserAdministrationCtrl'
+        });
+    }])
+
+    .controller('UserAdministrationCtrl', ["$scope", "user", "localStorageService", "$state", "$rootScope", function ($scope, user, localStorageService, $state, $rootScope) {
+        var currentUser = localStorageService.get("user") || {};
+        if (angular.equals({}, currentUser)) {
+            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
+            $state.go("login");
+        } else {
+            user.authenticate(currentUser.userName, currentUser.password)
+                .then(function (response) {
+                    localStorageService.set("user", response);
+                    currentUser = response;
+                    if (currentUser.role != "admin") {
+                        toastr.info("Diese Seite ist geschützt!");
+                        $state.go("home");
+                    } else {
+                        loadUsers();
+                    }
+                }, function () {
+                    toastr.error("Fehler bei der Authentifizierung");
+                    toastr.warning("Sie werden nun automatisch ausgeloggt");
+                    $rootScope.logout();
+                });
+        }
+
+        function loadUsers() {
+            user.getAllUsers()
+                .then(function (response) {
+                    $scope.users = response;
+                }, function (error) {
+                    if (error) {
+                        toastr.error(error);
+                    } else {
+                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
+                    }
+                });
+        }
+
+        $scope.deleteUser = function (userName) {
+            var confirm = window.confirm("Wollen Sie den Benutzer " + userName + " wirklich löschen?");
+            if (confirm) {
+                user.deleteUser(userName)
+                    .then(function (response) {
+                        toastr.success(response);
+                        loadUsers();
+                    }, function (error) {
+                        toastr.error(error);
+                    });
+            }
+        }
     }]);
 
 angular.module('app.checkout', [])
@@ -1471,6 +1461,8 @@ angular.module('app.checkout', [])
     }])
 
     .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
+        $scope.isLoading = false;
+
         var user = localStorageService.get('user') || {};
         if (!user.userName) {
             // if user wants to order something but isn't logged in, he will be directed to the checkout after login
@@ -1495,6 +1487,7 @@ angular.module('app.checkout', [])
         };
 
         $scope.addOrder = function () {
+            $scope.isLoading = true;
             var cart = localStorageService.get("cart");
             var data = {
                 userId : user.id,
@@ -1504,10 +1497,12 @@ angular.module('app.checkout', [])
             };
             orders.addOrder(data)
                 .then(function (response) {
+                    $scope.isLoading = false;
                     toastr.success(response);
                     localStorageService.remove("cart");
                     $state.go("orders");
                 }, function (error) {
+                    $scope.isLoading = false;
                     if (!error) {
                         toastr.error("Ein unbekannter Fehler ist aufgetreten!");
                     } else {
@@ -1517,6 +1512,38 @@ angular.module('app.checkout', [])
         };
         $scope.updateTotalPrice();
 
+    }]);
+
+angular.module('app.gameDetail')
+    .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
+        
+        $scope.stars = stars;
+        $scope.message = message;
+        $scope.title = title;
+        title ? $scope.isNewReview = false: $scope.isNewReview = true;
+
+        $scope.isTitleTouched = false;
+        $scope.isMessageTouched = false;
+        $scope.titleRegex = /^.{4,100}$/;
+        $scope.messageRegex = /^.{4,1000}$/;
+
+        // check if inputs are empty
+        $scope.checkValid = function () {
+            $scope.message && $scope.title && $scope.titleRegex.test($scope.title) && $scope.messageRegex.test($scope.message) ? $scope.isValid = true : $scope.isValid = false;
+        };
+        $scope.checkValid();
+
+        $scope.submit = function () {
+            var result = {
+                title: $scope.title,
+                message: $scope.message,
+                stars: $scope.stars
+            };
+            $uibModalInstance.close(result);
+        };
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
     }]);
 
 angular.module('app.register', [])
@@ -1536,24 +1563,34 @@ angular.module('app.register', [])
         $scope.data.password = '';
         $scope.data.passwordConfirm = '';
         $scope.isTouched = false;
+        $scope.isLoading = false;
 
-        // email regex
+        // regex
         $scope.pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        $scope.userRegex = /^[a-zA-Z0-9äöüÄÖÜ._-]{4,20}$/;
+        $scope.passwordRegex = /^[a-zA-Z0-9äöüÄÖÜ._-]{6,20}$/;
 
+        //Trigger Login when enter pressed
+        $("#form").keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#submit").click();
+            }
+        });
 
         $scope.register = function () {
             $scope.isTouched = true;
             if (!$scope.data.userName || !$scope.data.password || !$scope.data.passwordConfirm) {
                 toastr.warning('Alle Felder müssen ausgefüllt werden!', 'Fehlende Informationen!');
-            } else if (!$scope.data.email || !$scope.pattern.test($scope.data.email)) {
+            } else if (!$scope.userRegex.test($scope.data.userName)) {
+                toastr.warning("Der Benutzername darf nur bestimmte Sonderzeichen enthalten und muss zwischen 4 und 20 Zeichen lang sein!")
+            } else if (!$scope.data.email || !$scope.pattern.test($scope.data.email) || $scope.data.email > 60) {
                 toastr.warning('Die Email-Adresse ist ungültig!', 'Fehlerhafte Informationen!');
             } else if ($scope.data.password != $scope.data.passwordConfirm) {
                 toastr.warning('Die Passwörter stimmen nicht überein.', 'Fehlerhafte Informationen!');
-            } else if ($scope.data.userName.length < 4) {
-                toastr.warning('Benutzername zu kurz!');
-            } else if ($scope.data.password.length < 6) {
+            } else if (!$scope.passwordRegex.test($scope.data.password)) {
                 toastr.warning('Passwort zu kurz!');
             } else {
+                $scope.isLoading = true;
                 var data = {
                     userName: $scope.data.userName,
                     password: $scope.data.password,
@@ -1562,10 +1599,12 @@ angular.module('app.register', [])
                 };
                 user.addUser(data)
                     .then(function() {
+                        $scope.isLoading = false;
                         toastr.success("Der Benutzer wurde erfolgreich angelegt!");
                         $state.go('login');
                         toastr.info("Bitte loggen Sie sich mit den neuen Daten an.");
                     }, function (error) {
+                        $scope.isLoading = false;
                         if (error) {
                             toastr.error(error);
                         } else {

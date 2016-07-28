@@ -9,4 +9,4 @@
     <hr>
 </div>
 <p class="h4" ng-show="totalPrice">Gesamt: {{ totalPrice | number: 2 }}€</p>
-<button class="btn btn-warning" ng-click="addOrder()">Artikel bestellen</button>
+<button class="btn btn-warning" ng-click="addOrder()" ng-disabled="isLoading">Artikel bestellen</button>

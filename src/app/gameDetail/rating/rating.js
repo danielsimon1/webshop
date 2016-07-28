@@ -6,9 +6,14 @@ angular.module('app.gameDetail')
         $scope.title = title;
         title ? $scope.isNewReview = false: $scope.isNewReview = true;
 
+        $scope.isTitleTouched = false;
+        $scope.isMessageTouched = false;
+        $scope.titleRegex = /^.{4,100}$/;
+        $scope.messageRegex = /^.{4,1000}$/;
+
         // check if inputs are empty
         $scope.checkValid = function () {
-            $scope.message && $scope.title ? $scope.isValid = true : $scope.isValid = false;
+            $scope.message && $scope.title && $scope.titleRegex.test($scope.title) && $scope.messageRegex.test($scope.message) ? $scope.isValid = true : $scope.isValid = false;
         };
         $scope.checkValid();
 

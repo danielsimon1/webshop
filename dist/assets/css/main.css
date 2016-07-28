@@ -79,6 +79,13 @@
 .text-error {
   color: red; }
 
+.delete-user-button[disabled] {
+  z-index: -1; }
+
+.delete-button-wrapper {
+  cursor: not-allowed;
+  display: inline-block; }
+
 body {
   width: 100%;
   height: 100%; }
@@ -89,7 +96,8 @@ body {
 
 .content {
   margin-top: 60px;
-  padding: 0 30px 30px 30px; }
+  padding: 0 30px 30px 30px;
+  margin-bottom: 50px; }
 
 .footer {
   position: absolute;
@@ -114,6 +122,12 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 70vw; }
+
+@-webkit-keyframes rotation {
+  0% {
+    -webkit-transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(180deg); } }
 
 .ui-view-container {
   position: relative;

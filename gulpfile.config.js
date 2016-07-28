@@ -14,6 +14,7 @@ module.exports = {
             'angular/angular.js',
             'jquery/dist/jquery.min.js',
             'angular-animate/angular-animate.min.js',
+            'angular-loading-bar/build/loading-bar.min.js',
             'angular-local-storage/dist/angular-local-storage.min.js',
             'angular-touch/angular-touch.min.js',
             'angular-ui-router/release/angular-ui-router.min.js',
@@ -28,6 +29,7 @@ module.exports = {
         , css: [
             'bootstrap/dist/css/bootstrap.min.css',
             'angular-bootstrap/ui-bootstrap-csp.css',
+            'angular-loading-bar/build/loading-bar.min.css',
             'jasny-bootstrap/dist/css/jasny-bootstrap.min.css',
             'textAngular/dist/textAngular.css',
             'font-awesome/css/font-awesome.min.css',
