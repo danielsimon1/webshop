@@ -6,6 +6,7 @@ angular.module('app', [
     'templates',
     'textAngular',
     'angular-md5',
+    'angular-loading-bar',
     // 'ngSanitize',
     'app.home',
     'app.addArticle',
