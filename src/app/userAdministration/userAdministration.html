@@ -1,0 +1,20 @@
+<table class="table table-condensed">
+    <thead>
+    <tr>
+        <th>Benutzer-ID</th>
+        <th>Rechte</th>
+        <th>Benutzername</th>
+        <th>Email</th>
+        <th>Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.userName }}</td>
+        <td>{{ user.email }}</td>
+        <td><button class="btn btn-default glyphicon glyphicon-trash" ng-click="deleteUser(user.userName)" ng-disabled="user.role == 'admin'"></button> </td>
+    </tr>
+    </tbody>
+</table>
