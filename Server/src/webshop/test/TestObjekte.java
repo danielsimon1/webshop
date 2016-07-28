@@ -16,7 +16,7 @@ public class TestObjekte {
 		platforms.add(Article.WINDOWS);
 		platforms.add(Article.XBOX);
 		platforms.add(Article.OSX);
-		String release = "12345678";
+		String release = "12345678456";
 		String description = "Im Herbst 2009 kehrt Entwickler Infinity Ward mit Call of Duty: Modern Warfare 2 auf die Bildschirme zurück. "
 				+ "Das wohl am sehnlichsten erwartete Spiel des Jahresist die Fortsetzung zu Call of Duty 4: Modern Warfare, dem wohl meistverkauften Ego-Actionspiel aller Zeiten. "
 				+ "Modern Warfare 2 setzt die packende Saga mitbeispielloser Action fort und konfrontiert die Spieler mit einer neuen Bedrohung, welche die Welt an den Rand des Zusammenbruchs bringen könnte."

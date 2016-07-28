@@ -91,6 +91,7 @@ angular.module('app.addArticle', [])
                 } else if (!$scope.isFloat($scope.minProcessor) && !$scope.isInt($scope.minProcessor)) {
                     toastr.warning('Der Prozessor muss mit einer Zahl angegeben werden! Für Nachkommastellen den Punkt verwenden!');
                 } else {
+                    var date = new Date($scope.release).getTime();
                     var data = {
                         id : 2,
                         name : $scope.title,
@@ -98,7 +99,7 @@ angular.module('app.addArticle', [])
                         price : $scope.price,
                         fsk : $scope.selected.fsk,
                         platforms : checkPlatforms(),
-                        release : $scope.release,
+                        release : date,
                         language : $scope.language,
                         minRam : $scope.minRam,
                         minProcessor : $scope.minProcessor,

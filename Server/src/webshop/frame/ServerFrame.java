@@ -39,11 +39,16 @@ public class ServerFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (serverStarted == false) {
-						Datenbank.connectToBD();
-						RestServer.startServer();
-						serverButton.setText("Server anhalten");
-						serverStarted = true;
-						statusServer.setText("Server läuft");
+						if (Datenbank.connectToBD()) {
+							RestServer.startServer();
+							serverButton.setText("Server anhalten");
+							serverStarted = true;
+							statusServer.setText("Server läuft");
+
+						} else {
+							statusServer.setText("Datenbankverbindung konnte nicht hergestellt werden");
+						}
+
 					} else {
 						RestServer.stopServer();
 						Datenbank.closeConnectionToDB();
@@ -60,7 +65,7 @@ public class ServerFrame extends JFrame {
 
 		message = new JLabel("");
 		c.add(message);
-		
+
 		statusServer = new JLabel("Server läuft nicht");
 		c.add(statusServer);
 	}
@@ -72,6 +77,52 @@ public class ServerFrame extends JFrame {
 		frame.setLocation(1000, 50);
 		frame.setSize(400, 900);
 		frame.setVisible(true);
+		frame.addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Datenbank.closeConnectionToDB();
+				RestServer.stopServer();
+
+
+			}
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+				Datenbank.closeConnectionToDB();
+				RestServer.stopServer();
+
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+
+			}
+		});
 	}
 
 }

@@ -523,6 +523,9 @@ public class Datenbank {
 
 	public static String deleteUser(String username) {
 		try {
+			if(!doesUserAlreadyExists(username)){
+				return "\"User existiert nicht\"";
+			}
 			statement.executeUpdate("delete from " + USERS + " where " + User.BENUTZERNAME + " = '" + username + "'");
 			User user = new User();
 			ResultSet rs = getTable("select * from " + USERS + " where " +  User.BENUTZERNAME + " = '" + username + "'");
@@ -531,13 +534,12 @@ public class Datenbank {
 				user.setId(Util.deleteLastWhitespaces(rs.getString(User.ID)));
 			}
 			statement.executeUpdate("delete from " + ORDERS + " where " + User.ID + " = '" + user.getId() + "'");
+			return "\"User " + username + " wurde erfolgreich gelöscht.\"";
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return "\"User " + username + " wurde erfolgreich gelöscht.";
+			return "\"Hat nicht funktioniert\"";
 		}
-
-		return "\"Hat nicht funktioniert\"";
 	}
 
 	

@@ -9,6 +9,7 @@ angular.module('app')
                     if (typeof response.data == 'string') {
                         q.reject(response.data);
                     } else {
+                        console.log(response.data);
                         var mapped = _mapArticles(response.data);
                         localStorageService.set('articles', mapped);
                         $rootScope.$emit("articles-loaded");
@@ -109,6 +110,10 @@ angular.module('app')
                         localStorageService.set("top-games", top);
                     });
                     q.resolve(top);
+                }, function (error) {
+                    if (error.statusText) {
+
+                    }
                 });
             return q.promise;
         };

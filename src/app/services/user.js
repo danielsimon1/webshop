@@ -62,6 +62,23 @@ angular.module('app')
 
             return q.promise;
         };
+        
+        service.deleteUser = function (userName) {
+            var q = $q.defer();
+
+            $http.get("http://localhost:8080/rest/user/delete/" + userName)
+                .then(function (response) {
+                    if (response.data == "User existiert nicht" || response.data == "Hat nicht funktioniert") {
+                        q.reject(response.data);
+                    } else {
+                        q.resolve(response.data);
+                    }
+                }, function (error) {
+                    q.reject(error);
+                });
+
+            return q.promise;
+        };
 
         function _mapUsers(input) {
             var mapped = [];
