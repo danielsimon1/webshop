@@ -49,8 +49,8 @@ public class ArticleResource {
 				for (Article x : arrArticle) {
 					finalList.add(x);
 				}
-				if(finalList==null){
-					return "fdsajf";
+				if(finalList.size()<1){
+					return "\"Hat nicht funktioniert\"";
 				}
 				Artikelliste finalArtikelliste =  new Artikelliste(finalList);
 				
