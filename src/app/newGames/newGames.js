@@ -8,6 +8,14 @@ angular.module('app.newGames', [])
         });
     })
 
-    .controller('NewGamesCtrl', function () {
-
+    .controller('NewGamesCtrl', function ($scope, articles, localStorageService) {
+        $scope.newGameIds = localStorageService.get("new-games") || [];
+        $scope.articles = localStorageService.get("articles") || {};
+        articles.getAllArticles()
+            .then(function () {
+                $scope.newGameIds = localStorageService.get("new-games");
+                $scope.articles = localStorageService.get("articles");
+            }, function (error) {
+                toastr.error(error);
+            });
     });

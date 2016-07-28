@@ -265,7 +265,7 @@ angular.module('app.addArticle', [])
                         price : $scope.price,
                         fsk : $scope.selected.fsk,
                         platforms : checkPlatforms(),
-                        release : date,
+                        release : date.toString(),
                         language : $scope.language,
                         minRam : $scope.minRam,
                         minProcessor : $scope.minProcessor,
@@ -288,6 +288,73 @@ angular.module('app.addArticle', [])
             } else {
                 toastr.warning('Fehlende Informationen!');
             }
+        }
+    }]);
+
+angular.module('app.cart', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('cart', {
+            url: '/cart',
+            templateUrl: 'app/cart/cart.html',
+            controller: 'CartCtrl'
+        });
+    }])
+
+    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
+        // cart only
+        var cart = localStorageService.get('cart');
+        // articles only
+        var articles = localStorageService.get('articles');
+        $scope.articles = articles;
+        // cart and articles merged
+        $scope.cart = {};
+        $scope.isInvalid = false;
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * item.price;
+            });
+        };
+
+        // merge cart and articles
+        angular.forEach(articles, function (article) {
+            angular.forEach(cart, function (item) {
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    console.log(newObject);
+                    $scope.cart[item.itemId] = newObject;
+                }
+            });
+        });
+        $scope.updateTotalPrice();
+
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.quantityChange = function (id) {
+            var newQuantity = parseInt($scope.cart[id].quantity);
+            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
+                $scope.isInvalid = true;
+            } else {
+                $scope.isInvalid = false;
+                cart[id].quantity = newQuantity;
+                $scope.updateTotalPrice();
+                localStorageService.set('cart', cart);
+                $rootScope.$emit('itemAddedToCart');
+            }
+        };
+
+        $scope.remove = function (id) {
+            delete $scope.cart[id];
+            delete cart[id];
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', cart);
+            $rootScope.$emit('itemAddedToCart');
         }
     }]);
 
@@ -565,20 +632,6 @@ angular.module('app.login', [])
         }
     }]);
 
-angular.module('app.home', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('home', {
-            url: '/home',
-            templateUrl: 'app/home/home.html',
-            controller: 'HomeCtrl'
-        });
-    }])
-
-    .controller('HomeCtrl', function () {
-
-    });
-
 angular.module('app.newGames', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -589,9 +642,17 @@ angular.module('app.newGames', [])
         });
     }])
 
-    .controller('NewGamesCtrl', function () {
-
-    });
+    .controller('NewGamesCtrl', ["$scope", "articles", "localStorageService", function ($scope, articles, localStorageService) {
+        $scope.newGameIds = localStorageService.get("new-games") || [];
+        $scope.articles = localStorageService.get("articles") || {};
+        articles.getAllArticles()
+            .then(function () {
+                $scope.newGameIds = localStorageService.get("new-games");
+                $scope.articles = localStorageService.get("articles");
+            }, function (error) {
+                toastr.error(error);
+            });
+    }]);
 
 angular.module('app.orders', [])
 
@@ -624,8 +685,49 @@ angular.module('app.orders', [])
         }
     }]);
 
+angular.module('app.home', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('home', {
+            url: '/home',
+            templateUrl: 'app/home/home.html',
+            controller: 'HomeCtrl'
+        });
+    }])
+
+    .controller('HomeCtrl', function () {
+
+    });
+
+angular.module('app.topGames', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('topGames', {
+            url: '/topGames',
+            templateUrl: 'app/topGames/topGames.html',
+            controller: 'TopGamesCtrl'
+        });
+    }])
+
+    .controller('TopGamesCtrl', ["$scope", "articles", "localStorageService", function ($scope, articles, localStorageService) {
+        $scope.topGameIds = localStorageService.get("top-games") || [];
+        $scope.articles = localStorageService.get("articles") || {};
+        articles.getTopGames()
+            .then(function () {
+                $scope.topGameIds = localStorageService.get("top-games")
+            }, function (error) {
+                toastr.error(error);
+            });
+        articles.getAllArticles()
+            .then(function () {
+                $scope.articles = localStorageService.get("articles");
+            }, function (error) {
+                toastr.error(error);
+            });
+    }]);
+
 angular.module('app')
-    .factory('articles', ["$q", "$http", "localStorageService", "$rootScope", "$log", function ($q, $http, localStorageService, $rootScope, $log) {
+    .factory('articles', ["$q", "$http", "localStorageService", "$rootScope", "$log", "$filter", function ($q, $http, localStorageService, $rootScope, $log, $filter) {
         var service = {};
 
         service.getAllArticles = function () {
@@ -640,6 +742,7 @@ angular.module('app')
                         localStorageService.set('articles', mapped);
                         $rootScope.$emit("articles-loaded");
                         $log.info("articles loaded");
+                        service.getNewGames(mapped);
                         q.resolve(mapped);
                     }
                 }, function (error) {
@@ -742,6 +845,21 @@ angular.module('app')
                     }
                 });
             return q.promise;
+        };
+
+        service.getNewGames = function (articles) {
+            var articlesArray = [];
+            angular.forEach(articles, function (item) {
+                item.release = parseInt(item.release);
+                articlesArray.push(item);
+            });
+            var sorted = $filter('orderBy')(articlesArray, 'release', true);
+            var sliced = sorted.slice(0,5);
+            var newGamesIds = [];
+            angular.forEach(sliced, function (item) {
+                newGamesIds.push(item.id);
+            });
+            localStorageService.set("new-games", newGamesIds);
         };
 
 
@@ -1006,28 +1124,6 @@ angular.module('app')
         return service;
     }]);
 
-angular.module('app.topGames', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('topGames', {
-            url: '/topGames',
-            templateUrl: 'app/topGames/topGames.html',
-            controller: 'TopGamesCtrl'
-        });
-    }])
-
-    .controller('TopGamesCtrl', ["$scope", "articles", "localStorageService", function ($scope, articles, localStorageService) {
-        $scope.topGames = localStorageService.get("top-games") || [];
-        $scope.articles = localStorageService.get("articles");
-        articles.getTopGames()
-            .then(function () {
-                $scope.topGames = localStorageService.get("top-games") || [];
-            }, function (error) {
-                toastr.error(error);
-            });
-        articles.getAllArticles();
-    }]);
-
 angular.module('app.userAdministration', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -1065,73 +1161,6 @@ angular.module('app.userAdministration', [])
         }
     }]);
 
-angular.module('app.cart', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('cart', {
-            url: '/cart',
-            templateUrl: 'app/cart/cart.html',
-            controller: 'CartCtrl'
-        });
-    }])
-
-    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
-        // cart only
-        var cart = localStorageService.get('cart');
-        // articles only
-        var articles = localStorageService.get('articles');
-        $scope.articles = articles;
-        // cart and articles merged
-        $scope.cart = {};
-        $scope.isInvalid = false;
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
-            });
-        };
-
-        // merge cart and articles
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    console.log(newObject);
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
-        $scope.updateTotalPrice();
-
-        $scope.isInt = function (n) {
-            n = parseInt(n);
-            return Number(n) === n && n % 1 === 0;
-        };
-
-        $scope.quantityChange = function (id) {
-            var newQuantity = parseInt($scope.cart[id].quantity);
-            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
-                $scope.isInvalid = true;
-            } else {
-                $scope.isInvalid = false;
-                cart[id].quantity = newQuantity;
-                $scope.updateTotalPrice();
-                localStorageService.set('cart', cart);
-                $rootScope.$emit('itemAddedToCart');
-            }
-        };
-
-        $scope.remove = function (id) {
-            delete $scope.cart[id];
-            delete cart[id];
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', cart);
-            $rootScope.$emit('itemAddedToCart');
-        }
-    }]);
-
 angular.module('app.gameDetail')
     .controller('RatingCtrl', ["$scope", "$uibModalInstance", "stars", "title", "message", function ($scope, $uibModalInstance, stars, title, message) {
         
@@ -1156,6 +1185,69 @@ angular.module('app.gameDetail')
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
         };
+    }]);
+
+angular.module('app.checkout', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('checkout', {
+            url : '/checkout',
+            templateUrl : 'app/cart/checkout/checkout.html',
+            controller : 'CheckoutCtrl'
+        });
+    }])
+
+    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
+        var user = localStorageService.get('user') || {};
+        if (!user.userName) {
+            localStorageService.set('fromCheckout', true);
+            toastr.info('Bitte melden Sie sich an.');
+            $state.go('login');
+        }
+        var cart = localStorageService.get('cart') || {};
+        var articles = localStorageService.get('articles') || {};
+        $scope.cart = {};
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * item.price;
+            });
+        };
+
+        angular.forEach(articles, function (article) {
+            angular.forEach(cart, function (item) {
+                if (item.itemId == article.id) {
+                    var newObject = article;
+                    newObject.quantity = item.quantity;
+                    $scope.cart[item.itemId] = newObject;
+                }
+            });
+        });
+
+        $scope.addOrder = function () {
+            var cart = localStorageService.get("cart");
+            var data = {
+                userId : user.id,
+                date : new Date().getTime(),
+                totalPrice : $scope.totalPrice,
+                items : cart
+            };
+            orders.addOrder(data)
+                .then(function (response) {
+                    toastr.success(response);
+                    localStorageService.remove("cart");
+                    $state.go("orders");
+                }, function (error) {
+                    if (!error) {
+                        toastr.error("Fehler bei der Verbindung zum Server!");
+                    } else {
+                        toastr.error(error);
+                    }
+                });
+        };
+        $scope.updateTotalPrice();
+
     }]);
 
 angular.module('app.passwordForget', [])
@@ -1233,69 +1325,6 @@ angular.module('app.register', [])
                     });
             }
         }
-    }]);
-
-angular.module('app.checkout', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('checkout', {
-            url : '/checkout',
-            templateUrl : 'app/cart/checkout/checkout.html',
-            controller : 'CheckoutCtrl'
-        });
-    }])
-
-    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
-        var user = localStorageService.get('user') || {};
-        if (!user.userName) {
-            localStorageService.set('fromCheckout', true);
-            toastr.info('Bitte melden Sie sich an.');
-            $state.go('login');
-        }
-        var cart = localStorageService.get('cart') || {};
-        var articles = localStorageService.get('articles') || {};
-        $scope.cart = {};
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * item.price;
-            });
-        };
-
-        angular.forEach(articles, function (article) {
-            angular.forEach(cart, function (item) {
-                if (item.itemId == article.id) {
-                    var newObject = article;
-                    newObject.quantity = item.quantity;
-                    $scope.cart[item.itemId] = newObject;
-                }
-            });
-        });
-
-        $scope.addOrder = function () {
-            var cart = localStorageService.get("cart");
-            var data = {
-                userId : user.id,
-                date : new Date().getTime(),
-                totalPrice : $scope.totalPrice,
-                items : cart
-            };
-            orders.addOrder(data)
-                .then(function (response) {
-                    toastr.success(response);
-                    localStorageService.remove("cart");
-                    $state.go("orders");
-                }, function (error) {
-                    if (!error) {
-                        toastr.error("Fehler bei der Verbindung zum Server!");
-                    } else {
-                        toastr.error(error);
-                    }
-                });
-        };
-        $scope.updateTotalPrice();
-
     }]);
 
 })(window, document);

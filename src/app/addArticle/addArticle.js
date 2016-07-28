@@ -99,7 +99,7 @@ angular.module('app.addArticle', [])
                         price : $scope.price,
                         fsk : $scope.selected.fsk,
                         platforms : checkPlatforms(),
-                        release : date,
+                        release : date.toString(),
                         language : $scope.language,
                         minRam : $scope.minRam,
                         minProcessor : $scope.minProcessor,

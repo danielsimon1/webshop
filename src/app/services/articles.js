@@ -1,5 +1,5 @@
 angular.module('app')
-    .factory('articles', function ($q, $http, localStorageService, $rootScope, $log) {
+    .factory('articles', function ($q, $http, localStorageService, $rootScope, $log, $filter) {
         var service = {};
 
         service.getAllArticles = function () {
@@ -14,6 +14,7 @@ angular.module('app')
                         localStorageService.set('articles', mapped);
                         $rootScope.$emit("articles-loaded");
                         $log.info("articles loaded");
+                        service.getNewGames(mapped);
                         q.resolve(mapped);
                     }
                 }, function (error) {
@@ -116,6 +117,21 @@ angular.module('app')
                     }
                 });
             return q.promise;
+        };
+
+        service.getNewGames = function (articles) {
+            var articlesArray = [];
+            angular.forEach(articles, function (item) {
+                item.release = parseInt(item.release);
+                articlesArray.push(item);
+            });
+            var sorted = $filter('orderBy')(articlesArray, 'release', true);
+            var sliced = sorted.slice(0,5);
+            var newGamesIds = [];
+            angular.forEach(sliced, function (item) {
+                newGamesIds.push(item.id);
+            });
+            localStorageService.set("new-games", newGamesIds);
         };
 
 

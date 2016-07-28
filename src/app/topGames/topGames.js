@@ -9,13 +9,18 @@ angular.module('app.topGames', [])
     })
 
     .controller('TopGamesCtrl', function ($scope, articles, localStorageService) {
-        $scope.topGames = localStorageService.get("top-games") || [];
-        $scope.articles = localStorageService.get("articles");
+        $scope.topGameIds = localStorageService.get("top-games") || [];
+        $scope.articles = localStorageService.get("articles") || {};
         articles.getTopGames()
             .then(function () {
-                $scope.topGames = localStorageService.get("top-games") || [];
+                $scope.topGameIds = localStorageService.get("top-games")
             }, function (error) {
                 toastr.error(error);
             });
-        articles.getAllArticles();
+        articles.getAllArticles()
+            .then(function () {
+                $scope.articles = localStorageService.get("articles");
+            }, function (error) {
+                toastr.error(error);
+            });
     });
