@@ -105,7 +105,7 @@ angular.module('app.addArticle', [])
             $scope.languageRegex = /^.{4,15}$/;
             $scope.descriptionRegex = /^.{1,8000}$/;
 
-            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && genreRegex.test($scope.customGenre)))
+            if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && $scope.genreRegex.test($scope.customGenre)))
                 && $scope.price && $scope.descriptionRegex.test($scope.description) && ($scope.selected.platform.wiiu ||
                 $scope.selected.platform.windows || $scope.selected.platform.ps || $scope.selected.platform.xbox ||
                 $scope.selected.platform.osx) && $scope.release && $scope.language && $scope.minRam && $scope.languageRegex.test($scope.language) &&

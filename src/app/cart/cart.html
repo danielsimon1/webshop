@@ -1,18 +1,18 @@
 <div ng-repeat="item in cart" class="form-inline">
     <img ng-src="{{articles[item.itemId].image}}" height="100px" style="display:inline-block">
-    <div style="display: inline-block; margin-left: 15px">
+    <div style="display: inline-block; margin-left: 15px; vertical-align: middle">
         <input ng-model="item.quantity" class="form-control input-sm form-control-inline" style="width: 45px"
                ng-change="quantityChange(item.itemId)">
-        <span><a ui-sref="gameDetail({id: item.id})">{{ articles[item.itemId].name }}</a> (Stückpreis: {{ articles[item.itemId].price }}€)</span>
-        <span class="btn btn-default glyphicon glyphicon-trash" style="margin-left: 10px" ng-click="remove(item.itemId)"></span><br>
+        <span><a ui-sref="gameDetail({id: item.itemId})">{{ articles[item.itemId].name }}</a> (Stückpreis: {{ articles[item.itemId].price }}€)</span>
+        <span class="btn btn-default glyphicon glyphicon-trash" style="margin-left: 10px" ng-click="remove(item.itemId)"></span>
 
-        <span class="h4" ng-show="item.quantity && isInt(item.quantity) && item.quantity > 0  && item.quantity <= 20">{{ item.quantity * articles[item.itemId].price | number: 2 }}€</span>
+        <p class="h4" ng-show="item.quantity && isInt(item.quantity) && item.quantity > 0  && item.quantity <= 20">{{ item.quantity * articles[item.itemId].price | number: 2 }}€</p>
 
     </div>
 
     <hr>
 </div>
-<p class="h4" ng-show="totalPrice && !isInvalid">Gesamt: {{ totalPrice | number: 2 }}€</p>
+<p class="h4" ng-show="totalPrice && !isInvalid">Gesamt: <b>{{ totalPrice | number: 2 }}€</b></p>
 <button class="btn btn-default" ng-show="totalPrice && !isInvalid" ui-sref="checkout">Zur Kasse gehen</button>
 <p class="h4" ng-show="!totalPrice && !isInvalid">Es sind keine Elemente im Warenkorb!</p>
 <p class="h4" ng-show="isInvalid">Bitte geben Sie gültige Werte zwischen 1 und 20 an!</p>

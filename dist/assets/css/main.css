@@ -56,6 +56,15 @@
   margin-right: auto;
   display: block; }
 
+.radio-list > li > label {
+  font-weight: normal; }
+
+.radio-list > li > label, .radio-list > li > input {
+  cursor: pointer; }
+
+.radio-list > li {
+  margin-left: 10px; }
+
 .invalid > input, .invalid-select > select, .invalid-textarea > div > .ta-text, .invalid-select > input, .fileinput-invalid > .btn {
   border-color: red; }
 

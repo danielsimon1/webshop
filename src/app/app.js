@@ -117,19 +117,6 @@ angular.module('app', [
             localStorageService.set('cart', cart);
         };
         countCartItems();
-    })
-    .filter('objectFilter', function () {
-        return function (items, search) {
-            var result = [];
-            search = search ? search.toLowerCase() : '';
-            angular.forEach(items, function (value, key) {
-                if (value.name.toLowerCase().indexOf(search) !== -1) {
-                    result.push(value);
-                }
-            });
-            return result;
-
-        }
     });
 
 

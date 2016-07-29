@@ -1,11 +1,22 @@
 <div class="row">
     <div class="col-md-3">
         <h4>{{ genre }}</h4>
-        <input class="form-control" placeholder="Suche" ng-model="searchInput.name" ng-show="isArticles"/>
+        <div class="input-group">
+            <input class="form-control" placeholder="Suche" ng-model="searchInput.name" ng-show="isArticles"/>
+            <div class="input-group-btn" uib-dropdown auto-close="outsideClick">
+                <button class="btn btn-default" uib-dropdown-toggle>Sortieren nach <span class="caret"></span></button>
+                <ul uib-dropdown-menu class="radio-list">
+                    <li><input type="radio" id="relevance" name="order" ng-value="relevance" ng-model="orderType" ng-change="optionChange()"><label for="relevance">&nbsp;Relevanz</label></li>
+                    <li><input type="radio" id="priceDesc" name="order" ng-value="priceDesc" ng-model="orderType" ng-change="optionChange()"><label for="priceDesc">&nbsp;Preis absteigend</label></li>
+                    <li><input type="radio" id="priceAsc" name="order" ng-value="priceAsc" ng-model="orderType" ng-change="optionChange()"><label for="priceAsc">&nbsp;Preis aufsteigend</label></li>
+                    <li><input type="radio" id="newest" name="order" ng-value="newest" ng-model="orderType" ng-change="optionChange()"><label for="newest">&nbsp;Neueste zuerst</label></li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 <div class="col-md-12" style="margin-top: 20px;">
-    <div class="panel panel-default game-panels" ng-repeat="article in articles | objectFilter: searchInput.name">
+    <div class="panel panel-default game-panels" ng-repeat="article in articles | filter: searchInput | orderBy: orderType.value: orderType.reverse">
         <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span
                 class="badge">{{ article.price }}€</span></a></div>
         <div class="panel-body">
