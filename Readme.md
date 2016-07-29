@@ -46,6 +46,12 @@ Starten Sie dann den Browser mit ausgeschalteter same origin policy. Navigieren 
 Testen Sie die Anwendung, indem Sie auf das Bild von Modern Warfare 2 klicken. Es sollte sich eine Seite mit den Details zum Spiel öffnen. Dann sind die Anwendung und die Datenbank ordnungsgemäß verbunden.
 ## Benutzung
 Die Testdaten enthalten ein Spiel mit der ID 0 und einen User mit Admin-Rechten mit dem Benutzernamen `Matthias` und dem Passwort `secret`.
+
+##Struktur
+Der Java-Quellcode des Servers sowie die kompilierten JAR-Dateien befinden sich im `Server`-Ordner.
+
+Die einzelnen HTML-, JavaScript- und CSS-Dateien sowie Bilder befinden sich im `src`-Ordner. Diese wurde zusammengefügt und mit den verwendeten 3rd party libraries zu einer lauffähigen Anwendung kombiniert. Diese befindet sich im `dist`-Ordner.
+
 ## Funktionen
 * User-Registration (Alle)
 * User-Login (User, Admin)

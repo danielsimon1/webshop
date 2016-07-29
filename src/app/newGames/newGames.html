@@ -3,7 +3,7 @@
     <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: game})">{{ articles[game].name }} <span
             class="badge">{{ articles[game].price }}€</span></a></div>
     <div class="panel-body">
-        <div class="label label-success" ng-if="isAllGenres">{{ articles[game].genre }}</div>
+        <div class="label label-success" ui-sref="genre({name: articles[game].genre})" style="cursor: pointer;">{{ articles[game].genre }}</div>
         <a ui-sref="gameDetail({id: game})"><img ng-src="{{articles[game].image}}" class="panel-image"/></a>
     </div>
 </div>

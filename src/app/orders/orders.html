@@ -4,9 +4,9 @@
     <p class="h4">Gesamtpreis: <span class="label label-primary">{{ order.totalPrice }}€</span></p>
     <p>Bestellte Artikel:</p>
     <div>
-        <div class="list-group-item col-md-3" ng-repeat="article in order.articles">
-            <img ng-src="{{articles[article.id].image}}" height="100px" style="display: inline-block;">
-            <div style="display: inline-block; margin-left: 20px">
+        <div class="list-group-item col-md-3" ng-repeat="article in order.articles" style="min-width: 400px">
+            <a ui-sref="gameDetail({id: article.id})"><img ng-src="{{articles[article.id].image}}" height="100px" style="display: inline-block; margin-right:20px"></a>
+            <div style="display: inline-block;">
                 {{ article.quantity }}x <a ui-sref="gameDetail({id: article.id})">{{ article.name }}</a><br>
                 <span class="h4">{{ article.quantity * article.price }}€</span>
 

@@ -21,11 +21,14 @@
             <div class="form-group" ng-class="{'invalid': (!price || isPriceInvalid) && isPriceTouched}"
                  uib-tooltip="Centbeträge mit Punkt trennen! (z.B. 12.99)" tooltip-enable="isPriceInvalid">
                 <label for="price">Preis:</label>
-                <input type="text" class="form-control" id="price" ng-model="price" ng-change="priceValidation()">
+                <div class="input-group" style="width: 120px">
+                    <input type="text" class="form-control" id="price" ng-model="price" ng-change="priceValidation()">
+                    <span class="input-group-addon">€</span>
+                </div>
             </div>
             <div class="form-group">
                 <label for="fsk">Altersbeschränkung:</label>
-                <select class="form-control" id="fsk" ng-model="selected.fsk">
+                <select class="form-control" id="fsk" ng-model="selected.fsk" style="width: 63px">
                     <option>0</option>
                     <option>6</option>
                     <option>12</option>
@@ -64,12 +67,18 @@
             <div class="form-group" ng-class="{'invalid': (!minRam || !isInt(minRam)) && isTouched}"
                  uib-tooltip="Bitte eine Zahl eingeben!" tooltip-enable="!isInt(minRam)">
                 <label for="minRam">Minimaler Arbeitsspeicher:</label>
-                <input type="text" class="form-control" id="minRam" ng-model="minRam">
+                <div class="input-group" style="width: 120px">
+                    <input type="text" class="form-control" id="minRam" ng-model="minRam">
+                    <span class="input-group-addon">GB</span>
+                </div>
             </div>
             <div class="form-group" ng-class="{'invalid': (!minProcessor || (!isFloat(minProcessor) && !isInt(minProcessor))) && isTouched}"
                  uib-tooltip="Bitte eine Zahl eingeben und Nachkommastellen mit einem Punkt trennen!" tooltip-enable="!isFloat(minProcessor) && !isInt(minProcessor)">
                 <label for="minProcessor">Minimaler Prozessor:</label>
-                <input type="text" class="form-control" id="minProcessor" ng-model="minProcessor">
+                <div class="input-group" style="width: 120px">
+                    <input type="text" class="form-control" id="minProcessor" ng-model="minProcessor">
+                    <span class="input-group-addon">GHz</span>
+                </div>
             </div>
             <div class="form-group" ng-class="{'invalid-textarea': (!description || !descriptionRegex.test(description)) && isTouched}">
                 <label for="description">Beschreibung:</label>

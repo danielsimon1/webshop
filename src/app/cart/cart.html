@@ -1,5 +1,5 @@
 <div ng-repeat="item in cart" class="form-inline">
-    <img ng-src="{{articles[item.itemId].image}}" height="100px" style="display:inline-block">
+    <a ui-sref="gameDetail({id: item.itemId})"><img ng-src="{{articles[item.itemId].image}}" height="100px" style="display:inline-block"></a>
     <div style="display: inline-block; margin-left: 15px; vertical-align: middle">
         <input ng-model="item.quantity" class="form-control input-sm form-control-inline" style="width: 45px"
                ng-change="quantityChange(item.itemId)">
