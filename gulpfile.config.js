@@ -11,7 +11,7 @@ module.exports = {
         dist: 'dist'
     }, bower: {
         js: [
-            'angular/angular.js',
+            'angular/angular.min.js',
             'jquery/dist/jquery.min.js',
             'angular-animate/angular-animate.min.js',
             'angular-loading-bar/build/loading-bar.min.js',
@@ -21,6 +21,7 @@ module.exports = {
             'bootstrap/dist/js/bootstrap.min.js',
             'angular-bootstrap/ui-bootstrap-tpls.min.js',
             'jasny-bootstrap/dist/js/jasny-bootstrap.min.js',
+            'angular-md5/angular-md5.min.js',
             'textAngular/dist/textAngular-rangy.min.js',
             'textAngular/dist/textAngular-sanitize.min.js',
             'textAngular/dist/textAngular.min.js',
