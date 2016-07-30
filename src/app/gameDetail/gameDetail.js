@@ -8,7 +8,7 @@ angular.module('app.gameDetail', [])
         });
     })
 
-    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $uibModal, $state, articles, $rootScope) {
+    .controller('GameDetailCtrl', function ($scope, $http, $stateParams, localStorageService, $uibModal, $state, articles, $rootScope, $log) {
         $scope.tab = {};
         $scope.tab.active = 'description';
 
@@ -122,6 +122,7 @@ angular.module('app.gameDetail', [])
                 var title = '';
                 var message = '';
                 angular.forEach($scope.actualGame.reviews, function (review) {
+                    // if user wrote a preview before
                     if (review.author == user.userName) {
                         title = review.title;
                         message = review.message;
@@ -133,7 +134,7 @@ angular.module('app.gameDetail', [])
                     animation : true,
                     templateUrl : 'app/gameDetail/rating/rating.html',
                     controller : 'RatingCtrl',
-                    // if user wrote a review before, pre-filling the input fields
+                    // send data from previous review to modal controller
                     resolve : {
                         stars : function () {
                             return stars;
@@ -170,7 +171,7 @@ angular.module('app.gameDetail', [])
                         });
                 }, function () {
                     // modal has been closed because user pressed the cancel button
-                    console.log('Modal dismissed');
+                    $log.info('Modal dismissed');
                 });
             } else {
                 toastr.warning('Bitte loggen Sie sich zuerst ein!');

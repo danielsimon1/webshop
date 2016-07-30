@@ -75,9 +75,9 @@ angular.module('app')
         };
 
 
-        // send username and get id and role
-        // localstorage values can be edited by user
-        // prevents that users can access admin sites by changing the role in the localstorage
+        // send username and get user information to verify the identity of the user
+        // localstorage values can be edited by a user so he can pretend that he is an admin or another user
+        // the authentication prevents that users can access protected sites by changing the role in the localstorage or typing in another user name
 
         service.authenticate = function (userName, md5Password) {
             var q = $q.defer();

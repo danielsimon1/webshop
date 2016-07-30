@@ -8,31 +8,39 @@ angular.module('app.genre', [])
         });
     })
 
-    .controller('GenreCtrl', function ($stateParams, localStorageService, $scope) {
+    .controller('GenreCtrl', function ($stateParams, localStorageService, $scope, articles) {
         $scope.searchInput = "";
         $scope.isAllGenres = false;
 
         // get genre from URL parameters
         $scope.genre = $stateParams.name;
 
-        // all articles
-        var articles = localStorageService.get('articles');
+        function getArticles() {
+            // all articles
+            var articles = localStorageService.get('articles');
 
-        // only articles with matching genre
-        $scope.articles = [];
+            // only articles with matching genre
+            $scope.articles = [];
 
-        $scope.isArticles = false;
-        // convert from objects to array to be able to order
-        angular.forEach(articles, function (item) {
-            if (item.genre == $scope.genre) {
-                $scope.isArticles = true;
-                $scope.articles.push(item);
-            } else if ($scope.genre == 'Alle Spiele') {
-                $scope.articles.push(item);
-                $scope.isArticles = true;
-                $scope.isAllGenres = true;
-            }
-        });
+            $scope.isArticles = false;
+            // convert from objects to array to be able to order
+            angular.forEach(articles, function (item) {
+                if (item.genre == $scope.genre) {
+                    $scope.isArticles = true;
+                    $scope.articles.push(item);
+                } else if ($scope.genre == 'Alle Spiele') {
+                    $scope.articles.push(item);
+                    $scope.isArticles = true;
+                    $scope.isAllGenres = true;
+                }
+            });
+        }
+        getArticles();
+
+        articles.getAllArticles()
+            .then(function () {
+                getArticles();
+            });
 
         // set order values
         $scope.relevance = {

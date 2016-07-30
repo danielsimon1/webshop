@@ -77,7 +77,7 @@ angular.module('app.addArticle', [])
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    console.log('image successfully converted to Base64');
+                    $log.info('image successfully converted to Base64');
                     $scope.image = e.target.result;
                     $scope.$apply();
                 };
@@ -150,7 +150,7 @@ angular.module('app.addArticle', [])
                         })
                 }
             } else {
-                toastr.warning('Fehlende Informationen!');
+                toastr.warning('Fehlende oder fehlerhafte Angaben!');
             }
         }
     });
