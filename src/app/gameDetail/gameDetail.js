@@ -34,11 +34,14 @@ angular.module('app.gameDetail', [])
             // get the id from the url parameters
             var id = $stateParams.id;
             $scope.articles = localStorageService.get('articles');
-            $scope.actualGame = $scope.articles[id];
-            if (!$scope.actualGame) {
+            if (!$scope.articles) {
+                toastr.error("Es existieren keine Artikel!");
+                $state.go("home");
+            } else if (!$scope.articles[id]) {
                 toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
                 $state.go('home');
             } else {
+                $scope.actualGame = $scope.articles[id];
                 $scope.stars = calculateAverageStars($scope.actualGame.reviews);
                 document.getElementById("description").innerHTML = $scope.actualGame.description;
                 $scope.calcPrice();
