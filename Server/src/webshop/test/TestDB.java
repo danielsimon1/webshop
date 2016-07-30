@@ -1,6 +1,7 @@
 package webshop.test;
 
 import webshop.db.Datenbank;
+import webshop.model.Article;
 import webshop.model.Review;
 
 public class TestDB {
@@ -12,7 +13,9 @@ public class TestDB {
 	
 	
 	public static void insertTestData(){
-		Datenbank.addArticle(TestObjekte.getTestArticle1());
+		for(Article x:TestObjekte.getTestArticle1()) {
+			Datenbank.addArticle(x);
+		}
 		for(Review x:TestObjekte.getTestReview()){
 			Datenbank.addReview(x);
 		}

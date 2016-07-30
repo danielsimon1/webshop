@@ -148,7 +148,7 @@ public class Datenbank {
 				tempArtikel.setLanguage(Util.deleteLastWhitespaces(rs.getString(Article.LANGUAGE)));
 				tempArtikel.setMinRam(rs.getInt(Article.MINRAM));
 				tempArtikel.setMinProcessor(rs.getDouble(Article.MINPROCESSOR));
-				tempArtikel.setDescription(Util.deleteLastWhitespaces(rs.getString(Article.DESCRIPTION)));
+				tempArtikel.setDescription(Util.deleteLastWhitespaces(rs.getString(Article.DESCRIPTION).replace("\"", "'")));
 				
 				tempArtikel.setReviews(getReviews(tempArtikel.getId()));
 				
