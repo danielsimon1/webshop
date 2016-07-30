@@ -62,7 +62,7 @@ angular.module('app', [
         localStorageService.set('fromCheckout', false);
     }])
     // controller for the navbar
-    .controller('AppCtrl', ["$scope", "$rootScope", "$http", "localStorageService", "$state", "articles", function ($scope, $rootScope, $http, localStorageService, $state, articles) {
+    .controller('AppCtrl', ["$scope", "$rootScope", "$http", "localStorageService", "$state", "articles", "$log", function ($scope, $rootScope, $http, localStorageService, $state, articles, $log) {
         localStorageService.remove('checkout');
         $rootScope.$on('$stateChangeSuccess',
             function (event, toState, toParams) {
@@ -71,6 +71,7 @@ angular.module('app', [
             });
 
         $rootScope.$on('itemAddedToCart', function () {
+            $log.info("cart changed");
             countCartItems();
         });
 
@@ -219,14 +220,15 @@ angular.module('app.addArticle', [])
             return Number(n) === n && n % 1 !== 0;
         };
 
+        $scope.titleRegex = /^.{4,60}$/;
+        $scope.genreRegex = /^.{4,20}$/;
+        $scope.languageRegex = /^.{4,15}$/;
+        $scope.descriptionRegex = /^[^']{1,8000}$/;
+
         $scope.addArticle = function () {
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
             $scope.isPriceInvalid = false;
-            $scope.titleRegex = /^.{4,60}$/;
-            $scope.genreRegex = /^.{4,20}$/;
-            $scope.languageRegex = /^.{4,15}$/;
-            $scope.descriptionRegex = /^.{1,8000}$/;
 
             if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && $scope.genreRegex.test($scope.customGenre)))
                 && $scope.price && $scope.descriptionRegex.test($scope.description) && ($scope.selected.platform.wiiu ||
@@ -275,235 +277,6 @@ angular.module('app.addArticle', [])
                 toastr.warning('Fehlende Informationen!');
             }
         }
-    }]);
-
-angular.module('app.cart', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('cart', {
-            url: '/cart',
-            templateUrl: 'app/cart/cart.html',
-            controller: 'CartCtrl'
-        });
-    }])
-
-    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
-        $scope.cart = localStorageService.get('cart');
-        $scope.articles = localStorageService.get('articles');
-        $scope.isInvalid = false;
-
-        $scope.updateTotalPrice = function () {
-            $scope.totalPrice = 0;
-            angular.forEach($scope.cart, function (item) {
-                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
-            });
-        };
-        $scope.updateTotalPrice();
-
-        $scope.isInt = function (n) {
-            n = parseInt(n);
-            return Number(n) === n && n % 1 === 0;
-        };
-
-        $scope.quantityChange = function (id) {
-            var newQuantity = parseInt($scope.cart[id].quantity);
-            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
-                $scope.isInvalid = true;
-            } else {
-                $scope.isInvalid = false;
-                $scope.cart[id].quantity = newQuantity;
-                $scope.updateTotalPrice();
-                localStorageService.set('cart', $scope.cart);
-                $rootScope.$emit('itemAddedToCart');
-            }
-        };
-
-        $scope.remove = function (id) {
-            delete $scope.cart[id];
-            $scope.updateTotalPrice();
-            localStorageService.set('cart', $scope.cart);
-            $rootScope.$emit('itemAddedToCart');
-        }
-    }]);
-
-angular.module('app.gameDetail', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('gameDetail', {
-            url : '/gameDetail/:id',
-            templateUrl : 'app/gameDetail/gameDetail.html',
-            controller : 'GameDetailCtrl'
-        });
-    }])
-
-    .controller('GameDetailCtrl', ["$scope", "$http", "$stateParams", "localStorageService", "$uibModal", "$state", "articles", "$rootScope", function ($scope, $http, $stateParams, localStorageService, $uibModal, $state, articles, $rootScope) {
-        $scope.tab = {};
-        $scope.tab.active = 'description';
-
-        $scope.quantity = 1;
-
-        $scope.isValidQuantity = true;
-        $scope.calcPrice = function () {
-            var price = $scope.actualGame.price * $scope.quantity;
-            if (isNaN(price) || $scope.quantity < 1 || $scope.quantity > 20) {
-                //&#8209; : minus without line break
-                $scope.price = "Bitte gültige Anzahl (1&#8209;20) angeben!";
-                $scope.isValidQuantity = false;
-            } else {
-                $scope.price = Math.round(price * 100) / 100;
-                $scope.isValidQuantity = true;
-            }
-        };
-
-        // load game at initial start
-        loadGame();
-
-        function loadGame() {
-            // get the id from the url parameters
-            var id = $stateParams.id;
-            $scope.articles = localStorageService.get('articles');
-            $scope.actualGame = $scope.articles[id];
-            if (!$scope.actualGame) {
-                toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
-                $state.go('home');
-            } else {
-                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
-                document.getElementById("description").innerHTML = $scope.actualGame.description;
-                $scope.calcPrice();
-            }
-        }
-
-        $rootScope.$on("articles-loaded", function () {
-            // not every time the event is fired, the game detail site is opened
-            // only react to the event when the site is opened
-            if ($state.current.name == "gameDetail") {
-                loadGame();
-            }
-        });
-
-        var user = localStorageService.get('user') || {};
-        var userName = user.userName;
-
-        function calculateAverageStars(data) {
-            var count = 0;
-            var stars = 0;
-            angular.forEach(data, function (item) {
-                count++;
-                stars += item.stars;
-            });
-            $scope.reviewsCount = count;
-            if (count === 0) {
-                return 0;
-            } else {
-                return stars / count;
-            }
-        }
-
-        $scope.changeTab = function (type) {
-            $scope.tab.active = type;
-        };
-
-        $scope.toCart = function () {
-            if ($scope.quantity >= 1) {
-                var cart = localStorageService.get('cart') || {};
-                // merge item quantity with cart quantity
-                if (cart[$scope.actualGame.id] && cart[$scope.actualGame.id].quantity) {
-                    cart[$scope.actualGame.id].quantity = parseInt(cart[$scope.actualGame.id].quantity) + parseInt($scope.quantity)
-                } else {
-                    cart[$scope.actualGame.id] = {
-                        itemId : $scope.actualGame.id,
-                        quantity : parseInt($scope.quantity)
-                    };
-                }
-                localStorageService.set('cart', cart);
-                $rootScope.$emit('itemAddedToCart');
-                toastr.success('<img src="assets/img/giphy.gif" ng-show="inCart"/>');
-                toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
-            } else {
-                toastr.warning('Bitte geben Sie eine gültige Zahl ein!')
-            }
-        };
-
-        // logic for rating
-        $scope.starsActivator = {};
-        $scope.numbers = [1, 2, 3, 4, 5];
-        for (var i = 0; i <= 4; i++) {
-            $scope.starsActivator[$scope.numbers[i]] = false;
-        }
-        $scope.starHover = function (number) {
-            while (number > 0) {
-                $scope.starsActivator[number] = true;
-                number--;
-            }
-        };
-        $scope.leave = function () {
-            for (var i = 0; i <= 4; i++) {
-                $scope.starsActivator[$scope.numbers[i]] = false;
-            }
-        };
-        $scope.rate = function (stars) {
-            if (userName) {
-                var newReviewId = 1;
-                do {
-                    newReviewId++;
-                } while ($scope.actualGame.reviews[newReviewId]);
-                var title = '';
-                var message = '';
-                angular.forEach($scope.actualGame.reviews, function (review) {
-                    if (review.author == user.userName) {
-                        title = review.title;
-                        message = review.message;
-                        newReviewId = review.id;
-                    }
-                });
-                // modal
-                var modalInstance = $uibModal.open({
-                    animation : true,
-                    templateUrl : 'app/gameDetail/rating/rating.html',
-                    controller : 'RatingCtrl',
-                    // if user wrote a review before, pre-filling the input fields
-                    resolve : {
-                        stars : function () {
-                            return stars;
-                        },
-                        title : function () {
-                            return title;
-                        },
-                        message : function () {
-                            return message;
-                        }
-                    }
-                });
-                // code when modal is closed
-                modalInstance.result.then(function (result) {
-                    // modal has been closed because user wants to send a review
-                    var data = {
-                        id : 0,
-                        stars : result.stars,
-                        title : result.title,
-                        message : result.message,
-                        author : userName,
-                        articleId : $scope.actualGame.id
-                    };
-                    articles.addReview(data)
-                        .then(function () {
-                            toastr.success('Bewertung hinzugefügt!');
-                        }, function (error) {
-                            toastr.error("Bewertung wurde nicht hinzugefügt!");
-                            if (error) {
-                                toastr.error(error);
-                            } else {
-                                toastr.error("Ein unbekannter Fehler ist aufgetreten!");
-                            }
-                        });
-                }, function () {
-                    // modal has been closed because user pressed the cancel button
-                    console.log('Modal dismissed');
-                });
-            } else {
-                toastr.warning('Bitte loggen Sie sich zuerst ein!');
-            }
-        };
     }]);
 
 angular.module('app.genre', [])
@@ -575,6 +348,55 @@ angular.module('app.genre', [])
         }
     }]);
 
+angular.module('app.cart', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('cart', {
+            url: '/cart',
+            templateUrl: 'app/cart/cart.html',
+            controller: 'CartCtrl'
+        });
+    }])
+
+    .controller('CartCtrl', ["localStorageService", "$scope", "$rootScope", function (localStorageService, $scope, $rootScope) {
+        $scope.cart = localStorageService.get('cart');
+        $scope.articles = localStorageService.get('articles');
+        $scope.isInvalid = false;
+
+        $scope.updateTotalPrice = function () {
+            $scope.totalPrice = 0;
+            angular.forEach($scope.cart, function (item) {
+                $scope.totalPrice += item.quantity * $scope.articles[item.itemId].price;
+            });
+        };
+        $scope.updateTotalPrice();
+
+        $scope.isInt = function (n) {
+            n = parseInt(n);
+            return Number(n) === n && n % 1 === 0;
+        };
+
+        $scope.quantityChange = function (id) {
+            var newQuantity = parseInt($scope.cart[id].quantity);
+            if (newQuantity < 1 || newQuantity > 20 || !$scope.isInt(newQuantity)) {
+                $scope.isInvalid = true;
+            } else {
+                $scope.isInvalid = false;
+                $scope.cart[id].quantity = newQuantity;
+                $scope.updateTotalPrice();
+                localStorageService.set('cart', $scope.cart);
+                $rootScope.$emit('itemAddedToCart');
+            }
+        };
+
+        $scope.remove = function (id) {
+            delete $scope.cart[id];
+            $scope.updateTotalPrice();
+            localStorageService.set('cart', $scope.cart);
+            $rootScope.$emit('itemAddedToCart');
+        }
+    }]);
+
 angular.module('app.home', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -588,79 +410,6 @@ angular.module('app.home', [])
     .controller('HomeCtrl', function () {
 
     });
-
-angular.module('app.login', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('login', {
-            url : '/login',
-            templateUrl : 'app/login/login.html',
-            controller : 'LoginCtrl'
-        });
-    }])
-
-    .controller('LoginCtrl', ["$scope", "$state", "localStorageService", "$rootScope", "$http", "user", function ($scope, $state, localStorageService, $rootScope, $http, user) {
-        $scope.isFormTouched = false;
-        $scope.isLoading = false;
-
-        var username = localStorageService.get('user') || {};
-        var toCheckout = localStorageService.get('fromCheckout');
-        if (username.userName) {
-            toastr.info('Sie sind bereits eingeloogt als "' + username.userName + '"!');
-            $state.go('home');
-        }
-        $scope.data = {};
-        $scope.data.password = '';
-        $scope.data.userName = '';
-
-        //Trigger Login when enter pressed
-        $("#form").keydown(function (event) {
-            if (event.keyCode == 13) {
-                $("#submit").click();
-            }
-        });
-
-        $scope.login = function () {
-            $scope.isFormTouched = true;
-            if (!$scope.data.userName || !$scope.data.password) {
-                toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
-                toastr.warning('You had one Job!');
-            } else {
-                $scope.isLoading = true;
-                var data = {
-                    userName : $scope.data.userName,
-                    password : $scope.data.password
-                };
-                user.login(data)
-                    .then(function (response) {
-                        $scope.isLoading = false;
-                        toastr.success('Login war erfolgreich.');
-                        var user = {
-                            userName : $scope.data.userName,
-                            role : response.role,
-                            id : parseInt(response.id),
-                            // md5 encrypted
-                            password : response.password
-                        };
-                        localStorageService.set('user', user);
-                        $rootScope.$emit('login');
-                        localStorageService.remove('fromCheckout');
-                        if (toCheckout) {
-                            $state.go('checkout');
-                        } else {
-                            $state.go('home');
-                        }
-                    }, function (error) {
-                        $scope.isLoading = false;
-                        if (error) {
-                            toastr.error(error);
-                        } else {
-                            toastr.error("Fehler bei der Verbindung zum Server!");
-                        }
-                    });
-            }
-        }
-    }]);
 
 angular.module('app.newGames', [])
 
@@ -720,66 +469,6 @@ angular.module('app.orders', [])
                     toastr.warning("Sie werden nun automatisch ausgeloggt");
                     $rootScope.logout();
                 });
-        }
-    }]);
-
-angular.module('app.userAdministration', [])
-
-    .config(["$stateProvider", function ($stateProvider) {
-        $stateProvider.state('userAdministration', {
-            url : '/userAdministration',
-            templateUrl : 'app/userAdministration/userAdministration.html',
-            controller : 'UserAdministrationCtrl'
-        });
-    }])
-
-    .controller('UserAdministrationCtrl', ["$scope", "user", "localStorageService", "$state", "$rootScope", function ($scope, user, localStorageService, $state, $rootScope) {
-        var currentUser = localStorageService.get("user") || {};
-        if (angular.equals({}, currentUser)) {
-            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
-            $state.go("login");
-        } else {
-            user.authenticate(currentUser.userName, currentUser.password)
-                .then(function (response) {
-                    localStorageService.set("user", response);
-                    currentUser = response;
-                    if (currentUser.role != "admin") {
-                        toastr.info("Diese Seite ist geschützt!");
-                        $state.go("home");
-                    } else {
-                        loadUsers();
-                    }
-                }, function () {
-                    toastr.error("Fehler bei der Authentifizierung");
-                    toastr.warning("Sie werden nun automatisch ausgeloggt");
-                    $rootScope.logout();
-                });
-        }
-
-        function loadUsers() {
-            user.getAllUsers()
-                .then(function (response) {
-                    $scope.users = response;
-                }, function (error) {
-                    if (error) {
-                        toastr.error(error);
-                    } else {
-                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
-                    }
-                });
-        }
-
-        $scope.deleteUser = function (userName) {
-            var confirm = window.confirm("Wollen Sie den Benutzer " + userName + " wirklich löschen?");
-            if (confirm) {
-                user.deleteUser(userName)
-                    .then(function (response) {
-                        toastr.success(response);
-                        loadUsers();
-                    }, function (error) {
-                        toastr.error(error);
-                    });
-            }
         }
     }]);
 
@@ -1235,6 +924,186 @@ angular.module('app')
         return service;
     }]);
 
+angular.module('app.gameDetail', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('gameDetail', {
+            url : '/gameDetail/:id',
+            templateUrl : 'app/gameDetail/gameDetail.html',
+            controller : 'GameDetailCtrl'
+        });
+    }])
+
+    .controller('GameDetailCtrl', ["$scope", "$http", "$stateParams", "localStorageService", "$uibModal", "$state", "articles", "$rootScope", function ($scope, $http, $stateParams, localStorageService, $uibModal, $state, articles, $rootScope) {
+        $scope.tab = {};
+        $scope.tab.active = 'description';
+
+        $scope.quantity = 1;
+
+        $scope.isValidQuantity = true;
+        $scope.calcPrice = function () {
+            var price = $scope.actualGame.price * $scope.quantity;
+            if (isNaN(price) || $scope.quantity < 1 || $scope.quantity > 20) {
+                //&#8209; : minus without line break
+                $scope.price = "Bitte gültige Anzahl (1&#8209;20) angeben!";
+                $scope.isValidQuantity = false;
+            } else {
+                $scope.price = Math.round(price * 100) / 100;
+                $scope.isValidQuantity = true;
+            }
+        };
+
+        // load game at initial start
+        loadGame();
+
+        function loadGame() {
+            // get the id from the url parameters
+            var id = $stateParams.id;
+            $scope.articles = localStorageService.get('articles');
+            $scope.actualGame = $scope.articles[id];
+            if (!$scope.actualGame) {
+                toastr.warning('Das Spiel mit der ID ' + id + ' existiert nicht!');
+                $state.go('home');
+            } else {
+                $scope.stars = calculateAverageStars($scope.actualGame.reviews);
+                document.getElementById("description").innerHTML = $scope.actualGame.description;
+                $scope.calcPrice();
+            }
+        }
+
+        $rootScope.$on("articles-loaded", function () {
+            // not every time the event is fired, the game detail site is opened
+            // only react to the event when the site is opened
+            if ($state.current.name == "gameDetail") {
+                loadGame();
+            }
+        });
+
+        var user = localStorageService.get('user') || {};
+        var userName = user.userName;
+
+        function calculateAverageStars(data) {
+            var count = 0;
+            var stars = 0;
+            angular.forEach(data, function (item) {
+                count++;
+                stars += item.stars;
+            });
+            $scope.reviewsCount = count;
+            if (count === 0) {
+                return 0;
+            } else {
+                return stars / count;
+            }
+        }
+
+        $scope.changeTab = function (type) {
+            $scope.tab.active = type;
+        };
+
+        $scope.toCart = function () {
+            if ($scope.quantity >= 1) {
+                var cart = localStorageService.get('cart') || {};
+                // merge item quantity with cart quantity
+                if (cart[$scope.actualGame.id] && cart[$scope.actualGame.id].quantity) {
+                    cart[$scope.actualGame.id].quantity = parseInt(cart[$scope.actualGame.id].quantity) + parseInt($scope.quantity)
+                } else {
+                    cart[$scope.actualGame.id] = {
+                        itemId : $scope.actualGame.id,
+                        quantity : parseInt($scope.quantity)
+                    };
+                }
+                localStorageService.set('cart', cart);
+                $rootScope.$emit('itemAddedToCart');
+                toastr.success('<img src="assets/img/giphy.gif" ng-show="inCart"/>');
+                toastr.success('Artikel erfolgreich ' + $scope.quantity + 'x in den Warenkorb gelegt!');
+            } else {
+                toastr.warning('Bitte geben Sie eine gültige Zahl ein!')
+            }
+        };
+
+        // logic for rating
+        $scope.starsActivator = {};
+        $scope.numbers = [1, 2, 3, 4, 5];
+        for (var i = 0; i <= 4; i++) {
+            $scope.starsActivator[$scope.numbers[i]] = false;
+        }
+        $scope.starHover = function (number) {
+            while (number > 0) {
+                $scope.starsActivator[number] = true;
+                number--;
+            }
+        };
+        $scope.leave = function () {
+            for (var i = 0; i <= 4; i++) {
+                $scope.starsActivator[$scope.numbers[i]] = false;
+            }
+        };
+        $scope.rate = function (stars) {
+            if (userName) {
+                var newReviewId = 1;
+                do {
+                    newReviewId++;
+                } while ($scope.actualGame.reviews[newReviewId]);
+                var title = '';
+                var message = '';
+                angular.forEach($scope.actualGame.reviews, function (review) {
+                    if (review.author == user.userName) {
+                        title = review.title;
+                        message = review.message;
+                        newReviewId = review.id;
+                    }
+                });
+                // modal
+                var modalInstance = $uibModal.open({
+                    animation : true,
+                    templateUrl : 'app/gameDetail/rating/rating.html',
+                    controller : 'RatingCtrl',
+                    // if user wrote a review before, pre-filling the input fields
+                    resolve : {
+                        stars : function () {
+                            return stars;
+                        },
+                        title : function () {
+                            return title;
+                        },
+                        message : function () {
+                            return message;
+                        }
+                    }
+                });
+                // code when modal is closed
+                modalInstance.result.then(function (result) {
+                    // modal has been closed because user wants to send a review
+                    var data = {
+                        id : 0,
+                        stars : result.stars,
+                        title : result.title,
+                        message : result.message,
+                        author : userName,
+                        articleId : $scope.actualGame.id
+                    };
+                    articles.addReview(data)
+                        .then(function () {
+                            toastr.success('Bewertung hinzugefügt!');
+                        }, function (error) {
+                            toastr.error("Bewertung wurde nicht hinzugefügt!");
+                            if (error) {
+                                toastr.error(error);
+                            } else {
+                                toastr.error("Ein unbekannter Fehler ist aufgetreten!");
+                            }
+                        });
+                }, function () {
+                    // modal has been closed because user pressed the cancel button
+                    console.log('Modal dismissed');
+                });
+            } else {
+                toastr.warning('Bitte loggen Sie sich zuerst ein!');
+            }
+        };
+    }]);
+
 angular.module('app.topGames', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -1262,6 +1131,139 @@ angular.module('app.topGames', [])
             });
     }]);
 
+angular.module('app.login', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('login', {
+            url : '/login',
+            templateUrl : 'app/login/login.html',
+            controller : 'LoginCtrl'
+        });
+    }])
+
+    .controller('LoginCtrl', ["$scope", "$state", "localStorageService", "$rootScope", "$http", "user", function ($scope, $state, localStorageService, $rootScope, $http, user) {
+        $scope.isFormTouched = false;
+        $scope.isLoading = false;
+
+        var username = localStorageService.get('user') || {};
+        var toCheckout = localStorageService.get('fromCheckout');
+        if (username.userName) {
+            toastr.info('Sie sind bereits eingeloogt als "' + username.userName + '"!');
+            $state.go('home');
+        }
+        $scope.data = {};
+        $scope.data.password = '';
+        $scope.data.userName = '';
+
+        //Trigger Login when enter pressed
+        $("#form").keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#submit").click();
+            }
+        });
+
+        $scope.login = function () {
+            $scope.isFormTouched = true;
+            if (!$scope.data.userName || !$scope.data.password) {
+                toastr.warning('<img src="assets/img/Epic_Mass_Facepalm.gif"/>');
+                toastr.warning('You had one Job!');
+            } else {
+                $scope.isLoading = true;
+                var data = {
+                    userName : $scope.data.userName,
+                    password : $scope.data.password
+                };
+                user.login(data)
+                    .then(function (response) {
+                        $scope.isLoading = false;
+                        toastr.success('Login war erfolgreich.');
+                        var user = {
+                            userName : $scope.data.userName,
+                            role : response.role,
+                            id : parseInt(response.id),
+                            // md5 encrypted
+                            password : response.password
+                        };
+                        localStorageService.set('user', user);
+                        $rootScope.$emit('login');
+                        localStorageService.remove('fromCheckout');
+                        if (toCheckout) {
+                            $state.go('checkout');
+                        } else {
+                            $state.go('home');
+                        }
+                    }, function (error) {
+                        $scope.isLoading = false;
+                        if (error) {
+                            toastr.error(error);
+                        } else {
+                            toastr.error("Fehler bei der Verbindung zum Server!");
+                        }
+                    });
+            }
+        }
+    }]);
+
+angular.module('app.userAdministration', [])
+
+    .config(["$stateProvider", function ($stateProvider) {
+        $stateProvider.state('userAdministration', {
+            url : '/userAdministration',
+            templateUrl : 'app/userAdministration/userAdministration.html',
+            controller : 'UserAdministrationCtrl'
+        });
+    }])
+
+    .controller('UserAdministrationCtrl', ["$scope", "user", "localStorageService", "$state", "$rootScope", function ($scope, user, localStorageService, $state, $rootScope) {
+        var currentUser = localStorageService.get("user") || {};
+        if (angular.equals({}, currentUser)) {
+            toastr.info("Sie müssen sich einloggen, um diese Seite zu sehen");
+            $state.go("login");
+        } else {
+            user.authenticate(currentUser.userName, currentUser.password)
+                .then(function (response) {
+                    localStorageService.set("user", response);
+                    currentUser = response;
+                    if (currentUser.role != "admin") {
+                        toastr.info("Diese Seite ist geschützt!");
+                        $state.go("home");
+                    } else {
+                        loadUsers();
+                    }
+                }, function () {
+                    toastr.error("Fehler bei der Authentifizierung");
+                    toastr.warning("Sie werden nun automatisch ausgeloggt");
+                    $rootScope.logout();
+                });
+        }
+
+        function loadUsers() {
+            user.getAllUsers()
+                .then(function (response) {
+                    $scope.users = response;
+                }, function (error) {
+                    if (error) {
+                        toastr.error(error);
+                    } else {
+                        toastr.error("Ein unbekannter Fehler ist aufgetreten!");
+                    }
+                });
+        }
+
+        $scope.deleteUser = function (userName) {
+            var confirm = window.confirm("Wollen Sie den Benutzer " + userName + " wirklich löschen?");
+            if (confirm) {
+                user.deleteUser(userName)
+                    .then(function (response) {
+                        toastr.success(response);
+                        loadUsers();
+                    }, function (error) {
+                        toastr.error(error);
+                    });
+            }
+        }
+    }]);
+
 angular.module('app.checkout', [])
 
     .config(["$stateProvider", function ($stateProvider) {
@@ -1272,7 +1274,7 @@ angular.module('app.checkout', [])
         });
     }])
 
-    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", function ($scope, localStorageService, $state, orders) {
+    .controller('CheckoutCtrl', ["$scope", "localStorageService", "$state", "orders", "$rootScope", function ($scope, localStorageService, $state, orders, $rootScope) {
         $scope.isLoading = false;
 
         var user = localStorageService.get('user') || {};
@@ -1298,6 +1300,19 @@ angular.module('app.checkout', [])
             });
         };
 
+        // if game is fsk 16 or 18, user has to confirm age
+        $scope.highestFsk = 0;
+        $scope.isAgeConfirmed = false;
+        angular.forEach($scope.cart, function (item) {
+             if ($scope.articles[item.itemId].fsk > $scope.highestFsk) {
+                 $scope.highestFsk = $scope.articles[item.itemId].fsk;
+             }
+        });
+
+        $scope.ageConfirmedChange = function () {
+            $scope.isAgeConfirmed ? $scope.isAgeConfirmed = false : $scope.isAgeConfirmed = true;
+        };
+
         $scope.addOrder = function () {
             $scope.isLoading = true;
             var cart = localStorageService.get("cart");
@@ -1312,6 +1327,8 @@ angular.module('app.checkout', [])
                     $scope.isLoading = false;
                     toastr.success(response);
                     localStorageService.remove("cart");
+                    // update cart elements count
+                    $rootScope.$emit("itemAddedToCart");
                     $state.go("orders");
                 }, function (error) {
                     $scope.isLoading = false;

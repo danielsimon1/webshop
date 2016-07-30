@@ -60,7 +60,7 @@ angular.module('app', [
         localStorageService.set('fromCheckout', false);
     })
     // controller for the navbar
-    .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state, articles) {
+    .controller('AppCtrl', function ($scope, $rootScope, $http, localStorageService, $state, articles, $log) {
         localStorageService.remove('checkout');
         $rootScope.$on('$stateChangeSuccess',
             function (event, toState, toParams) {
@@ -69,6 +69,7 @@ angular.module('app', [
             });
 
         $rootScope.$on('itemAddedToCart', function () {
+            $log.info("cart changed");
             countCartItems();
         });
 

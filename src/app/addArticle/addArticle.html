@@ -41,7 +41,7 @@
                 selected.platform.osx) && isTouched}">
                 <label>Plattformen</label><br>
                 <label class="checkbox-inline">
-                    <input type="checkbox" value="wiiu" ng-model="selected.platform.wiiu">Wii U
+                    <input type="checkbox" value="wiiu" ng-model="selected.platform.wiiu">Gameboy
                 </label>
                 <label class="checkbox-inline">
                     <input type="checkbox" value="windows" ng-model="selected.platform.windows">Windows
@@ -80,6 +80,8 @@
                     <span class="input-group-addon">GHz</span>
                 </div>
             </div>
+            <label style="color:red" ng-show="description.length > 8000">Die Beschreibung ist zu lang! Es müssen {{ (description.length - 8000) }} Zeichen entfernt werden!</label>
+            <label style="color:red" ng-show="description.length <= 8000 && description.includes('\'')">Die Beschreibung enthält das unerlaubte Sonderzeichen '</label>
             <div class="form-group" ng-class="{'invalid-textarea': (!description || !descriptionRegex.test(description)) && isTouched}">
                 <label for="description">Beschreibung:</label>
                 <div text-angular ng-model="description" id="description"></div>

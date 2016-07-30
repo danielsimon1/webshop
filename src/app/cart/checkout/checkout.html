@@ -1,6 +1,6 @@
 <div ng-repeat="item in cart">
-    <img ng-src="{{ articles[item.itemId].image }}" height="100px" style="display:inline-block">
-    <div style="display: inline-block; margin-left: 15px">
+    <img ng-src="{{ articles[item.itemId].image }}" height="100px" style="display:inline-block; margin-right: 15px">
+    <div style="display: inline-block">
         <p><b>{{ item.quantity }}</b>x {{ articles[item.itemId].name }} (Stückpreis: {{ articles[item.itemId].price }}€)</p>
         <p>
             <span class="h4" ng-show="item.quantity">{{ item.quantity * articles[item.itemId].price | number: 2 }}€</span>
@@ -9,4 +9,7 @@
     <hr>
 </div>
 <p class="h4" ng-show="totalPrice">Gesamt: {{ totalPrice | number: 2 }}€</p>
-<button class="btn btn-warning" ng-click="addOrder()" ng-disabled="isLoading">Artikel bestellen</button>
+<div ng-if="highestFsk >= 16">
+    <input type="checkbox" id="age-confirm" ng-model="isAgeConfirmed" ng-change="ageConfirmedChange()"/><label for="age-confirm">&nbsp;Bitte bestätigen Sie, dass Sie {{ highestFsk }} Jahre oder älter sind!</label><br>
+</div>
+<button class="btn btn-warning" ng-click="addOrder()" ng-disabled="isLoading || (highestFsk >= 16 && !isAgeConfirmed)">Artikel bestellen</button>

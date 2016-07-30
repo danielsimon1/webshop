@@ -1,7 +1,7 @@
 <div class="row">
-    <div class="col-md-6">
-        <img ng-src="{{ actualGame.image }}" id="image" width="300px" style="display: inline-block; vertical-align: top"/>
-        <div style="display: inline-block; margin-left: 50px">
+    <div class="col-md-8">
+        <img ng-src="{{ actualGame.image }}" id="image" width="300px" style="display: inline-block; vertical-align: top; margin-right:50px"/>
+        <div style="display: inline-block">
             <p class="h2">{{ actualGame.name }}</p>
             <p class="h4"><span class="label label-primary"> {{ actualGame.genre }}</span></p>
             <p class="h3">Preis: <span class="price">{{ actualGame.price }} € *</span><br>
@@ -15,7 +15,7 @@
             <p>Altersfreigabe: <b>FSK {{ actualGame.fsk }}</b></p>
             <p>Release-Datum: <b>{{ actualGame.release | date:'dd.MM.yyyy'}}</b></p>
             <p>Durchschnittliche Bewertung:
-            <span class="stars" uib-tooltip="Bewerten">
+                <span class="stars" uib-tooltip="Bewerten">
                 <span class="rating">
                     <span ng-class="{'star-selected': starsActivator[1],'star-inactive': stars === 0, 'star-active': stars >= 1}"
                           ng-mouseover="starHover(1)" ng-mouseleave="leave()" ng-click="rate(1)">★</span><span
@@ -41,11 +41,11 @@
                         ng-mouseover="starHover(5)" ng-mouseleave="leave()">☆</span>
                 </span>
             </span>
-                aus {{ reviewsCount }} Bewertungen
+                aus {{ reviewsCount }} {{ reviewsCount === 1 ? "Bewertung" : "Bewertungen" }}
             </p>
         </div>
     </div>
-    <div class="col-md-6 panel panel-default" style="width: 250px">
+    <div class="col-md-4 panel panel-default" style="width: 250px">
         <div class="panel-body">
             <h3 style="margin-top: 0" ng-show="isValidQuantity">
                 <span>Preis:&nbsp;</span><b>{{ price | number: 2 }}<span ng-show="isValidQuantity"> €</span></b>
@@ -56,7 +56,7 @@
             <div class="input-group" uib-tooltip="In den Warenkorb legen" tooltip-placement="bottom" style="width: 150px">
                 <span class="input-group-addon">Anzahl</span>
                 <input type="text" class="form-control" ng-model="quantity" ng-change="calcPrice()"/>
-            <span class="input-group-btn">
+                <span class="input-group-btn">
                 <button class="btn btn-default" type="button" ng-click="toCart()" ng-disabled="!isValidQuantity">
                     <span class="glyphicon glyphicon-shopping-cart"></span>
                 </button>

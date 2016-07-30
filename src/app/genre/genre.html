@@ -15,7 +15,7 @@
         </div>
     </div>
 </div>
-<div class="col-md-12" style="margin-top: 20px;">
+<div class="col-md-12" style="margin-top: 20px; margin-bottom: 40px">
     <div class="panel panel-default game-panels" ng-repeat="article in articles | filter: searchInput | orderBy: orderType.value: orderType.reverse">
         <div class="panel-heading"><a class="h5" ui-sref="gameDetail({id: article.id})">{{ article.name }} <span class="badge">{{ article.price }}€</span></a></div>
         <div class="panel-body">

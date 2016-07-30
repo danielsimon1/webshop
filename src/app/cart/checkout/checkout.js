@@ -8,7 +8,7 @@ angular.module('app.checkout', [])
         });
     })
 
-    .controller('CheckoutCtrl', function ($scope, localStorageService, $state, orders) {
+    .controller('CheckoutCtrl', function ($scope, localStorageService, $state, orders, $rootScope) {
         $scope.isLoading = false;
 
         var user = localStorageService.get('user') || {};
@@ -34,6 +34,19 @@ angular.module('app.checkout', [])
             });
         };
 
+        // if game is fsk 16 or 18, user has to confirm age
+        $scope.highestFsk = 0;
+        $scope.isAgeConfirmed = false;
+        angular.forEach($scope.cart, function (item) {
+             if ($scope.articles[item.itemId].fsk > $scope.highestFsk) {
+                 $scope.highestFsk = $scope.articles[item.itemId].fsk;
+             }
+        });
+
+        $scope.ageConfirmedChange = function () {
+            $scope.isAgeConfirmed ? $scope.isAgeConfirmed = false : $scope.isAgeConfirmed = true;
+        };
+
         $scope.addOrder = function () {
             $scope.isLoading = true;
             var cart = localStorageService.get("cart");
@@ -48,6 +61,8 @@ angular.module('app.checkout', [])
                     $scope.isLoading = false;
                     toastr.success(response);
                     localStorageService.remove("cart");
+                    // update cart elements count
+                    $rootScope.$emit("itemAddedToCart");
                     $state.go("orders");
                 }, function (error) {
                     $scope.isLoading = false;

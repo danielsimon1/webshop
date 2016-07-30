@@ -96,14 +96,15 @@ angular.module('app.addArticle', [])
             return Number(n) === n && n % 1 !== 0;
         };
 
+        $scope.titleRegex = /^.{4,60}$/;
+        $scope.genreRegex = /^.{4,20}$/;
+        $scope.languageRegex = /^.{4,15}$/;
+        $scope.descriptionRegex = /^[^']{1,8000}$/;
+
         $scope.addArticle = function () {
             $scope.isTouched = true;
             $scope.isPriceTouched = true;
             $scope.isPriceInvalid = false;
-            $scope.titleRegex = /^.{4,60}$/;
-            $scope.genreRegex = /^.{4,20}$/;
-            $scope.languageRegex = /^.{4,15}$/;
-            $scope.descriptionRegex = /^.{1,8000}$/;
 
             if ($scope.title && (($scope.selected.genre && !$scope.isCustomGenre) || ($scope.customGenre && $scope.isCustomGenre && $scope.genreRegex.test($scope.customGenre)))
                 && $scope.price && $scope.descriptionRegex.test($scope.description) && ($scope.selected.platform.wiiu ||
