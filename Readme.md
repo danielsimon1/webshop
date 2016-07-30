@@ -38,6 +38,10 @@ Bitte beachten Sie: Diese Einstellungen sollten nicht beim Surfen verwendet werd
 
 Die Anwendung ist auf allen gängigen Browsern lauffähig, wenn die same origin policy deaktiviert wurde.
 
+Anleitungen für die restlichen Browser:
+* [Firefox](http://stackoverflow.com/questions/17088609/disable-firefox-same-origin-policy)
+* [Internet Explorer](http://stackoverflow.com/questions/20947359/disable-same-origin-policy-internet-explorer)
+
 ## Anwendung starten
 Stellen Sie sicher, dass der Server läuft.
 
@@ -45,7 +49,7 @@ Starten Sie dann den Browser mit ausgeschalteter same origin policy. Navigieren 
 
 Testen Sie die Anwendung, indem Sie auf das Bild von Modern Warfare 2 klicken. Es sollte sich eine Seite mit den Details zum Spiel öffnen. Dann sind die Anwendung und die Datenbank ordnungsgemäß verbunden.
 ## Benutzung
-Die Testdaten enthalten ein Spiel mit der ID 0 und einen User mit Admin-Rechten mit dem Benutzernamen `Matthias` und dem Passwort `secret`.
+Die Testdaten enthalten fünf Spiele und einen User mit Admin-Rechten mit dem Benutzernamen `Matthias` und dem Passwort `secret`.
 
 ##Struktur
 Der Java-Quellcode des Servers sowie die kompilierten JAR-Dateien befinden sich im `Server`-Ordner.
